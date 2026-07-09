@@ -246,7 +246,7 @@ export default function Inventory() {
             ) : (
               Object.keys(productsByCategory).map((catName) => {
                 const categoryProducts = productsByCategory[catName];
-                const isCollapsed = !isSearching && selectedCategoryFilters.length === 0 && !!collapsedCategories[catName];
+                const isCollapsed = !isSearching && !!collapsedCategories[catName];
 
                 return (
                   <div key={catName} className="bg-white border border-[#e2e8f0] rounded-[16px] overflow-hidden shadow-clinical-sm">

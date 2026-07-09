@@ -30,7 +30,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="hidden md:flex md:flex-col w-64 bg-white border-r border-[#e2e8f0]/80 md:static min-h-[100dvh] shrink-0">
+    <aside className="hidden md:flex md:flex-col w-64 bg-white border-r border-[#e2e8f0]/80 md:fixed md:top-0 md:bottom-0 md:left-0 md:z-30 shrink-0">
       {/* Brand Header */}
       <div className="h-16 px-6 border-b border-[#e2e8f0] flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
@@ -69,12 +69,12 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer / Logout */}
-      <div className="p-4 border-t border-[#e2e8f0] bg-slate-50/50">
+      <div className="p-4 pb-8 border-t border-[#e2e8f0] bg-slate-50/50">
         <button
           onClick={logout}
-          className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-colors text-left cursor-pointer tap-bounce no-select"
+          className="flex items-center gap-3 w-full px-4 py-2.5 rounded-lg text-xs font-extrabold text-rose-600 hover:bg-rose-50 transition-colors text-left cursor-pointer tap-bounce no-select"
         >
-          <LogOut className="w-5 h-5 text-rose-500" />
+          <LogOut className="w-4.5 h-4.5 text-rose-500" />
           Cerrar Sesión
         </button>
       </div>

@@ -73,7 +73,7 @@ export default function Home() {
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-h-[100dvh] min-w-0">
+      <div className="flex-1 flex flex-col min-h-[100dvh] min-w-0 md:pl-64">
         {/* Header containing search, notifications and network state */}
         <Header />
 

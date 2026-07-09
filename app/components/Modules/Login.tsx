@@ -37,7 +37,7 @@ export default function Login() {
 
   return (
     <div className="fixed inset-0 w-full h-[100dvh] flex items-center justify-center p-4 bg-[#f8fafc] overflow-hidden select-none">
-      <div className="w-full max-w-md bg-white border border-[#e2e8f0] rounded-[16px] shadow-clinical-lg p-8 text-center animate-fade-in">
+      <div className="w-full max-w-md bg-white border border-[#e2e8f0] rounded-[16px] shadow-clinical-lg p-8 text-center animate-fade-in -translate-y-10 sm:-translate-y-16">
         {/* Hospital Brand Header */}
         <div className="flex flex-col items-center gap-3 mb-8">
           <img src="/logo.svg" alt="Clinica Montalvo Logo" className="w-16 h-16" />

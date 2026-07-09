@@ -60,15 +60,15 @@ export default function Reception() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {pendingReceptions.map((item) => (
-            <Card key={item.id} className="flex flex-col justify-between p-5">
-              <div className="space-y-3">
+            <Card key={item.id} className="flex flex-col justify-between p-5 border border-slate-200/80 hover:border-slate-300 shadow-clinical-sm transition-all duration-150">
+              <div className="space-y-4">
                 {/* Header */}
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-[#39ADA3] bg-[#ebf7f6] px-2.5 py-0.5 rounded-full">
+                  <span className="text-[10px] font-bold text-secondary bg-[#ebf7f6] px-2.5 py-0.5 rounded-full border border-secondary/10">
                     ID: #{item.id}
                   </span>
                   <span className="text-xs text-slate-400 font-semibold flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5" />
+                    <Calendar className="w-3.5 h-3.5 text-slate-400" />
                     Prog: {item.date.split('-').reverse().join('/')}
                   </span>
                 </div>
@@ -78,14 +78,19 @@ export default function Reception() {
                   {item.productName}
                 </h3>
 
-                <div className="text-xs text-slate-600 space-y-1 bg-slate-50 border border-slate-100 p-3 rounded-lg">
-                  <div>
-                    <span className="font-bold text-slate-400 uppercase tracking-wide mr-1">Cantidad Esperada:</span>
-                    <span className="text-[#006156] font-bold">{item.quantity} {item.unit}</span>
+                {/* Grid layout for details (ideal for mobile) */}
+                <div className="grid grid-cols-2 gap-2.5 pt-1">
+                  <div className="bg-slate-50/50 border border-[#e2e8f0]/60 p-2.5 rounded-xl flex flex-col min-w-0">
+                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Cant. Esperada</span>
+                    <span className="text-xs font-black text-primary truncate">
+                      {item.quantity} {item.unit}
+                    </span>
                   </div>
-                  <div>
-                    <span className="font-bold text-slate-400 uppercase tracking-wide mr-1">Proveedor:</span>
-                    <span className="text-slate-700 font-semibold">{item.supplier}</span>
+                  <div className="bg-slate-50/50 border border-[#e2e8f0]/60 p-2.5 rounded-xl flex flex-col min-w-0">
+                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Proveedor</span>
+                    <span className="text-xs font-bold text-slate-700 truncate" title={item.supplier}>
+                      {item.supplier}
+                    </span>
                   </div>
                 </div>
               </div>
