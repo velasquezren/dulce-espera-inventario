@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Card, Button, ConfirmModal } from '../UI';
 import { Search, Trash2, Send, ShoppingBag, Check, HelpCircle } from 'lucide-react';
@@ -25,6 +25,10 @@ export default function Inventory() {
   const [showSendConfirm, setShowSendConfirm] = useState(false);
   const [instantNote, setInstantNote] = useState('');
   const [isSending, setIsSending] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [activeTab]);
 
   // Global order notes/reason
   const [listReason, setListReason] = useState('');

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Card, Badge, EmptyState } from '../UI';
 import { 
@@ -27,6 +27,10 @@ export default function MyRequests() {
   // Calendar state
   const [viewDate, setViewDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [activeView, selectedDate]);
 
   const toggleExpand = (id: string) => {
     setExpandedRequestId((prev) => (prev === id ? null : id));

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useApp } from './context/AppContext';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -20,6 +20,10 @@ import ManageProducts from './components/Modules/ManageProducts';
 
 export default function Home() {
   const { user, activeModule, isLoading, isSidebarCollapsed } = useApp();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [activeModule]);
 
   // If initial load is running, show a clean clinic launcher spinner
   if (isLoading) {

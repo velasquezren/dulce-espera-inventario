@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Card, Button, ConfirmModal } from '../UI';
 import { Plus, Trash2, FolderPlus, Layers, Search, HelpCircle } from 'lucide-react';
@@ -20,6 +20,10 @@ export default function ManageProducts() {
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [showHelp, setShowHelp] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [activeTab]);
 
   // Category form states
   const [newCategoryName, setNewCategoryName] = useState('');
