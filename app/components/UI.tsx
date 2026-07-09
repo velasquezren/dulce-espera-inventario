@@ -13,7 +13,7 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 export function Card({ children, className = '', ...props }: CardProps) {
   return (
     <div
-      className={`bg-white border border-[#e2e8f0] rounded-[12px] p-5 shadow-[0_2px_8px_rgba(0,97,86,0.02)] transition-all duration-200 hover:shadow-[0_4px_12px_rgba(0,97,86,0.05)] ${className}`}
+      className={`bg-white border border-[#e2e8f0]/80 rounded-card p-5 shadow-clinical-sm card-hover-effect ${className}`}
       {...props}
     >
       {children}
@@ -39,14 +39,14 @@ export function Button({
   disabled,
   ...props
 }: ButtonProps) {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-150 focus:outline-none cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 active:scale-[0.98]';
+  const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-interactive tap-bounce no-select focus-ring-brand cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:transform-none';
   
   const variants = {
-    primary: 'bg-[#006156] hover:bg-[#004d44] text-white focus:ring-2 focus:ring-[#006156]/20',
-    secondary: 'bg-[#39ADA3] hover:bg-[#2e8b83] text-white focus:ring-2 focus:ring-[#39ADA3]/20',
-    outline: 'border border-[#006156] text-[#006156] hover:bg-[#e6f0ef] focus:ring-2 focus:ring-[#006156]/20',
-    ghost: 'text-[#006156] hover:bg-[#e6f0ef] focus:ring-2 focus:ring-[#006156]/20',
-    danger: 'bg-red-600 hover:bg-red-700 text-white focus:ring-2 focus:ring-red-200',
+    primary: 'bg-[#006156] hover:bg-[#004d44] text-white shadow-clinical-sm hover:shadow-glow',
+    secondary: 'bg-[#39ADA3] hover:bg-[#2e8b83] text-white shadow-clinical-sm hover:shadow-glow',
+    outline: 'border-2 border-[#006156] text-[#006156] hover:bg-[#e6f0ef]',
+    ghost: 'text-[#006156] hover:bg-[#e6f0ef]',
+    danger: 'bg-red-600 hover:bg-red-700 text-white shadow-[0_2px_8px_rgba(220,38,38,0.15)]',
   };
 
   const sizes = {
@@ -91,8 +91,8 @@ export function Input({ label, error, className = '', id, ...props }: InputProps
       )}
       <input
         id={id}
-        className={`w-full h-12 px-4 rounded-lg border bg-white border-[#cbd5e1] text-[#0f172a] text-base placeholder-[#94a3b8] transition-all duration-150 focus:border-[#006156] focus:ring-2 focus:ring-[#006156]/10 outline-none ${
-          error ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : ''
+        className={`w-full h-12 px-4 rounded-interactive border bg-white border-[#cbd5e1] text-[#0f172a] text-base placeholder-[#94a3b8] pwa-input focus-ring-brand outline-none ${
+          error ? 'border-red-500 focus-ring-brand' : ''
         } ${className}`}
         {...props}
       />
@@ -119,8 +119,8 @@ export function Textarea({ label, error, className = '', id, ...props }: Textare
       )}
       <textarea
         id={id}
-        className={`w-full p-4 rounded-lg border bg-white border-[#cbd5e1] text-[#0f172a] text-base placeholder-[#94a3b8] transition-all duration-150 focus:border-[#006156] focus:ring-2 focus:ring-[#006156]/10 outline-none min-h-[100px] resize-none ${
-          error ? 'border-red-500 focus:border-red-500 focus:ring-red-200' : ''
+        className={`w-full p-4 rounded-interactive border bg-white border-[#cbd5e1] text-[#0f172a] text-base placeholder-[#94a3b8] pwa-input focus-ring-brand outline-none min-h-[100px] resize-none ${
+          error ? 'border-red-500 focus-ring-brand' : ''
         } ${className}`}
         {...props}
       />
@@ -201,8 +201,8 @@ export function ConfirmModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-[2px] animate-fade-in">
-      <div className="bg-white rounded-[12px] border border-[#e2e8f0] shadow-xl w-full max-w-md overflow-hidden animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-fade-in">
+      <div className="bg-white rounded-card border border-[#e2e8f0]/80 shadow-clinical-lg w-full max-w-md overflow-hidden animate-view-enter">
         <div className="p-6">
           <div className="flex items-center gap-3 text-[#006156]">
             <AlertCircle className="w-6 h-6 stroke-[#006156]" />
@@ -248,7 +248,7 @@ function Toast({ id, message, type = 'success', onClose }: ToastProps) {
   };
 
   return (
-    <div className={`flex items-start gap-3 p-4 rounded-lg border border-[#e2e8f0] ${bgStyles[type]} w-full max-w-sm animate-fade-in`}>
+    <div className={`flex items-start gap-3 p-4 rounded-interactive border border-[#e2e8f0]/80 shadow-clinical-md ${bgStyles[type]} w-full max-w-sm animate-view-enter`}>
       {type === 'success' && <div className="p-0.5 bg-emerald-100 rounded-full text-emerald-600 mt-0.5"><Check className="w-4 h-4" /></div>}
       {type === 'error' && <div className="p-0.5 bg-rose-100 rounded-full text-rose-600 mt-0.5"><AlertCircle className="w-4 h-4" /></div>}
       
@@ -303,7 +303,7 @@ export function useToast() {
 // ==========================================
 export function Skeleton({ className = '' }: { className?: string }) {
   return (
-    <div className={`bg-slate-200 animate-pulse rounded-md ${className}`} />
+    <div className={`shimmer-skeleton rounded-interactive ${className}`} />
   );
 }
 

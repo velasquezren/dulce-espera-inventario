@@ -24,9 +24,9 @@ export default function Home() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#f8fafc] text-center p-6">
-        <div className="flex flex-col items-center gap-4 animate-pulse-subtle">
-          <img src="/logo.svg" alt="Clinica Montalvo Logo" className="w-16 h-16" />
-          <div>
+        <div className="flex flex-col items-center gap-4">
+          <img src="/logo.svg" alt="Clinica Montalvo Logo" className="w-16 h-16 animate-float" />
+          <div className="animate-pulse-subtle">
             <h2 className="text-[#006156] font-bold text-sm tracking-widest uppercase">CLÍNICA MONTALVO</h2>
             <p className="text-xs text-slate-400 font-semibold mt-1">Iniciando inventario...</p>
           </div>
@@ -75,7 +75,7 @@ export default function Home() {
         <Header />
 
         {/* Scrollable Container */}
-        <main className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto pb-24 md:pb-8">
+        <main key={activeModule} className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto pb-24 md:pb-8 animate-view-enter">
           {renderModule()}
         </main>
 

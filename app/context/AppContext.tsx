@@ -38,6 +38,8 @@ interface AppContextType {
   selectedProductId: string | null;
   isOnline: boolean;
   isLoading: boolean;
+  isMobileSidebarOpen: boolean;
+  setMobileSidebarOpen: (open: boolean) => void;
   products: Product[];
   requests: RequestItem[];
   receptions: ReceptionItem[];
@@ -63,6 +65,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [isOnline, setIsOnline] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isMobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
 
   const [products, setProducts] = useState<Product[]>([]);
   const [requests, setRequests] = useState<RequestItem[]>([]);
@@ -208,12 +211,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const setModule = (module: AppModule) => {
     setActiveModule(module);
     saveState('montalvo_module', module);
+    setMobileSidebarOpen(false);
   };
 
   const viewProductDetails = (productId: string) => {
     setSelectedProductId(productId);
     setActiveModule('detail');
     saveState('montalvo_module', 'detail');
+    setMobileSidebarOpen(false);
   };
 
   // Create Kitchen request
@@ -460,6 +465,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         selectedProductId,
         isOnline,
         isLoading,
+        isMobileSidebarOpen,
+        setMobileSidebarOpen,
         products,
         requests,
         receptions,

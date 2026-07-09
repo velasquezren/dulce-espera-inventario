@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 :root {
+  /* Brand Colors (Clinical & Culinary Blend) */
   --background: #f8fafc;
   --foreground: #0f172a;
   
@@ -23,7 +24,21 @@
   --status-low: #f59e0b;
   --status-out: #ef4444;
   
-  --radius-card: 12px;
+  --radius-card: 16px;
+  --radius-interactive: 12px;
+
+  /* Gradients */
+  --gradient-brand: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  --gradient-brand-light: linear-gradient(135deg, var(--primary-light) 0%, var(--secondary-light) 100%);
+  --gradient-soft: linear-gradient(180deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 250, 252, 0.95) 100%);
+  --gradient-pulse: linear-gradient(90deg, #e6f0ef 0%, #ebf7f6 50%, #e6f0ef 100%);
+
+  /* Shadows (PWA native-like depth elevation) */
+  --shadow-clinical-sm: 0 2px 8px rgba(0, 97, 86, 0.03);
+  --shadow-clinical-md: 0 8px 20px rgba(0, 97, 86, 0.05);
+  --shadow-clinical-lg: 0 16px 36px rgba(0, 97, 86, 0.08);
+  --shadow-soft-bottom: 0 -4px 16px rgba(0, 97, 86, 0.025);
+  --shadow-glow: 0 0 20px rgba(57, 173, 163, 0.15);
 }
 
 @theme {
@@ -50,6 +65,16 @@
   --color-status-out: var(--status-out);
   
   --radius-card: var(--radius-card);
+  --radius-interactive: var(--radius-interactive);
+}
+
+/* ==========================================================================
+   Base reset & PWA Gesture Optimizations
+   ========================================================================== */
+html {
+  scroll-behavior: smooth;
+  height: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -57,10 +82,21 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   overflow-x: hidden;
-  -webkit-tap-highlight-color: transparent;
+  /* Prevent pull-to-refresh reload effect at viewport boundaries on mobile */
+  overscroll-behavior-y: contain; 
+  /* Prevent blue highlight flash on tap for PWA responsiveness */
+  -webkit-tap-highlight-color: transparent; 
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom scrollbars for a clean look */
+/* Form element sizing to prevent auto-zoom in iOS Safari */
+input, select, textarea {
+  font-size: 16px !important;
+}
+
+/* Remove default scrollbar styling, implement smooth minimal tracks */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -72,34 +108,205 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: #cbd5e1;
-  border-radius: 3px;
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
 
-/* Base animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ==========================================================================
+   PWA & Safe Area Layout Utilities
+   ========================================================================== */
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
-@keyframes pulse-subtle {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
+.px-safe {
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
 }
 
-.animate-pulse-subtle {
-  animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.bottom-safe {
+  bottom: env(safe-area-inset-bottom, 0px);
 }
 
-/* Offline Banner CSS */
+/* Disable selection for navigation bars, headers and UI actions */
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Force touch optimization */
+.touch-optimized {
+  touch-action: manipulation;
+}
+
+/* ==========================================================================
+   Modern Interactive Feedbacks (The "Fast/Native" feel)
+   ========================================================================== */
+
+/* Active tap-bounce feedback */
+.tap-bounce {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.15s ease;
+  will-change: transform;
+  touch-action: manipulation;
+}
+
+.tap-bounce:active {
+  transform: scale(0.96);
+  opacity: 0.9;
+}
+
+/* Smooth custom focus ring */
+.focus-ring-brand:focus-within,
+.focus-ring-brand:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--primary-light);
+}
+
+/* ==========================================================================
+   Premium UI & Glassmorphism Designs
+   ========================================================================== */
+
+/* Glass Panel Layout */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: var(--shadow-clinical-sm);
+}
+
+/* Brand Text Gradient */
+.text-brand-gradient {
+  background: var(--gradient-brand);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Premium Card hover effects */
+.card-hover-effect {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-hover-effect:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-clinical-md);
+  border-color: var(--secondary-light);
+}
+
+/* PWA bottom navbar custom overlay */
+.pwa-nav-glow {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-soft-bottom);
+}
+
+/* Offline state layout */
 .offline-gradient {
-  background: linear-gradient(90deg, #475569 0%, #334155 100%);
+  background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================================================
+   Advanced Micro-Animations & Skeleton Loading
+   ========================================================================== */
+
+/* Page transition slide & fade in */
+@keyframes pwa-view-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-view-enter {
+  animation: pwa-view-enter 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Native-like drawer / bottom sheet slide up */
+@keyframes pwa-sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-sheet-up {
+  animation: pwa-sheet-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Shimmer placeholder animation for ultra-fast perceived load times */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer-skeleton {
+  background: linear-gradient(
+    90deg,
+    #f1f5f9 25%,
+    #e2e8f0 37%,
+    #f1f5f9 63%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite ease-in-out;
+}
+
+/* Pulse-ring for warning alerts / low stock indicator */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+.critical-pulse {
+  animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Float animation for branding images and logos */
+@keyframes brand-float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: brand-float 3s ease-in-out infinite;
 }
 

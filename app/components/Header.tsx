@@ -11,10 +11,25 @@ export default function Header() {
     notifications, 
     markNotificationRead, 
     clearNotifications,
-    setModule 
+    setModule,
+    setMobileSidebarOpen,
+    activeModule
   } = useApp();
   const [showNotifications, setShowNotifications] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const moduleTitles: Record<string, string> = {
+    dashboard: 'Panel de Control',
+    inventory: 'Inventario de Insumos',
+    detail: 'Detalle de Insumo',
+    'request-form': 'Nueva Solicitud',
+    requests: 'Solicitudes de Cocina',
+    receptions: 'Recepción de Pedidos',
+    history: 'Bitácora de Movimientos',
+    profile: 'Mi Perfil de Usuario',
+  };
+
+  const currentTitle = moduleTitles[activeModule] || 'Clínica Montalvo';
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -29,13 +44,27 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-40 w-full h-16 bg-white border-b border-[#e2e8f0] px-4 md:px-8 flex items-center justify-between">
+    <header className="sticky top-0 z-40 w-full h-16 bg-white/90 backdrop-blur-md border-b border-[#e2e8f0]/85 px-4 md:px-8 flex items-center justify-between no-select">
       {/* Title / Section Name */}
       <div className="flex items-center gap-3">
-        <img src="/logo.svg" alt="Logo Clínica Montalvo" className="w-8 h-8 md:hidden" />
-        <div>
+        {/* Mobile View: Menu Button (Clinic Logo) + Brand Title */}
+        <div className="flex items-center gap-2 md:hidden">
+          <button
+            onClick={() => setMobileSidebarOpen(true)}
+            className="p-1.5 rounded-lg hover:bg-[#e6f0ef] text-[#006156] tap-bounce focus:outline-none cursor-pointer"
+            aria-label="Abrir menú"
+          >
+            <img src="/logo.svg" alt="Logo Clínica Montalvo" className="w-8 h-8 animate-float" />
+          </button>
           <span className="font-bold text-[#006156] tracking-tight text-lg">Clínica Montalvo</span>
-          <span className="hidden md:inline-block text-xs font-semibold text-[#39ADA3] bg-[#ebf7f6] px-2 py-0.5 rounded-full ml-3">
+        </div>
+
+        {/* Desktop View: Active Page Title */}
+        <div className="hidden md:flex items-center gap-3">
+          <h2 className="font-extrabold text-slate-800 text-lg tracking-tight">
+            {currentTitle}
+          </h2>
+          <span className="text-xs font-semibold text-[#39ADA3] bg-[#ebf7f6] px-2.5 py-0.5 rounded-full">
             Cocina y Nutrición
           </span>
         </div>
@@ -63,7 +92,7 @@ export default function Header() {
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setShowNotifications(!showNotifications)}
-              className="relative p-2 rounded-full hover:bg-slate-100 transition-colors text-slate-600 focus:outline-none"
+              className="relative p-2 rounded-full hover:bg-slate-100 transition-colors text-slate-600 focus:outline-none tap-bounce"
             >
               <Bell className="w-5 h-5 stroke-[1.8]" />
               {unreadCount > 0 && (
@@ -74,7 +103,7 @@ export default function Header() {
             </button>
 
             {showNotifications && (
-              <div className="absolute right-0 mt-2 w-80 bg-white border border-[#e2e8f0] rounded-xl shadow-lg py-2 z-50 animate-fade-in max-h-96 overflow-y-auto">
+              <div className="absolute right-0 mt-2 w-80 bg-white rounded-card border border-[#e2e8f0]/80 shadow-clinical-lg py-2 z-50 animate-view-enter max-h-96 overflow-y-auto">
                 <div className="px-4 py-2 border-b border-[#e2e8f0] flex items-center justify-between">
                   <h3 className="font-bold text-sm text-[#006156]">Notificaciones</h3>
                   {unreadCount > 0 && (
@@ -134,7 +163,7 @@ export default function Header() {
         {user && (
           <div
             onClick={() => setModule('profile')}
-            className="hidden sm:flex items-center gap-2.5 border-l border-slate-200 pl-4 cursor-pointer hover:opacity-80 transition-opacity"
+            className="hidden sm:flex items-center gap-2.5 border-l border-slate-200 pl-4 cursor-pointer hover:opacity-80 transition-opacity tap-bounce"
           >
             <div className="w-8 h-8 rounded-full bg-[#006156]/10 text-[#006156] font-bold flex items-center justify-center text-sm">
               {user.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
