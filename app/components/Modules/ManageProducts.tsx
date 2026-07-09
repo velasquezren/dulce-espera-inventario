@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Card, Button, ConfirmModal } from '../UI';
-import { Plus, Trash2, FolderPlus, Layers, Search } from 'lucide-react';
+import { Plus, Trash2, FolderPlus, Layers, Search, HelpCircle } from 'lucide-react';
 import { useToast } from '../UI';
 
 export default function ManageProducts() {
@@ -12,14 +12,14 @@ export default function ManageProducts() {
     categories, 
     addCategory, 
     removeCategory, 
-    updateProductCategory,
-    setModule 
+    updateProductCategory
   } = useApp();
   const { showToast } = useToast();
 
   const [activeTab, setActiveTab] = useState<'organize' | 'categories'>('organize');
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
+  const [showHelp, setShowHelp] = useState(false);
 
   // Category form states
   const [newCategoryName, setNewCategoryName] = useState('');
@@ -60,11 +60,28 @@ export default function ManageProducts() {
   return (
     <div className="space-y-6 animate-view-enter pb-24 md:pb-8">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-primary">Organizar Insumos</h1>
-        <p className="text-sm text-slate-500 font-semibold mt-1">
-          Organiza los productos de la base de datos en tus propias categorías para encontrarlos más rápido al pedir.
-        </p>
+      <div className="flex flex-col gap-2.5">
+        <h1 className="text-2xl font-bold tracking-tight text-primary flex items-center gap-2">
+          <span>Organizar Insumos</span>
+          <button 
+            type="button"
+            onClick={() => setShowHelp(!showHelp)}
+            className={`p-0.5 rounded-full transition-colors focus:outline-none cursor-pointer inline-flex items-center justify-center tap-bounce shrink-0 ${
+              showHelp ? 'text-primary bg-primary-light' : 'text-slate-400 hover:text-primary hover:bg-slate-100'
+            }`}
+            aria-label="Ayuda"
+          >
+            <HelpCircle className="w-5 h-5" />
+          </button>
+        </h1>
+        {showHelp && (
+          <div className="p-4 bg-primary-light border border-primary/10 rounded-xl animate-view-enter text-xs text-primary leading-relaxed shadow-clinical-sm">
+            <p className="font-semibold text-primary">Sobre esta página</p>
+            <p className="mt-1 text-primary-hover font-semibold">
+              Organiza los productos de la base de datos en tus propias categorías para encontrarlos más rápido al pedir.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Selector Tabs */}

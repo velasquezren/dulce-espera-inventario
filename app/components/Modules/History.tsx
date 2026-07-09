@@ -2,22 +2,23 @@
 
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Card, Button, EmptyState } from '../UI';
+import { Button, EmptyState } from '../UI';
 import { 
   History as HistoryIcon, 
   Search, 
   ArrowDownCircle, 
   ArrowUpCircle, 
   ClipboardList, 
-  Truck,
   FileText,
-  Download
+  Download,
+  HelpCircle
 } from 'lucide-react';
 
 export default function History() {
   const { history, exportToPDF, exportToExcel } = useApp();
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
+  const [showHelp, setShowHelp] = useState(false);
   const [dateFilter, setDateFilter] = useState('');
 
   // Filter logs
@@ -58,12 +59,29 @@ export default function History() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Title */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-[#006156]">Historial de Movimientos</h1>
-          <p className="text-sm text-slate-500 font-semibold mt-1">
-            Bitácora de entradas, salidas, solicitudes y recepciones de almacén.
-          </p>
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+        <div className="flex flex-col gap-2.5 flex-1">
+          <h1 className="text-2xl font-bold tracking-tight text-[#006156] flex items-center gap-2">
+            <span>Historial de Movimientos</span>
+            <button 
+              type="button"
+              onClick={() => setShowHelp(!showHelp)}
+              className={`p-0.5 rounded-full transition-colors focus:outline-none cursor-pointer inline-flex items-center justify-center tap-bounce shrink-0 ${
+                showHelp ? 'text-primary bg-primary-light' : 'text-slate-400 hover:text-primary hover:bg-slate-100'
+              }`}
+              aria-label="Ayuda"
+            >
+              <HelpCircle className="w-5 h-5" />
+            </button>
+          </h1>
+          {showHelp && (
+            <div className="p-4 bg-primary-light border border-primary/10 rounded-xl animate-view-enter text-xs text-primary leading-relaxed shadow-clinical-sm">
+              <p className="font-semibold text-primary">Sobre esta página</p>
+              <p className="mt-1 text-primary-hover font-semibold">
+                Bitácora de entradas, salidas, solicitudes y recepciones de almacén.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Export Buttons */}

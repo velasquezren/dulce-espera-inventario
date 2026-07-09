@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Card, Button, ConfirmModal, EmptyState } from '../UI';
-import { Truck, Calendar, ShoppingBag, Check } from 'lucide-react';
+import { Check, HelpCircle } from 'lucide-react';
 import { useToast } from '../UI';
 
 export default function Reception() {
@@ -12,6 +12,7 @@ export default function Reception() {
 
   const [confirmId, setConfirmId] = useState<string | null>(null);
   const [isConfirming, setIsConfirming] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
 
   const pendingReceptions = receptions.filter((r) => r.status === 'Pendiente');
 
@@ -30,7 +31,7 @@ export default function Reception() {
     try {
       await confirmReception(confirmId);
       showToast('Pedido recibido en cocina', 'success');
-    } catch (err) {
+    } catch {
       showToast('Error al confirmar recepción', 'error');
     } finally {
       setIsConfirming(false);
@@ -43,11 +44,28 @@ export default function Reception() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Title */}
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-[#006156]">Recepciones de Pedido</h1>
-        <p className="text-sm text-slate-500 font-semibold mt-1">
-          Confirma la llegada de los insumos solicitados para la cocina.
-        </p>
+      <div className="flex flex-col gap-2.5">
+        <h1 className="text-2xl font-bold tracking-tight text-[#006156] flex items-center gap-2">
+          <span>Recepciones de Pedido</span>
+          <button 
+            type="button"
+            onClick={() => setShowHelp(!showHelp)}
+            className={`p-0.5 rounded-full transition-colors focus:outline-none cursor-pointer inline-flex items-center justify-center tap-bounce shrink-0 ${
+              showHelp ? 'text-primary bg-primary-light' : 'text-slate-400 hover:text-primary hover:bg-slate-100'
+            }`}
+            aria-label="Ayuda"
+          >
+            <HelpCircle className="w-5 h-5" />
+          </button>
+        </h1>
+        {showHelp && (
+          <div className="p-4 bg-primary-light border border-primary/10 rounded-xl animate-view-enter text-xs text-primary leading-relaxed shadow-clinical-sm">
+            <p className="font-semibold text-primary">Sobre esta página</p>
+            <p className="mt-1 text-primary-hover font-semibold">
+              Confirma la llegada de los insumos solicitados para la cocina.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Grid list of pending deliveries */}
@@ -60,49 +78,43 @@ export default function Reception() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {pendingReceptions.map((item) => (
-            <Card key={item.id} className="flex flex-col justify-between p-5 border border-slate-200/80 hover:border-slate-300 shadow-clinical-sm transition-all duration-150">
-              <div className="space-y-4">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-secondary bg-[#ebf7f6] px-2.5 py-0.5 rounded-full border border-secondary/10">
+            <Card key={item.id} className="p-4 border border-slate-200/80 hover:border-slate-300 shadow-clinical-sm transition-all duration-150 flex flex-col gap-3.5">
+              {/* Product Info & Quantity badge */}
+              <div className="flex justify-between items-start gap-3">
+                <div className="space-y-1 min-w-0 flex-1 text-left">
+                  {/* Date (Small and subtle) */}
+                  <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
+                    Entrega: {item.date.split('-').reverse().join('/')}
+                  </span>
+                  
+                  <h3 className="text-sm font-extrabold text-slate-800 tracking-tight leading-snug">
+                    {item.productName}
+                  </h3>
+                  
+                  
+                  {/* ID Badge: Hidden on mobile, shown on desktop (sm and up) */}
+                  <span className="hidden sm:inline-block mt-1 bg-[#ebf7f6] text-secondary text-[9px] font-bold px-2 py-0.5 rounded border border-secondary/10 uppercase tracking-wider">
                     ID: #{item.id}
                   </span>
-                  <span className="text-xs text-slate-400 font-semibold flex items-center gap-1">
-                    <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                    Prog: {item.date.split('-').reverse().join('/')}
-                  </span>
                 </div>
-
-                {/* Product details */}
-                <h3 className="text-base font-extrabold text-slate-800 tracking-tight leading-snug">
-                  {item.productName}
-                </h3>
-
-                {/* Grid layout for details (ideal for mobile) */}
-                <div className="grid grid-cols-2 gap-2.5 pt-1">
-                  <div className="bg-slate-50/50 border border-[#e2e8f0]/60 p-2.5 rounded-xl flex flex-col min-w-0">
-                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Cant. Esperada</span>
-                    <span className="text-xs font-black text-primary truncate">
-                      {item.quantity} {item.unit}
-                    </span>
-                  </div>
-                  <div className="bg-slate-50/50 border border-[#e2e8f0]/60 p-2.5 rounded-xl flex flex-col min-w-0">
-                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">Proveedor</span>
-                    <span className="text-xs font-bold text-slate-700 truncate" title={item.supplier}>
-                      {item.supplier}
-                    </span>
-                  </div>
+                
+                {/* Quantity badge */}
+                <div className="shrink-0 text-right bg-primary-light border border-primary/10 px-2.5 py-1.5 rounded-xl flex flex-col items-center justify-center min-w-[75px]">
+                  <span className="text-[8px] font-black text-primary uppercase tracking-widest leading-none mb-1">Esperado</span>
+                  <span className="text-xs font-black text-primary leading-none whitespace-nowrap">
+                    {item.quantity} {item.unit}
+                  </span>
                 </div>
               </div>
 
               {/* Confirm Reception Button */}
-              <div className="border-t border-[#f1f5f9] pt-4 mt-5">
+              <div className="border-t border-[#f1f5f9] pt-3">
                 <Button
                   variant="primary"
                   onClick={() => handleOpenConfirm(item.id)}
-                  className="w-full font-bold h-11 tracking-wide"
+                  className="w-full font-bold h-9.5 text-xs tracking-wide"
                 >
-                  <Check className="w-4 h-4 mr-1.5 stroke-[2.5]" />
+                  <Check className="w-3.5 h-3.5 mr-1 stroke-[2.5]" />
                   Confirmar Recepción
                 </Button>
               </div>
@@ -117,7 +129,7 @@ export default function Reception() {
         onClose={handleCloseConfirm}
         onConfirm={handleConfirm}
         title="Confirmar Recepción de Mercancía"
-        message={`¿Confirmas que has recibido la cantidad de ${selectedReception?.quantity} ${selectedReception?.unit} de ${selectedReception?.productName} provisto por ${selectedReception?.supplier}? Se registrará el ingreso de inmediato.`}
+        message={`¿Confirmas que has recibido la cantidad de ${selectedReception?.quantity} ${selectedReception?.unit} de ${selectedReception?.productName}? Se registrará el ingreso de inmediato.`}
         confirmText="Confirmar"
         cancelText="Cancelar"
         isConfirming={isConfirming}

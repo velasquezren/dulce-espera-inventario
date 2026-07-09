@@ -1,23 +1,41 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Card, Button } from '../UI';
-import { User, LogOut, UserCheck } from 'lucide-react';
+import { User, LogOut, UserCheck, HelpCircle } from 'lucide-react';
 
 export default function Profile() {
   const { user, logout } = useApp();
+  const [showHelp, setShowHelp] = useState(false);
 
   if (!user) return null;
 
   return (
     <div className="space-y-6 max-w-xl mx-auto animate-fade-in">
       {/* Title */}
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-[#006156]">Mi Perfil de Usuario</h1>
-        <p className="text-sm text-slate-500 font-semibold mt-1">
-          Información de tu cuenta clínica y privilegios de acceso.
-        </p>
+      <div className="flex flex-col gap-2.5">
+        <h1 className="text-2xl font-bold tracking-tight text-[#006156] flex items-center gap-2">
+          <span>Mi Perfil de Usuario</span>
+          <button 
+            type="button"
+            onClick={() => setShowHelp(!showHelp)}
+            className={`p-0.5 rounded-full transition-colors focus:outline-none cursor-pointer inline-flex items-center justify-center tap-bounce shrink-0 ${
+              showHelp ? 'text-primary bg-primary-light' : 'text-slate-400 hover:text-primary hover:bg-slate-100'
+            }`}
+            aria-label="Ayuda"
+          >
+            <HelpCircle className="w-5 h-5" />
+          </button>
+        </h1>
+        {showHelp && (
+          <div className="p-4 bg-primary-light border border-primary/10 rounded-xl animate-view-enter text-xs text-primary leading-relaxed shadow-clinical-sm">
+            <p className="font-semibold text-primary">Sobre esta página</p>
+            <p className="mt-1 text-primary-hover font-semibold">
+              Información de tu cuenta clínica y privilegios de acceso.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Main card */}

@@ -71,6 +71,10 @@
 /* ==========================================================================
    Base reset & PWA Gesture Optimizations
    ========================================================================== */
+*, *::before, *::after {
+  -webkit-tap-highlight-color: transparent !important;
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
@@ -83,11 +87,17 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   overflow-x: hidden;
-  /* Prevent blue highlight flash on tap for PWA responsiveness */
-  -webkit-tap-highlight-color: transparent; 
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+button:focus,
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none !important;
 }
 
 /* Form element sizing to prevent auto-zoom in iOS Safari */

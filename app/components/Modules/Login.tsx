@@ -28,7 +28,7 @@ export default function Login() {
       if (!success) {
         setError('Credenciales inválidas. Intente de nuevo.');
       }
-    } catch (err) {
+    } catch {
       setError('Error de conexión. Intente más tarde.');
     } finally {
       setIsLoading(false);
@@ -40,9 +40,9 @@ export default function Login() {
       <div className="w-full max-w-md bg-white border border-[#e2e8f0] rounded-[16px] shadow-clinical-lg p-8 text-center animate-fade-in -translate-y-10 sm:-translate-y-16">
         {/* Hospital Brand Header */}
         <div className="flex flex-col items-center gap-3 mb-8">
-          <img src="/logo.svg" alt="Clinica Montalvo Logo" className="w-16 h-16" />
+          <img src="/logo.svg" alt="Dulce Espera Logo" className="w-16 h-16" />
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-[#006156]">CLÍNICA MONTALVO</h1>
+            <h1 className="text-xl font-bold tracking-tight text-[#006156]">DULCE ESPERA</h1>
             <p className="text-xs font-semibold text-[#39ADA3] uppercase tracking-wider mt-1">
               Inventario de Cocina
             </p>

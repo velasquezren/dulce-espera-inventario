@@ -41,6 +41,8 @@ interface AppContextType {
   isLoading: boolean;
   isMobileSidebarOpen: boolean;
   setMobileSidebarOpen: (open: boolean) => void;
+  isSidebarCollapsed: boolean;
+  setSidebarCollapsed: (collapsed: boolean) => void;
   products: Product[];
   requests: RequestItem[];
   receptions: ReceptionItem[];
@@ -88,6 +90,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [isOnline, setIsOnline] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isMobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
+  const [isSidebarCollapsed, setSidebarCollapsedState] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('montalvo_sidebar_collapsed');
+      return stored ? JSON.parse(stored) : false;
+    }
+    return false;
+  });
+
+  const setSidebarCollapsed = (collapsed: boolean) => {
+    setSidebarCollapsedState(collapsed);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('montalvo_sidebar_collapsed', JSON.stringify(collapsed));
+    }
+  };
 
   const [products, setProducts] = useState<Product[]>([]);
   const [requests, setRequests] = useState<RequestItem[]>([]);
@@ -650,9 +666,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         </head>
         <body>
           <div class="header">
-            <div>
-              <h1 class="title">CLÍNICA MONTALVO</h1>
-              <div style="font-size: 13px; color: #39ADA3; font-weight: 600; margin-top: 4px;">Inventario e Insumos de Cocina</div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <img src="/logo.svg" alt="Dulce Espera Logo" style="width: 42px; height: 42px; object-fit: contain;" />
+              <div>
+                <h1 class="title">DULCE ESPERA</h1>
+                <div style="font-size: 13px; color: #39ADA3; font-weight: 600; margin-top: 4px;">Inventario e Insumos de Cocina</div>
+              </div>
             </div>
             <div class="meta">
               <div>Documento Oficial Generado</div>
@@ -676,7 +695,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             </tbody>
           </table>
           <div class="footer">
-            © ${new Date().getFullYear()} Clínica Montalvo. Todos los derechos reservados. Confidencialidad de Nutrición y Cocina.
+            © ${new Date().getFullYear()} Dulce Espera. Todos los derechos reservados. Confidencialidad de Nutrición y Cocina.
           </div>
           <script>
             window.onload = function() {
@@ -692,7 +711,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const exportToExcel = (data: any[], title: string) => {
-    // Elegant CSV formatted download mimicking Excel
+    // Elegant CSV formatted download mimicking Excel with brand header and metadata
+    const metadataRows = [
+      ['DULCE ESPERA', 'Inventario e Insumos de Cocina'],
+      ['Reporte', title],
+      ['Fecha', new Date().toLocaleDateString()],
+      ['Usuario', user?.name || 'Administrador'],
+      [] // separator empty row
+    ];
+
     const headers = ['Fecha/Entrega', 'Producto', 'Tipo/Categoria', 'Cantidad', 'Unidad', 'Responsable/Detalle'];
     const rows = data.map((item) => [
       item.date || item.lastDelivery || '',
@@ -703,8 +730,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       item.user || item.supplier || 'N/A'
     ]);
 
+    const allRows = [...metadataRows, headers, ...rows];
+    
     const csvContent = "data:text/csv;charset=utf-8,\uFEFF" 
-      + [headers.join(','), ...rows.map(e => e.map(val => `"${String(val).replace(/"/g, '""')}"`).join(','))].join('\n');
+      + allRows.map(e => e.map(val => `"${String(val).replace(/"/g, '""')}"`).join(',')).join('\n');
     
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
@@ -725,6 +754,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         isLoading,
         isMobileSidebarOpen,
         setMobileSidebarOpen,
+        isSidebarCollapsed,
+        setSidebarCollapsed,
         products,
         requests,
         receptions,

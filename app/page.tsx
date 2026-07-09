@@ -19,7 +19,7 @@ import Profile from './components/Modules/Profile';
 import ManageProducts from './components/Modules/ManageProducts';
 
 export default function Home() {
-  const { user, activeModule, isLoading } = useApp();
+  const { user, activeModule, isLoading, isSidebarCollapsed } = useApp();
 
   // If initial load is running, show a clean clinic launcher spinner
   if (isLoading) {
@@ -73,7 +73,9 @@ export default function Home() {
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-h-[100dvh] min-w-0 md:pl-64">
+      <div className={`flex-1 flex flex-col min-h-[100dvh] min-w-0 transition-all duration-300 ease-in-out ${
+        isSidebarCollapsed ? 'md:pl-20' : 'md:pl-64'
+      }`}>
         {/* Header containing search, notifications and network state */}
         <Header />
 

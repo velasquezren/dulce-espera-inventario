@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Card, Button, ConfirmModal } from '../UI';
-import { Search, Trash2, Send, ShoppingBag, Check, ChevronDown, ChevronRight, Settings } from 'lucide-react';
+import { Search, Trash2, Send, ShoppingBag, Check, HelpCircle } from 'lucide-react';
 import { useToast } from '../UI';
 
 export default function Inventory() {
@@ -15,21 +15,19 @@ export default function Inventory() {
     updateDraftItem, 
     removeDraftItem, 
     sendDraftList,
-    sendSingleItem,
-    setModule
+    sendSingleItem
   } = useApp();
   const { showToast } = useToast();
 
   const [activeTab, setActiveTab] = useState<'catalog' | 'notebook'>('catalog');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showHelp, setShowHelp] = useState(false);
   const [showSendConfirm, setShowSendConfirm] = useState(false);
+  const [instantNote, setInstantNote] = useState('');
   const [isSending, setIsSending] = useState(false);
 
   // Global order notes/reason
   const [listReason, setListReason] = useState('');
-
-  // Collapsible accordion state for categories
-  const [collapsedCategories, setCollapsedCategories] = useState<Record<string, boolean>>({});
 
   // Selected category filter state (multiple selection)
   const [selectedCategoryFilters, setSelectedCategoryFilters] = useState<string[]>([]);
@@ -53,21 +51,15 @@ export default function Inventory() {
     new Set([...categories, ...products.map((p) => p.category || 'Otros')])
   ).filter(Boolean);
 
-  // Group filtered products by category
-  const productsByCategory: Record<string, typeof products> = {};
-  allCategories.forEach((cat) => {
-    const matching = filteredProducts.filter((p) => (p.category || 'Otros') === cat);
-    if (matching.length > 0) {
-      productsByCategory[cat] = matching;
+  // Sort filtered products by category then name
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    const catA = a.category || 'Otros';
+    const catB = b.category || 'Otros';
+    if (catA !== catB) {
+      return catA.localeCompare(catB);
     }
+    return a.name.localeCompare(b.name);
   });
-
-  const toggleCategory = (category: string) => {
-    setCollapsedCategories((prev) => ({
-      ...prev,
-      [category]: !prev[category]
-    }));
-  };
 
   const handleQuantityChange = (productId: string, newQty: number) => {
     const draftItem = draftItems.find((d) => d.productId === productId);
@@ -84,31 +76,24 @@ export default function Inventory() {
     }
   };
 
-  const handleNotesChange = (productId: string, notes: string) => {
-    const draftItem = draftItems.find((d) => d.productId === productId);
-    if (draftItem) {
-      updateDraftItem(draftItem.id, draftItem.quantity, notes);
-    } else {
-      // If setting notes first, default quantity to 1
-      addDraftItem(productId, 1, notes);
-    }
-  };
 
-  const handleInstantSendSubmit = async (productId: string, quantity: number, notes: string) => {
+
+  const handleInstantSendSubmit = async (productId: string, quantity: number) => {
     setIsSendingInstant(true);
     try {
-      await sendSingleItem(productId, quantity, notes);
+      await sendSingleItem(productId, quantity, instantNote);
       showToast('Solicitud urgente enviada con éxito', 'success');
       // If the product was in draft, remove it since it was sent
       const draftItem = draftItems.find((d) => d.productId === productId);
       if (draftItem) {
         removeDraftItem(draftItem.id);
       }
-    } catch (e) {
+    } catch {
       showToast('Error al enviar la solicitud', 'error');
     } finally {
       setIsSendingInstant(false);
       setConfirmingProductId(null);
+      setInstantNote('');
     }
   };
 
@@ -119,24 +104,40 @@ export default function Inventory() {
       await sendDraftList(listReason);
       showToast('Lista del cuaderno enviada con éxito', 'success');
       setListReason(''); // Reset reason
-    } catch (e) {
+    } catch {
       showToast('Error al enviar la lista', 'error');
     } finally {
       setIsSending(false);
     }
   };
 
-  // Active search query forces expansion of all matching categories
-  const isSearching = searchQuery.trim() !== '';
+
 
   return (
     <div className="space-y-6 animate-view-enter pb-24 md:pb-8 w-full max-w-full overflow-x-hidden">
       {/* Title */}
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-primary">Mi Cuaderno de Compras</h1>
-        <p className="text-sm text-slate-500 font-semibold mt-1">
-          Anota lo que hace falta en la cocina. Puedes mandar productos por separado o enviar todo el cuaderno junto.
-        </p>
+      <div className="flex flex-col gap-2.5">
+        <h1 className="text-2xl font-bold tracking-tight text-primary flex items-center gap-2">
+          <span>Mi Cuaderno de Compras</span>
+          <button 
+            type="button"
+            onClick={() => setShowHelp(!showHelp)}
+            className={`p-0.5 rounded-full transition-colors focus:outline-none cursor-pointer inline-flex items-center justify-center tap-bounce shrink-0 ${
+              showHelp ? 'text-primary bg-primary-light' : 'text-slate-400 hover:text-primary hover:bg-slate-100'
+            }`}
+            aria-label="Ayuda"
+          >
+            <HelpCircle className="w-5 h-5" />
+          </button>
+        </h1>
+        {showHelp && (
+          <div className="p-4 bg-primary-light border border-primary/10 rounded-xl animate-view-enter text-xs text-primary leading-relaxed shadow-clinical-sm">
+            <p className="font-extrabold text-primary">¿Cómo usar el Cuaderno?</p>
+            <p className="mt-1 text-primary-hover font-semibold">
+              Anota lo que hace falta en la cocina. Puedes mandar productos por separado o enviar todo el cuaderno junto.
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Tab Switcher */}
@@ -237,159 +238,137 @@ export default function Inventory() {
             </div>
           </div>
 
-          {/* Grouped Products List */}
-          <div className="space-y-4">
-            {Object.keys(productsByCategory).length === 0 ? (
-              <div className="text-center py-12 text-slate-400 font-semibold text-sm bg-white border border-slate-100 rounded-xl">
+          {/* Flat Catalog Products List */}
+          <div className="bg-white border border-[#e2e8f0] rounded-[16px] overflow-hidden shadow-clinical-sm">
+            {sortedProducts.length === 0 ? (
+              <div className="text-center py-12 text-slate-400 font-semibold text-sm bg-white rounded-xl">
                 No se encontraron productos en el catálogo.
               </div>
             ) : (
-              Object.keys(productsByCategory).map((catName) => {
-                const categoryProducts = productsByCategory[catName];
-                const isCollapsed = !isSearching && !!collapsedCategories[catName];
+              <div className="p-1 sm:p-2">
+                {sortedProducts.map((product, index) => {
+                  const draftItem = draftItems.find((d) => d.productId === product.id);
+                  const quantity = draftItem ? draftItem.quantity : 0;
 
-                return (
-                  <div key={catName} className="bg-white border border-[#e2e8f0] rounded-[16px] overflow-hidden shadow-clinical-sm">
-                    {/* Category Accordion Header */}
-                    <button
-                      onClick={() => toggleCategory(catName)}
-                      className="w-full px-5 py-4 bg-slate-50/50 hover:bg-slate-50 flex items-center justify-between border-b border-[#e2e8f0] text-left cursor-pointer transition-colors"
+                  return (
+                    <div 
+                      key={product.id} 
+                      className={`p-2.5 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 transition-[background-color] duration-200 rounded-xl ${
+                        quantity > 0 ? 'bg-[#e6f0ef]/30' : ''
+                      } ${
+                        index < sortedProducts.length - 1 ? 'border-b border-[#f1f5f9]' : ''
+                      }`}
                     >
-                      <div className="flex items-center gap-2">
-                        <span className="font-extrabold text-sm text-primary uppercase tracking-wider">
-                          {catName}
-                        </span>
-                        <span className="text-[11px] font-bold text-slate-500 bg-slate-200/60 px-2 py-0.5 rounded-full">
-                          {categoryProducts.length}
-                        </span>
+                      {/* Left: Info */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-[9px] font-bold text-primary bg-primary-light px-2 py-0.5 rounded uppercase tracking-wide">
+                            {product.category || 'Otros'}
+                          </span>
+                          <h3 className="text-base font-extrabold text-slate-800 tracking-tight">
+                            {product.name}
+                          </h3>
+                          <span className="text-[10px] font-bold text-secondary bg-secondary-light px-2 py-0.5 rounded uppercase tracking-wide">
+                            {product.unit}
+                          </span>
+                          {quantity > 0 && (
+                            <span className="flex items-center gap-1 text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded shrink-0 animate-fade-in">
+                              <Check className="w-3 h-3" />
+                              Anotado
+                            </span>
+                          )}
+                        </div>
                       </div>
-                      
-                      {isCollapsed ? (
-                        <ChevronRight className="w-4 h-4 text-slate-400" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4 text-slate-400" />
-                      )}
-                    </button>
 
-                    {/* Category Products list */}
-                    {!isCollapsed && (
-                      <div className="divide-y divide-[#f1f5f9] p-1 sm:p-2 space-y-1">
-                        {categoryProducts.map((product) => {
-                          const draftItem = draftItems.find((d) => d.productId === product.id);
-                          const quantity = draftItem ? draftItem.quantity : 0;
-                          const notes = draftItem ? draftItem.notes : '';
-
-                          return (
-                            <div key={product.id} className="p-2 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                              {/* Left: Info */}
-                              <div className="space-y-1 flex-1 min-w-0">
-                                <div className="flex items-center gap-2 flex-wrap">
-                                  <h3 className="text-base font-extrabold text-slate-800 tracking-tight">
-                                    {product.name}
-                                  </h3>
-                                  <span className="text-[10px] font-bold text-secondary bg-secondary-light px-2 py-0.5 rounded uppercase tracking-wide">
-                                    {product.unit}
-                                  </span>
-                                  {quantity > 0 && (
-                                    <span className="flex items-center gap-1 text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded shrink-0 animate-fade-in">
-                                      <Check className="w-3 h-3" />
-                                      Anotado
-                                    </span>
-                                  )}
-                                </div>
-                                
-                                {/* Notes Input */}
-                                <div className="pt-1">
-                                  <input
-                                    type="text"
-                                    placeholder="Observación (ej: marca, maduro, urgente)..."
-                                    value={notes}
-                                    onChange={(e) => handleNotesChange(product.id, e.target.value)}
-                                    className="w-full h-9 px-3 rounded-lg border border-[#e2e8f0] text-xs text-[#0f172a] placeholder-[#94a3b8] outline-none focus:border-primary"
-                                  />
-                                </div>
-                              </div>
-
-                              {/* Right: Controls & Instant Actions */}
-                              {confirmingProductId === product.id ? (
-                                /* Inline Confirmation */
-                                <div className="flex items-center gap-2.5 justify-between sm:justify-end bg-secondary-light border border-secondary/20 px-3 py-1.5 rounded-xl animate-view-enter w-full sm:w-auto mt-2 sm:mt-0 pt-2 pb-2 sm:py-1.5">
-                                  <span className="text-[11px] font-bold text-primary">
-                                    ¿Pedir {quantity} {product.unit} ahora?
-                                  </span>
-                                  <div className="flex items-center gap-1.5 shrink-0">
-                                    <button
-                                      onClick={() => handleInstantSendSubmit(product.id, quantity, notes || '')}
-                                      disabled={isSendingInstant}
-                                      className="h-8 px-3 rounded-lg bg-primary text-white text-xs font-extrabold tap-bounce cursor-pointer hover:bg-primary-hover shadow-clinical-sm"
-                                    >
-                                      {isSendingInstant ? 'Enviando...' : 'Sí, Pedir'}
-                                    </button>
-                                    <button
-                                      onClick={() => setConfirmingProductId(null)}
-                                      disabled={isSendingInstant}
-                                      className="h-8 px-2.5 rounded-lg border border-slate-200 text-slate-500 hover:text-slate-700 bg-white text-xs font-bold tap-bounce cursor-pointer"
-                                    >
-                                      No
-                                    </button>
-                                  </div>
-                                </div>
-                              ) : (
-                                /* Normal Controls */
-                                <div className="flex flex-col items-end gap-2 w-full sm:w-auto border-t border-[#f1f5f9] sm:border-t-0 pt-2.5 sm:pt-0">
-                                  {/* Qty edit controls */}
-                                  <div className="flex items-center gap-2 shrink-0">
-                                    <button
-                                      type="button"
-                                      onClick={() => handleQuantityChange(product.id, quantity - 1)}
-                                      className="w-9 h-9 rounded-lg border border-[#cbd5e1] text-slate-600 hover:bg-slate-50 flex items-center justify-center cursor-pointer select-none active:scale-[0.95]"
-                                    >
-                                      <span className="font-bold">-</span>
-                                    </button>
-                                    
-                                    <input
-                                      type="number"
-                                      min="0"
-                                      value={quantity || ''}
-                                      placeholder="0"
-                                      onChange={(e) => handleQuantityChange(product.id, Math.max(0, parseInt(e.target.value) || 0))}
-                                      className="w-14 h-9 border border-[#cbd5e1] rounded-lg text-center font-extrabold text-sm text-slate-800 outline-none focus:border-primary"
-                                    />
-
-                                    <button
-                                      type="button"
-                                      onClick={() => handleQuantityChange(product.id, quantity + 1)}
-                                      className="w-9 h-9 rounded-lg border border-[#cbd5e1] text-slate-600 hover:bg-slate-50 flex items-center justify-center cursor-pointer select-none active:scale-[0.95]"
-                                    >
-                                      <span className="font-bold">+</span>
-                                    </button>
-                                  </div>
-
-                                  {/* Pedir solo este */}
-                                  {quantity > 0 && (
-                                    <div className="animate-fade-in w-full sm:w-auto">
-                                      <Button
-                                        variant="primary"
-                                        size="sm"
-                                        onClick={() => setConfirmingProductId(product.id)}
-                                        className="w-full sm:w-36 h-9 px-3 text-xs font-bold flex items-center justify-center gap-1.5 tap-bounce"
-                                        title="Pedir este producto de inmediato de forma individual"
-                                      >
-                                        <Send className="w-3.5 h-3.5 shrink-0" />
-                                        <span className="whitespace-nowrap">Pedir solo este</span>
-                                      </Button>
-                                    </div>
-                                  )}
-                                </div>
-                              )}
+                      {/* Right: Controls & Instant Actions */}
+                      {confirmingProductId === product.id ? (
+                        /* Inline Confirmation with Note Input */
+                        <div className="flex flex-col gap-2 bg-secondary-light border border-secondary/20 p-2.5 rounded-xl animate-view-enter w-full sm:w-80 mt-2 sm:mt-0">
+                          <div className="flex items-center justify-between gap-2.5">
+                            <span className="text-[11px] font-bold text-primary">
+                              ¿Pedir {quantity} {product.unit} ahora?
+                            </span>
+                            <div className="flex items-center gap-1.5 shrink-0">
+                              <button
+                                onClick={() => handleInstantSendSubmit(product.id, quantity)}
+                                disabled={isSendingInstant}
+                                className="h-8 px-3 rounded-lg bg-primary text-white text-xs font-extrabold tap-bounce cursor-pointer hover:bg-primary-hover shadow-clinical-sm"
+                              >
+                                {isSendingInstant ? 'Enviando...' : 'Sí, Pedir'}
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setConfirmingProductId(null);
+                                  setInstantNote('');
+                                }}
+                                disabled={isSendingInstant}
+                                className="h-8 px-2.5 rounded-lg border border-slate-200 text-slate-500 hover:text-slate-700 bg-white text-xs font-bold tap-bounce cursor-pointer"
+                              >
+                                No
+                              </button>
                             </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                );
-              })
+                          </div>
+                          <input
+                            type="text"
+                            placeholder="Detalle o motivo (ej: marca, urgente, maduro)..."
+                            value={instantNote}
+                            onChange={(e) => setInstantNote(e.target.value)}
+                            disabled={isSendingInstant}
+                            className="w-full h-8 px-2.5 rounded-lg border bg-white border-secondary/35 text-xs text-[#0f172a] placeholder-[#94a3b8] outline-none focus:border-primary font-medium"
+                          />
+                        </div>
+                      ) : (
+                        /* Normal Controls */
+                        <div className="flex flex-col items-end gap-2 w-full sm:w-auto border-t border-[#f1f5f9] sm:border-t-0 pt-2.5 sm:pt-0">
+                          {/* Qty edit controls */}
+                          <div className="flex items-center gap-2 shrink-0">
+                            <button
+                              type="button"
+                              onClick={() => handleQuantityChange(product.id, quantity - 1)}
+                              className="w-9 h-9 rounded-lg border border-[#cbd5e1] text-slate-600 hover:bg-slate-50 flex items-center justify-center cursor-pointer select-none active:scale-[0.95] bg-white"
+                            >
+                              <span className="font-bold">-</span>
+                            </button>
+                            
+                            <input
+                              type="number"
+                              min="0"
+                              value={quantity || ''}
+                              placeholder="0"
+                              onChange={(e) => handleQuantityChange(product.id, Math.max(0, parseInt(e.target.value) || 0))}
+                              className="w-14 h-9 border border-[#cbd5e1] rounded-lg text-center font-extrabold text-sm text-slate-800 outline-none focus:border-primary bg-white"
+                            />
+
+                            <button
+                              type="button"
+                              onClick={() => handleQuantityChange(product.id, quantity + 1)}
+                              className="w-9 h-9 rounded-lg border border-[#cbd5e1] text-slate-600 hover:bg-slate-50 flex items-center justify-center cursor-pointer select-none active:scale-[0.95] bg-white"
+                            >
+                              <span className="font-bold">+</span>
+                            </button>
+                          </div>
+
+                          {/* Pedir solo este */}
+                          {quantity > 0 && (
+                            <div className="animate-fade-in w-full sm:w-auto">
+                              <Button
+                                variant="primary"
+                                size="sm"
+                                onClick={() => setConfirmingProductId(product.id)}
+                                className="w-full sm:w-36 h-9 px-3 text-xs font-bold flex items-center justify-center gap-1.5 tap-bounce"
+                                title="Pedir este producto de inmediato de forma individual"
+                              >
+                                <Send className="w-3.5 h-3.5 shrink-0" />
+                                <span className="whitespace-nowrap">Pedir solo este</span>
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </div>
         </div>
@@ -434,11 +413,6 @@ export default function Inventory() {
                               {item.unit}
                             </span>
                           </div>
-                          {item.notes && (
-                            <p className="text-xs text-slate-400 italic">
-                              <span className="font-bold text-slate-500 not-italic mr-1">Observación:</span> &ldquo;{item.notes}&rdquo;
-                            </p>
-                          )}
                         </div>
 
                         {/* Actions */}

@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { Bell, Wifi, WifiOff, Check, AlertTriangle } from 'lucide-react';
+import { Bell, Wifi, WifiOff, Check } from 'lucide-react';
 
 export default function Header() {
   const { 
@@ -28,7 +28,7 @@ export default function Header() {
     profile: 'Mi Perfil de Usuario',
   };
 
-  const currentTitle = moduleTitles[activeModule] || 'Clínica Montalvo';
+  const currentTitle = moduleTitles[activeModule] || 'Dulce Espera';
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -48,7 +48,7 @@ export default function Header() {
       <div className="flex items-center gap-3">
         {/* Mobile View: Clinic Logo + Brand Title (Static, no click action) */}
         <div className="flex items-center gap-2 md:hidden">
-          <img src="/logo.svg" alt="Logo Clínica Montalvo" className="w-8 h-8" />
+          <img src="/logo.svg" alt="Logo Dulce Espera" className="w-8 h-8" />
           <span className="font-bold text-[#006156] tracking-tight text-lg">Dulce Espera</span>
         </div>
 
@@ -68,9 +68,9 @@ export default function Header() {
         {/* Network Status */}
         <div className="flex items-center">
           {isOnline ? (
-            <div className="flex items-center gap-1.5 text-emerald-600 text-xs font-semibold bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
+            <div className="hidden md:flex items-center gap-1.5 text-emerald-600 text-xs font-semibold bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
               <Wifi className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">En línea</span>
+              <span>En línea</span>
             </div>
           ) : (
             <div className="flex items-center gap-1.5 text-slate-600 text-xs font-semibold bg-slate-100 px-2.5 py-1 rounded-full border border-slate-200 animate-pulse-subtle">
@@ -89,8 +89,9 @@ export default function Header() {
             >
               <Bell className="w-5.5 h-5.5 stroke-[2]" />
               {unreadCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-white shadow-sm px-1 shrink-0 leading-none">
-                  {unreadCount}
+                <span className="absolute top-1.5 right-1.5 flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-secondary border border-white"></span>
                 </span>
               )}
             </button>
@@ -123,14 +124,17 @@ export default function Header() {
                           setModule('requests');
                           setShowNotifications(false);
                         }}
-                        className={`p-3.5 hover:bg-slate-50 transition-colors cursor-pointer text-left ${
-                          !notif.read ? 'bg-primary-light/40' : ''
-                        }`}
+                        className="p-3.5 hover:bg-slate-50 transition-colors cursor-pointer text-left"
                       >
                         <div className="flex items-start gap-2.5">
-                          <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                          <div className="flex-1">
-                            <h4 className="font-bold text-xs text-[#0f172a]">{notif.title}</h4>
+                          <Check className="w-4 h-4 text-secondary shrink-0 mt-0.5" />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-2">
+                              <h4 className="font-bold text-xs text-[#0f172a] truncate">{notif.title}</h4>
+                              {!notif.read && (
+                                <span className="w-1.5 h-1.5 rounded-full bg-secondary shrink-0" title="Nueva" />
+                              )}
+                            </div>
                             <p className="text-xs text-slate-500 mt-0.5 leading-relaxed font-semibold">{notif.message}</p>
                             <span className="text-[10px] text-slate-400 block mt-1 font-bold">{notif.date}</span>
                           </div>
@@ -148,7 +152,7 @@ export default function Header() {
         {user && (
           <div
             onClick={() => setModule('profile')}
-            className="hidden sm:flex items-center gap-2.5 border-l border-slate-200 pl-4 cursor-pointer hover:opacity-80 transition-opacity tap-bounce"
+            className="hidden md:flex items-center gap-2.5 border-l border-slate-200 pl-4 cursor-pointer hover:opacity-80 transition-opacity tap-bounce"
           >
             <div className="w-8 h-8 rounded-full bg-[#006156]/10 text-[#006156] font-bold flex items-center justify-center text-sm">
               {user.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
