@@ -36,8 +36,8 @@ export default function Login() {
   };
 
   return (
-    <div className="flex-1 flex items-center justify-center p-4 min-h-[calc(100vh-4rem)] md:min-h-screen bg-slate-50/50">
-      <div className="w-full max-w-md bg-white border border-[#e2e8f0] rounded-[12px] shadow-[0_4px_20px_rgba(0,97,86,0.03)] p-8 text-center animate-fade-in">
+    <div className="fixed inset-0 w-full h-[100dvh] flex items-center justify-center p-4 bg-[#f8fafc] overflow-hidden select-none">
+      <div className="w-full max-w-md bg-white border border-[#e2e8f0] rounded-[16px] shadow-clinical-lg p-8 text-center animate-fade-in">
         {/* Hospital Brand Header */}
         <div className="flex flex-col items-center gap-3 mb-8">
           <img src="/logo.svg" alt="Clinica Montalvo Logo" className="w-16 h-16" />
@@ -81,14 +81,27 @@ export default function Login() {
 
           {/* Remember Session Option */}
           <div className="flex items-center justify-between">
-            <label className="flex items-center gap-2 cursor-pointer select-none">
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={() => setRememberMe(!rememberMe)}
-                className="w-4 h-4 rounded border-slate-300 text-[#006156] focus:ring-[#006156]/20 cursor-pointer"
-              />
-              <span className="text-sm font-semibold text-slate-500">Recordar sesión</span>
+            <label className="flex items-center gap-2 cursor-pointer select-none group">
+              <div className="relative">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={() => setRememberMe(!rememberMe)}
+                  className="sr-only"
+                />
+                <div className={`w-5 h-5 rounded-md border transition-all flex items-center justify-center ${
+                  rememberMe 
+                    ? 'bg-primary border-primary shadow-clinical-sm' 
+                    : 'border-[#cbd5e1] bg-white group-hover:border-primary/50'
+                }`}>
+                  {rememberMe && (
+                    <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3.5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <span className="text-sm font-semibold text-slate-500 group-hover:text-slate-700 transition-colors">Recordar sesión</span>
             </label>
           </div>
 
