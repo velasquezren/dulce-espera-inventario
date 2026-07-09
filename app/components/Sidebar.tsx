@@ -30,7 +30,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="hidden md:flex md:flex-col w-64 bg-white border-r border-[#e2e8f0]/80 md:sticky md:top-0 md:h-[100dvh] shrink-0">
+    <aside className="hidden md:flex md:flex-col w-64 bg-white border-r border-[#e2e8f0]/80 md:static min-h-[100dvh] shrink-0">
       {/* Brand Header */}
       <div className="h-16 px-6 border-b border-[#e2e8f0] flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
