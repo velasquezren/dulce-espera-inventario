@@ -3,7 +3,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { Card, Button } from '../UI';
-import { User, LogOut, Key, UserCheck, ShieldAlert } from 'lucide-react';
+import { User, LogOut, UserCheck } from 'lucide-react';
 
 export default function Profile() {
   const { user, logout } = useApp();
@@ -41,27 +41,12 @@ export default function Profile() {
             <span className="font-bold text-slate-700">{user.username}</span>
           </div>
 
-          <div className="flex justify-between items-center py-2.5 border-b border-[#f1f5f9]/70">
+          <div className="flex justify-between items-center py-2.5">
             <span className="font-semibold text-slate-400 text-xs uppercase tracking-wide">Estado de Cuenta</span>
             <span className="flex items-center gap-1 text-xs font-bold text-emerald-600">
               <UserCheck className="w-4 h-4" />
               Sesión Activa
             </span>
-          </div>
-
-          {/* JWT Auth Simulator Details */}
-          <div className="space-y-2 pt-2">
-            <div className="flex items-center gap-1.5 text-xs font-bold text-[#006156]">
-              <Key className="w-4 h-4 text-[#39ADA3]" />
-              <span>Token JWT de Autenticación (Simulado)</span>
-            </div>
-            
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 font-mono text-[10px] text-slate-400 break-all leading-normal select-all">
-              {user.token}
-            </div>
-            <p className="text-[10px] text-slate-400 leading-normal">
-              Este token se adjunta automáticamente a las cabeceras HTTP (`Authorization: Bearer &lt;token&gt;`) para validar los permisos de cocina con el servidor.
-            </p>
           </div>
         </div>
 

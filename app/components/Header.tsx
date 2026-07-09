@@ -12,7 +12,6 @@ export default function Header() {
     markNotificationRead, 
     clearNotifications,
     setModule,
-    setMobileSidebarOpen,
     activeModule
   } = useApp();
   const [showNotifications, setShowNotifications] = useState(false);
@@ -47,16 +46,10 @@ export default function Header() {
     <header className="sticky top-0 z-40 w-full h-16 bg-white/90 backdrop-blur-md border-b border-[#e2e8f0]/85 px-4 md:px-8 flex items-center justify-between no-select">
       {/* Title / Section Name */}
       <div className="flex items-center gap-3">
-        {/* Mobile View: Menu Button (Clinic Logo) + Brand Title */}
+        {/* Mobile View: Clinic Logo + Brand Title (Static, no click action) */}
         <div className="flex items-center gap-2 md:hidden">
-          <button
-            onClick={() => setMobileSidebarOpen(true)}
-            className="p-1.5 rounded-lg hover:bg-[#e6f0ef] text-[#006156] tap-bounce focus:outline-none cursor-pointer"
-            aria-label="Abrir menú"
-          >
-            <img src="/logo.svg" alt="Logo Clínica Montalvo" className="w-8 h-8 animate-float" />
-          </button>
-          <span className="font-bold text-[#006156] tracking-tight text-lg">Clínica Montalvo</span>
+          <img src="/logo.svg" alt="Logo Clínica Montalvo" className="w-8 h-8" />
+          <span className="font-bold text-[#006156] tracking-tight text-lg">Dulce Espera</span>
         </div>
 
         {/* Desktop View: Active Page Title */}
@@ -92,24 +85,24 @@ export default function Header() {
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setShowNotifications(!showNotifications)}
-              className="relative p-2 rounded-full hover:bg-slate-100 transition-colors text-slate-600 focus:outline-none tap-bounce"
+              className="relative p-2.5 rounded-full hover:bg-slate-100/80 active:scale-95 text-slate-600 hover:text-primary transition-all duration-150 focus:outline-none tap-bounce flex items-center justify-center"
             >
-              <Bell className="w-5 h-5 stroke-[1.8]" />
+              <Bell className="w-5.5 h-5.5 stroke-[2]" />
               {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-4.5 h-4.5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] bg-red-500 text-white text-[9px] font-black rounded-full flex items-center justify-center border-2 border-white shadow-sm px-1 shrink-0 leading-none">
                   {unreadCount}
                 </span>
               )}
             </button>
 
             {showNotifications && (
-              <div className="absolute right-0 mt-2 w-80 bg-white rounded-card border border-[#e2e8f0]/80 shadow-clinical-lg py-2 z-50 animate-view-enter max-h-96 overflow-y-auto">
+              <div className="absolute right-0 mt-2.5 w-80 bg-white rounded-card border border-[#e2e8f0]/80 shadow-clinical-lg py-2 z-50 animate-view-enter max-h-96 overflow-y-auto">
                 <div className="px-4 py-2 border-b border-[#e2e8f0] flex items-center justify-between">
-                  <h3 className="font-bold text-sm text-[#006156]">Notificaciones</h3>
+                  <h3 className="font-bold text-sm text-primary">Notificaciones</h3>
                   {unreadCount > 0 && (
                     <button
                       onClick={clearNotifications}
-                      className="text-xs font-semibold text-[#39ADA3] hover:text-[#2e8b83]"
+                      className="text-xs font-bold text-primary hover:underline transition-all cursor-pointer"
                     >
                       Marcar todo leído
                     </button>
@@ -118,7 +111,7 @@ export default function Header() {
 
                 <div className="divide-y divide-[#f1f5f9]">
                   {notifications.length === 0 ? (
-                    <div className="p-4 text-center text-xs text-slate-400">
+                    <div className="p-4 text-center text-xs text-slate-400 font-semibold">
                       No hay notificaciones.
                     </div>
                   ) : (
@@ -127,27 +120,19 @@ export default function Header() {
                         key={notif.id}
                         onClick={() => {
                           markNotificationRead(notif.id);
-                          if (notif.type === 'low_stock' || notif.type === 'out_of_stock') {
-                            setModule('inventory');
-                          } else {
-                            setModule('requests');
-                          }
+                          setModule('requests');
                           setShowNotifications(false);
                         }}
                         className={`p-3.5 hover:bg-slate-50 transition-colors cursor-pointer text-left ${
-                          !notif.read ? 'bg-[#ebf7f6]/40' : ''
+                          !notif.read ? 'bg-primary-light/40' : ''
                         }`}
                       >
                         <div className="flex items-start gap-2.5">
-                          {notif.type === 'low_stock' || notif.type === 'out_of_stock' ? (
-                            <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-                          ) : (
-                            <Check className="w-4 h-4 text-[#39ADA3] shrink-0 mt-0.5" />
-                          )}
+                          <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                           <div className="flex-1">
                             <h4 className="font-bold text-xs text-[#0f172a]">{notif.title}</h4>
-                            <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{notif.message}</p>
-                            <span className="text-[10px] text-slate-400 block mt-1">{notif.date}</span>
+                            <p className="text-xs text-slate-500 mt-0.5 leading-relaxed font-semibold">{notif.message}</p>
+                            <span className="text-[10px] text-slate-400 block mt-1 font-bold">{notif.date}</span>
                           </div>
                         </div>
                       </div>

@@ -17,7 +17,7 @@ export default function BottomNav() {
 
   const items: Array<{ id: AppModule; label: string; icon: React.ComponentType<{ className?: string }> }> = [
     { id: 'dashboard', label: 'Inicio', icon: LayoutDashboard },
-    { id: 'inventory', label: 'Inventario', icon: Package },
+    { id: 'inventory', label: 'Cuaderno', icon: Package },
     { id: 'requests', label: 'Solicitudes', icon: ClipboardList },
     { id: 'receptions', label: 'Recepciones', icon: Truck },
     { id: 'profile', label: 'Perfil', icon: User },
@@ -37,7 +37,7 @@ export default function BottomNav() {
             key={item.id}
             onClick={() => setModule(item.id)}
             className={`flex flex-col items-center justify-center gap-1 w-16 h-12 rounded-lg tap-bounce no-select ${
-              isActive ? 'text-[#006156]' : 'text-slate-400 hover:text-slate-600'
+              isActive ? 'text-primary' : 'text-slate-400 hover:text-slate-600'
             }`}
           >
             <Icon className={`w-5.5 h-5.5 stroke-[1.8]`} />

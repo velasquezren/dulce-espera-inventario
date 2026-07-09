@@ -26,6 +26,14 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: "cover",
+  themeColor: "#006156",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -34,14 +42,14 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
       <head>
         <meta name="theme-color" content="#006156" />
         <meta name="mobile-web-app-capable" content="yes" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
       </head>
-      <body className="min-h-full bg-[#f8fafc] text-[#0f172a] antialiased">
+      <body className="bg-[#f8fafc] text-[#0f172a] antialiased">
         <Providers>
           <PWARegister />
           <ErrorDebugger />

@@ -147,9 +147,9 @@ export default function History() {
           </div>
 
           <div className="divide-y divide-[#f1f5f9]">
-            {filteredLogs.map((log) => (
+            {filteredLogs.map((log, idx) => (
               <div 
-                key={log.id} 
+                key={`${log.id}-${idx}`} 
                 className="p-4 md:px-6 md:py-4 hover:bg-slate-50/50 flex flex-col md:grid md:grid-cols-5 gap-2 md:gap-4 md:items-center text-sm"
               >
                 {/* Date */}

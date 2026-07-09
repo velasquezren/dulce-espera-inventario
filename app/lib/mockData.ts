@@ -13,13 +13,16 @@ export interface Product {
 export interface RequestItem {
   id: string;
   date: string;
-  productId: string;
-  productName: string;
-  quantity: number;
-  unit: string;
-  status: 'Pendiente' | 'Aprobado' | 'Comprado' | 'En camino' | 'Entregado' | 'Cancelado';
-  notes?: string;
+  status: 'Pendiente' | 'En revisión' | 'Aprobado' | 'Comprado' | 'Entregado' | 'Cancelado';
   user: string;
+  reason?: string;
+  items: Array<{
+    productId: string;
+    productName: string;
+    quantity: number;
+    unit: string;
+    notes?: string;
+  }>;
 }
 
 export interface ReceptionItem {
@@ -49,7 +52,7 @@ export interface MovementLog {
 
 export interface NotificationItem {
   id: string;
-  type: 'approved' | 'received' | 'low_stock' | 'out_of_stock';
+  type: 'approved' | 'purchased' | 'delivered';
   title: string;
   message: string;
   date: string;
@@ -151,46 +154,47 @@ export const INITIAL_REQUESTS: RequestItem[] = [
   {
     id: 'req-101',
     date: '2026-07-07 09:30',
-    productId: 'prod-3',
-    productName: 'Pechuga de Pollo Deshuesada',
-    quantity: 25,
-    unit: 'Kilogramos',
     status: 'Aprobado',
-    notes: 'Urgente para menú de fin de semana.',
-    user: 'Chef Teresa Ortiz'
+    user: 'Chef Teresa Ortiz',
+    items: [
+      {
+        productId: 'prod-3',
+        productName: 'Pechuga de Pollo Deshuesada',
+        quantity: 25,
+        unit: 'Kilogramos',
+        notes: 'Urgente para menú de fin de semana.'
+      }
+    ]
   },
   {
     id: 'req-102',
     date: '2026-07-07 11:15',
-    productId: 'prod-7',
-    productName: 'Espesante Alimentario en Polvo',
-    quantity: 10,
-    unit: 'Botes de 250g',
     status: 'Pendiente',
-    notes: 'Quedan muy pocos botes para disfagia en geriatría.',
-    user: 'Nutrióloga Mariana Ríos'
+    user: 'Nutrióloga Mariana Ríos',
+    items: [
+      {
+        productId: 'prod-7',
+        productName: 'Espesante Alimentario en Polvo',
+        quantity: 10,
+        unit: 'Botes de 250g',
+        notes: 'Quedan muy pocos botes para disfagia en geriatría.'
+      }
+    ]
   },
   {
     id: 'req-103',
     date: '2026-07-06 08:00',
-    productId: 'prod-2',
-    productName: 'Leche Semidescremada Pasteurizada',
-    quantity: 60,
-    unit: 'Litros',
     status: 'Entregado',
-    notes: 'Abasto de inicio de semana.',
-    user: 'Chef Teresa Ortiz'
-  },
-  {
-    id: 'req-104',
-    date: '2026-07-05 14:20',
-    productId: 'prod-5',
-    productName: 'Verduras Mixtas Picadas (Congeladas)',
-    quantity: 15,
-    unit: 'Cajas de 5kg',
-    status: 'En camino',
-    notes: 'Resurtido regular.',
-    user: 'Aux. Cocina Juan Gómez'
+    user: 'Chef Teresa Ortiz',
+    items: [
+      {
+        productId: 'prod-2',
+        productName: 'Leche Semidescremada Pasteurizada',
+        quantity: 60,
+        unit: 'Litros',
+        notes: 'Abasto de inicio de semana.'
+      }
+    ]
   }
 ];
 
@@ -279,25 +283,25 @@ export const INITIAL_HISTORY: MovementLog[] = [
 export const INITIAL_NOTIFICATIONS: NotificationItem[] = [
   {
     id: 'not-1',
-    type: 'low_stock',
-    title: 'Stock Bajo Detectado',
-    message: 'El espesante alimentario en polvo tiene 3 botes disponibles (Mínimo requerido: 8).',
-    date: 'Hace 1 hora',
+    type: 'approved',
+    title: 'Solicitud Aprobada',
+    message: 'Tu solicitud de insumos #req-101 fue aprobada por Gobernación.',
+    date: 'Hace 2 horas',
     read: false
   },
   {
     id: 'not-2',
-    type: 'approved',
-    title: 'Solicitud Aprobada',
-    message: 'Tu solicitud de Pechuga de Pollo Deshuesada (25 kg) fue aprobada por Nutrición.',
-    date: 'Hace 3 horas',
+    type: 'purchased',
+    title: 'Compra Realizada',
+    message: 'Se han comprado los insumos de la solicitud #req-102.',
+    date: 'Hace 4 horas',
     read: false
   },
   {
     id: 'not-3',
-    type: 'out_of_stock',
-    title: 'Producto Sin Stock',
-    message: 'La Pechuga de Pollo Deshuesada se encuentra totalmente agotada.',
+    type: 'delivered',
+    title: 'Solicitud Entregada',
+    message: 'La solicitud #req-103 ha sido entregada a la cocina.',
     date: 'Hace 1 día',
     read: true
   }

@@ -29,7 +29,7 @@ export default function Reception() {
     setIsConfirming(true);
     try {
       await confirmReception(confirmId);
-      showToast('Pedido recibido e inventario actualizado', 'success');
+      showToast('Pedido recibido en cocina', 'success');
     } catch (err) {
       showToast('Error al confirmar recepción', 'error');
     } finally {
@@ -46,7 +46,7 @@ export default function Reception() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-[#006156]">Recepciones de Pedido</h1>
         <p className="text-sm text-slate-500 font-semibold mt-1">
-          Confirma la llegada de insumos de proveedores para ingresarlos al stock.
+          Confirma la llegada de los insumos solicitados para la cocina.
         </p>
       </div>
 
@@ -112,8 +112,8 @@ export default function Reception() {
         onClose={handleCloseConfirm}
         onConfirm={handleConfirm}
         title="Confirmar Recepción de Mercancía"
-        message={`¿Confirmas que has recibido la cantidad de ${selectedReception?.quantity} ${selectedReception?.unit} de ${selectedReception?.productName} provisto por ${selectedReception?.supplier}? Se actualizará el inventario disponible de inmediato.`}
-        confirmText="Confirmar Ingreso"
+        message={`¿Confirmas que has recibido la cantidad de ${selectedReception?.quantity} ${selectedReception?.unit} de ${selectedReception?.productName} provisto por ${selectedReception?.supplier}? Se registrará el ingreso de inmediato.`}
+        confirmText="Confirmar"
         cancelText="Cancelar"
         isConfirming={isConfirming}
       />

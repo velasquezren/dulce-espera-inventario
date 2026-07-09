@@ -16,6 +16,7 @@ import MyRequests from './components/Modules/MyRequests';
 import Reception from './components/Modules/Reception';
 import History from './components/Modules/History';
 import Profile from './components/Modules/Profile';
+import ManageProducts from './components/Modules/ManageProducts';
 
 export default function Home() {
   const { user, activeModule, isLoading } = useApp();
@@ -25,7 +26,7 @@ export default function Home() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#f8fafc] text-center p-6">
         <div className="flex flex-col items-center gap-4">
-          <img src="/logo.svg" alt="Clinica Montalvo Logo" className="w-16 h-16 animate-float" />
+          <img src="/logo.svg" alt="Clinica Montalvo Logo" className="w-16 h-16" />
           <div className="animate-pulse-subtle">
             <h2 className="text-[#006156] font-bold text-sm tracking-widest uppercase">CLÍNICA MONTALVO</h2>
             <p className="text-xs text-slate-400 font-semibold mt-1">Iniciando inventario...</p>
@@ -59,23 +60,25 @@ export default function Home() {
         return <History />;
       case 'profile':
         return <Profile />;
+      case 'manage-products':
+        return <ManageProducts />;
       default:
         return <Dashboard />;
     }
   };
 
   return (
-    <div className="flex min-h-screen bg-[#f8fafc]">
+    <div className="flex min-h-[100dvh] bg-[#f8fafc]">
       {/* Persistent Sidebar on Desktop */}
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-h-screen">
+      <div className="flex-1 flex flex-col min-h-[100dvh] min-w-0">
         {/* Header containing search, notifications and network state */}
         <Header />
 
         {/* Scrollable Container */}
-        <main key={activeModule} className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto pb-24 md:pb-8 animate-view-enter">
+        <main key={activeModule} className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto pb-24 md:pb-8 animate-view-enter min-w-0">
           {renderModule()}
         </main>
 

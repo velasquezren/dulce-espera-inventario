@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Check, AlertCircle, X, Loader2 } from 'lucide-react';
 
 // ==========================================
@@ -42,10 +43,10 @@ export function Button({
   const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-interactive tap-bounce no-select focus-ring-brand cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 disabled:transform-none';
   
   const variants = {
-    primary: 'bg-[#006156] hover:bg-[#004d44] text-white shadow-clinical-sm hover:shadow-glow',
-    secondary: 'bg-[#39ADA3] hover:bg-[#2e8b83] text-white shadow-clinical-sm hover:shadow-glow',
-    outline: 'border-2 border-[#006156] text-[#006156] hover:bg-[#e6f0ef]',
-    ghost: 'text-[#006156] hover:bg-[#e6f0ef]',
+    primary: 'bg-primary hover:bg-primary-hover text-white shadow-clinical-sm hover:shadow-glow',
+    secondary: 'bg-primary hover:bg-primary-hover text-white shadow-clinical-sm hover:shadow-glow',
+    outline: 'border-2 border-primary text-primary hover:bg-primary-light',
+    ghost: 'text-primary hover:bg-primary-light',
     danger: 'bg-red-600 hover:bg-red-700 text-white shadow-[0_2px_8px_rgba(220,38,38,0.15)]',
   };
 
@@ -157,6 +158,7 @@ export function Badge({ type, value }: BadgeProps) {
     // Request statuses: Pendiente, Aprobado, Comprado, En camino, Entregado, Cancelado
     const requestMap: Record<string, { bg: string; text: string; label: string }> = {
       Pendiente: { bg: 'bg-[#cbd5e1]/40', text: 'text-slate-700', label: 'Pendiente' },
+      'En revisión': { bg: 'bg-amber-50', text: 'text-amber-700', label: 'En revisión' },
       Aprobado: { bg: 'bg-[#39ADA3]/10', text: 'text-[#2e8b83]', label: 'Aprobado' },
       Comprado: { bg: 'bg-[#006156]/10', text: 'text-[#006156]', label: 'Comprado' },
       'En camino': { bg: 'bg-sky-50', text: 'text-sky-700', label: 'En camino' },
@@ -176,6 +178,22 @@ export function Badge({ type, value }: BadgeProps) {
 
 // ==========================================
 // MODAL / DIALOG COMPONENT
+// ==========================================
+// PORTAL COMPONENT
+// ==========================================
+export function Portal({ children }: { children: React.ReactNode }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  if (!mounted) return null;
+
+  return createPortal(children, document.body);
+}
+
 // ==========================================
 interface ModalProps {
   isOpen: boolean;
@@ -201,25 +219,27 @@ export function ConfirmModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-fade-in">
-      <div className="bg-white rounded-card border border-[#e2e8f0]/80 shadow-clinical-lg w-full max-w-md overflow-hidden animate-view-enter">
-        <div className="p-6">
-          <div className="flex items-center gap-3 text-[#006156]">
-            <AlertCircle className="w-6 h-6 stroke-[#006156]" />
-            <h3 className="text-lg font-bold tracking-tight">{title}</h3>
+    <Portal>
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-fade-in">
+        <div className="bg-white rounded-card border border-[#e2e8f0]/80 shadow-clinical-lg w-full max-w-md overflow-hidden animate-view-enter">
+          <div className="p-6">
+            <div className="flex items-center gap-3 text-[#006156]">
+              <AlertCircle className="w-6 h-6 stroke-[#006156]" />
+              <h3 className="text-lg font-bold tracking-tight">{title}</h3>
+            </div>
+            <p className="mt-3 text-slate-600 text-sm leading-relaxed">{message}</p>
           </div>
-          <p className="mt-3 text-slate-600 text-sm leading-relaxed">{message}</p>
-        </div>
-        <div className="flex items-center justify-end gap-2 px-6 py-4 bg-[#f8fafc] border-t border-[#e2e8f0]">
-          <Button variant="ghost" onClick={onClose} disabled={isConfirming} className="h-10 text-slate-600 hover:bg-slate-100">
-            {cancelText}
-          </Button>
-          <Button variant="primary" onClick={onConfirm} isLoading={isConfirming} className="h-10 px-5">
-            {confirmText}
-          </Button>
+          <div className="flex items-center justify-end gap-2 px-6 py-4 bg-[#f8fafc] border-t border-[#e2e8f0]">
+            <Button variant="ghost" onClick={onClose} disabled={isConfirming} className="h-10 text-slate-600 hover:bg-slate-100">
+              {cancelText}
+            </Button>
+            <Button variant="primary" onClick={onConfirm} isLoading={isConfirming} className="h-10 px-5">
+              {confirmText}
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+    </Portal>
   );
 }
 

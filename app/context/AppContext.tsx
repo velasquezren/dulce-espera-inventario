@@ -23,7 +23,8 @@ export type AppModule =
   | 'history' 
   | 'profile' 
   | 'detail' 
-  | 'request-form';
+  | 'request-form'
+  | 'manage-products';
 
 interface User {
   name: string;
@@ -45,6 +46,27 @@ interface AppContextType {
   receptions: ReceptionItem[];
   history: MovementLog[];
   notifications: NotificationItem[];
+  
+  draftItems: Array<{
+    id: string;
+    productId: string;
+    productName: string;
+    quantity: number;
+    unit: string;
+    notes?: string;
+  }>;
+  addDraftItem: (productId: string, quantity: number, notes?: string) => void;
+  updateDraftItem: (id: string, quantity: number, notes?: string) => void;
+  removeDraftItem: (id: string) => void;
+  sendDraftList: (reason?: string) => Promise<void>;
+  sendSingleItem: (productId: string, quantity: number, notes?: string) => Promise<void>;
+  categories: string[];
+  addCategory: (category: string) => void;
+  removeCategory: (category: string) => void;
+  addProduct: (name: string, category: string, unit: string) => void;
+  deleteProduct: (productId: string) => void;
+  updateProductCategory: (productId: string, category: string) => void;
+
   login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
   setModule: (module: AppModule) => void;
@@ -72,6 +94,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [receptions, setReceptions] = useState<ReceptionItem[]>([]);
   const [history, setHistory] = useState<MovementLog[]>([]);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [draftItems, setDraftItems] = useState<Array<{
+    id: string;
+    productId: string;
+    productName: string;
+    quantity: number;
+    unit: string;
+    notes?: string;
+  }>>([]);
+
+  const [categories, setCategories] = useState<string[]>([]);
 
   // Synchronize browser online/offline status
   useEffect(() => {
@@ -125,12 +157,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         const loadedReceptions = parseOrFallback('montalvo_receptions', INITIAL_RECEPTIONS);
         const loadedHistory = parseOrFallback('montalvo_history', INITIAL_HISTORY);
         const loadedNotifications = parseOrFallback('montalvo_notifications', INITIAL_NOTIFICATIONS);
+        const loadedDrafts = parseOrFallback('montalvo_drafts', []);
+        const DEFAULT_CATEGORIES = ['Lácteos', 'Carnes y Proteínas', 'Granos y Cereales', 'Nutrición Clínica', 'Abarrotes', 'Verduras', 'Otros'];
+        const loadedCategories = parseOrFallback('montalvo_categories', DEFAULT_CATEGORIES);
 
         setProducts(loadedProducts);
         setRequests(loadedRequests);
         setReceptions(loadedReceptions);
         setHistory(loadedHistory);
         setNotifications(loadedNotifications);
+        setDraftItems(loadedDrafts);
+        setCategories(loadedCategories);
+
+        if (!localStorage.getItem('montalvo_categories')) localStorage.setItem('montalvo_categories', JSON.stringify(DEFAULT_CATEGORIES));
 
         // Seed initial local storage if not set
         if (!localStorage.getItem('montalvo_products')) localStorage.setItem('montalvo_products', JSON.stringify(INITIAL_PRODUCTS));
@@ -159,6 +198,221 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       localStorage.setItem(key, JSON.stringify(data));
     }
+  };
+
+  const saveDrafts = (drafts: any) => {
+    setDraftItems(drafts);
+    saveState('montalvo_drafts', drafts);
+  };
+
+  const addDraftItem = (productId: string, quantity: number, notes?: string) => {
+    const product = products.find((p) => p.id === productId);
+    if (!product) return;
+    const existingIndex = draftItems.findIndex((item) => item.productId === productId);
+    if (existingIndex > -1) {
+      const updated = [...draftItems];
+      updated[existingIndex] = {
+        ...updated[existingIndex],
+        quantity: updated[existingIndex].quantity + quantity,
+        notes: notes || updated[existingIndex].notes || ''
+      };
+      saveDrafts(updated);
+    } else {
+      const newItem = {
+        id: `draft-${Date.now()}-${Math.random().toString().slice(-3)}`,
+        productId,
+        productName: product.name,
+        quantity,
+        unit: product.unit,
+        notes: notes || ''
+      };
+      saveDrafts([...draftItems, newItem]);
+    }
+  };
+
+  const updateDraftItem = (id: string, quantity: number, notes?: string) => {
+    const updated = draftItems.map((item) => {
+      if (item.id === id) {
+        return {
+          ...item,
+          quantity,
+          notes: notes !== undefined ? notes : item.notes
+        };
+      }
+      return item;
+    });
+    saveDrafts(updated);
+  };
+
+  const removeDraftItem = (id: string) => {
+    const updated = draftItems.filter((item) => item.id !== id);
+    saveDrafts(updated);
+  };
+
+  const sendDraftList = async (reason?: string) => {
+    if (draftItems.length === 0 || !user) return;
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    const newRequest: RequestItem = {
+      id: `req-${Date.now().toString().slice(-4)}`,
+      date: new Date().toISOString().replace('T', ' ').slice(0, 16),
+      status: 'Pendiente',
+      user: user.name,
+      reason: reason || '',
+      items: draftItems.map((item) => ({
+        productId: item.productId,
+        productName: item.productName,
+        quantity: item.quantity,
+        unit: item.unit,
+        notes: item.notes
+      }))
+    };
+    setRequests((prev) => {
+      const updated = [newRequest, ...prev];
+      saveState('montalvo_requests', updated);
+      return updated;
+    });
+    const newLogs: MovementLog[] = draftItems.map((item, idx) => ({
+      id: `log-${Date.now()}-${idx}-${Math.floor(Math.random() * 1000)}`,
+      date: newRequest.date,
+      productId: item.productId,
+      productName: item.productName,
+      type: 'Solicitud',
+      quantity: item.quantity,
+      unit: item.unit,
+      user: user.name,
+      status: 'Solicitado en cocina'
+    }));
+    setHistory((prev) => {
+      const updated = [...newLogs, ...prev];
+      saveState('montalvo_history', updated);
+      return updated;
+    });
+    saveDrafts([]);
+    setActiveModule('requests');
+    saveState('montalvo_module', 'requests');
+  };
+
+  const addCategory = (category: string) => {
+    const trimmed = category.trim();
+    if (!trimmed || categories.includes(trimmed)) return;
+    const updated = [...categories, trimmed];
+    setCategories(updated);
+    saveState('montalvo_categories', updated);
+  };
+
+  const removeCategory = (category: string) => {
+    const updated = categories.filter((c) => c !== category);
+    setCategories(updated);
+    saveState('montalvo_categories', updated);
+
+    // Also update products in that category to 'Otros'
+    setProducts((prev) => {
+      const updatedProds = prev.map((p) => {
+        if (p.category === category) {
+          return { ...p, category: 'Otros' };
+        }
+        return p;
+      });
+      saveState('montalvo_products', updatedProds);
+      return updatedProds;
+    });
+  };
+
+  const addProduct = (name: string, category: string, unit: string) => {
+    const trimmedName = name.trim();
+    if (!trimmedName) return;
+    const newProduct: Product = {
+      id: `prod-${Date.now()}`,
+      name: trimmedName,
+      category: category || 'Otros',
+      unit: unit || 'Unidades',
+      stock: 0,
+      minStock: 0,
+      description: 'Producto registrado por cocina.',
+      avgConsumption: '0/mes',
+      lastDelivery: '-'
+    };
+    setProducts((prev) => {
+      const updated = [...prev, newProduct];
+      saveState('montalvo_products', updated);
+      return updated;
+    });
+  };
+
+  const deleteProduct = (productId: string) => {
+    setProducts((prev) => {
+      const updated = prev.filter((p) => p.id !== productId);
+      saveState('montalvo_products', updated);
+      return updated;
+    });
+    // Also remove from draft items if present
+    setDraftItems((prev) => {
+      const updated = prev.filter((d) => d.productId !== productId);
+      saveState('montalvo_drafts', updated);
+      return updated;
+    });
+  };
+
+  const updateProductCategory = (productId: string, category: string) => {
+    setProducts((prev) => {
+      const updated = prev.map((p) => {
+        if (p.id === productId) {
+          return { ...p, category };
+        }
+        return p;
+      });
+      saveState('montalvo_products', updated);
+      return updated;
+    });
+  };
+
+  const sendSingleItem = async (productId: string, quantity: number, notes?: string) => {
+    const product = products.find((p) => p.id === productId);
+    if (!product || !user) return;
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+    const newRequest: RequestItem = {
+      id: `req-${Date.now().toString().slice(-4)}`,
+      date: new Date().toISOString().replace('T', ' ').slice(0, 16),
+      status: 'Pendiente',
+      user: user.name,
+      items: [
+        {
+          productId,
+          productName: product.name,
+          quantity,
+          unit: product.unit,
+          notes: notes || ''
+        }
+      ]
+    };
+
+    setRequests((prev) => {
+      const updated = [newRequest, ...prev];
+      saveState('montalvo_requests', updated);
+      return updated;
+    });
+
+    const newLog: MovementLog = {
+      id: `log-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+      date: newRequest.date,
+      productId,
+      productName: product.name,
+      type: 'Solicitud',
+      quantity,
+      unit: product.unit,
+      user: user.name,
+      status: 'Solicitado en cocina'
+    };
+
+    setHistory((prev) => {
+      const updated = [newLog, ...prev];
+      saveState('montalvo_history', updated);
+      return updated;
+    });
+
+    setActiveModule('requests');
+    saveState('montalvo_module', 'requests');
   };
 
   // JWT Mock Authentication
@@ -229,13 +483,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const newRequest: RequestItem = {
       id: `req-${Date.now().toString().slice(-4)}`,
       date: new Date().toISOString().replace('T', ' ').slice(0, 16),
-      productId,
-      productName: product.name,
-      quantity,
-      unit: product.unit,
       status: 'Pendiente',
-      notes: notes || '',
-      user: user.name
+      user: user.name,
+      items: [
+        {
+          productId,
+          productName: product.name,
+          quantity,
+          unit: product.unit,
+          notes: notes || ''
+        }
+      ]
     };
 
     setRequests((prev) => {
@@ -246,7 +504,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     // Register movement log
     const newLog: MovementLog = {
-      id: `log-${Date.now().toString().slice(-4)}`,
+      id: `log-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
       date: newRequest.date,
       productId,
       productName: product.name,
@@ -308,7 +566,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       });
 
       const newLog: MovementLog = {
-        id: `log-${Date.now().toString().slice(-4)}`,
+        id: `log-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
         date: new Date().toISOString().replace('T', ' ').slice(0, 16),
         productId: reception.productId,
         productName: reception.productName,
@@ -327,7 +585,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
       const newNotif: NotificationItem = {
         id: `not-${Date.now()}`,
-        type: 'received',
+        type: 'delivered',
         title: 'Pedido Recibido',
         message: `Se confirmaron ${reception.quantity} ${reception.unit} de ${reception.productName} por ${user.name}.`,
         date: 'Justo ahora',
@@ -472,6 +730,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         receptions,
         history,
         notifications,
+        draftItems,
+        addDraftItem,
+        updateDraftItem,
+        removeDraftItem,
+        sendDraftList,
+        sendSingleItem,
+        categories,
+        addCategory,
+        removeCategory,
+        addProduct,
+        deleteProduct,
+        updateProductCategory,
         login,
         logout,
         setModule,
