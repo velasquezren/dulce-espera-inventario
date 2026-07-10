@@ -17,6 +17,7 @@ import Reception from './components/Modules/Reception';
 import History from './components/Modules/History';
 import Profile from './components/Modules/Profile';
 import ManageProducts from './components/Modules/ManageProducts';
+import WhatsAppDispatch from './components/Modules/WhatsAppDispatch';
 
 export default function Home() {
   const { user, activeModule, isLoading, isSidebarCollapsed } = useApp();
@@ -66,6 +67,8 @@ export default function Home() {
         return <Profile />;
       case 'manage-products':
         return <ManageProducts />;
+      case 'whatsapp-dispatch':
+        return <WhatsAppDispatch />;
       default:
         return <Dashboard />;
     }

@@ -37,7 +37,8 @@ export type AppModule =
   | 'profile' 
   | 'detail' 
   | 'request-form'
-  | 'manage-products';
+  | 'manage-products'
+  | 'whatsapp-dispatch';
 
 export interface Coordinador {
   id: number;

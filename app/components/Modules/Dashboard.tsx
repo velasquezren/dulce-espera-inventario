@@ -7,7 +7,7 @@ import {
   Truck,
   PlusCircle,
   History,
-  Layers
+  MessageCircle
 } from 'lucide-react';
 
 export default function Dashboard() {
@@ -27,6 +27,14 @@ export default function Dashboard() {
       title: 'Mis Solicitudes',
       description: 'Consulta el estado y avance de tus pedidos enviados.',
       icon: ClipboardList,
+      colorClass: 'text-primary bg-primary-light',
+      hoverBorder: 'hover:border-primary'
+    },
+    {
+      id: 'whatsapp-dispatch',
+      title: 'Despachar WhatsApp',
+      description: 'Envía el reporte del pedido a un coordinador para su aprobación.',
+      icon: MessageCircle,
       colorClass: 'text-primary bg-primary-light',
       hoverBorder: 'hover:border-primary'
     },

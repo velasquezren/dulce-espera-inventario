@@ -10,7 +10,8 @@ import {
   History, 
   User, 
   LogOut,
-  Settings
+  Settings,
+  MessageCircle
 } from 'lucide-react';
 
 export default function Sidebar() {
@@ -24,6 +25,7 @@ export default function Sidebar() {
     { id: 'requests', label: 'Solicitudes', icon: ClipboardList },
     { id: 'receptions', label: 'Recepciones', icon: Truck },
     { id: 'history', label: 'Historial', icon: History },
+    { id: 'whatsapp-dispatch', label: 'Despacho WhatsApp', icon: MessageCircle },
     { id: 'profile', label: 'Mi Perfil', icon: User },
   ];
 
