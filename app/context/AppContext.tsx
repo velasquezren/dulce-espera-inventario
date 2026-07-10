@@ -39,6 +39,13 @@ export type AppModule =
   | 'request-form'
   | 'manage-products';
 
+export interface Coordinador {
+  id: number;
+  nombre: string;
+  telefono: string;
+  activo: number;
+}
+
 interface User {
   name: string;
   username: string;
@@ -61,6 +68,7 @@ interface AppContextType {
   receptions: ReceptionItem[];
   history: MovementLog[];
   notifications: NotificationItem[];
+  coordinators: Coordinador[];
   
   draftItems: Array<{
     id: string;
@@ -121,6 +129,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [requests, setRequests] = useState<RequestItem[]>([]);
+  const [coordinators, setCoordinators] = useState<Coordinador[]>([]);
   const [receptions, setReceptions] = useState<ReceptionItem[]>([]);
   const [history, setHistory] = useState<MovementLog[]>([]);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
@@ -263,6 +272,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         const data = await res.json();
         const mapped: RequestItem[] = data.map((req: any) => ({
           id: req.id_publico.slice(0, 8),
+          idPublico: req.id_publico,
           date: req.fecha_solicitud ? req.fecha_solicitud.replace('T', ' ').slice(0, 16) : '',
           status: mapStatusToFrontend(req.estado),
           user: req.solicitante || '',
@@ -300,8 +310,23 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return await res.json();
   };
 
+  const fetchCoordinators = async () => {
+    try {
+      const res = await fetch(`${API_URL}/coordinadores?t=${Date.now()}`, {
+        cache: 'no-store'
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setCoordinators(data);
+      }
+    } catch (error) {
+      console.error("Error fetching coordinators:", error);
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
+    fetchCoordinators();
   }, []);
 
   useEffect(() => {
@@ -819,7 +844,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         clearNotifications,
         exportToPDF,
         exportToExcel,
-        refreshRequests: fetchRequests
+        refreshRequests: fetchRequests,
+        coordinators
       }}
     >
       {children}

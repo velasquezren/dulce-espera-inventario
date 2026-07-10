@@ -12,6 +12,7 @@ export interface Product {
 
 export interface RequestItem {
   id: string;
+  idPublico?: string;
   date: string;
   status: 'Pendiente' | 'En revisión' | 'Aprobado' | 'Comprado' | 'Entregado' | 'Cancelado';
   user: string;
