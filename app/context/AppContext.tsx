@@ -487,26 +487,35 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     // Simulating API call latency
     await new Promise((resolve) => setTimeout(resolve, 600));
 
-    // Accepted demo credentials: any password for matching demo users, or 'admin' / '123'
-    if (username.trim() && password.trim()) {
-      let displayName = 'Personal Clínico';
-      let role = 'Auxiliar de Cocina';
+    const normUser = username.trim().toLowerCase();
+    const normPass = password.trim();
 
-      if (username.toLowerCase().includes('chef') || username.toLowerCase() === 'teresa') {
+    // Accept simple credentials where password equals username
+    if (normUser && normPass === normUser) {
+      let displayName = username.charAt(0).toUpperCase() + username.slice(1);
+      let role = 'Personal de Cocina';
+
+      if (normUser === 'maria') {
+        displayName = 'María López';
+        role = 'Auxiliar de Cocina';
+      } else if (normUser === 'pedro') {
+        displayName = 'Pedro Gómez';
+        role = 'Cocinero Turno Mañana';
+      } else if (normUser === 'sistemas') {
+        displayName = 'Sistemas Dulce Espera';
+        role = 'Administrador de Cocina';
+      } else if (normUser === 'teresa') {
         displayName = 'Chef Teresa Ortiz';
         role = 'Jefe de Cocina';
-      } else if (username.toLowerCase().includes('nutri') || username.toLowerCase() === 'mariana') {
+      } else if (normUser === 'mariana') {
         displayName = 'Nutrióloga Mariana Ríos';
         role = 'Coordinadora de Nutrición';
-      } else if (username.toLowerCase() === 'admin') {
-        displayName = 'Administrador Clínica';
-        role = 'Administrador de Cocina';
       }
 
-      const mockJwtToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mockUserTokenFor-${username}`;
+      const mockJwtToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mockUserTokenFor-${normUser}`;
       const newUser = {
         name: displayName,
-        username,
+        username: normUser,
         role,
         token: mockJwtToken
       };
