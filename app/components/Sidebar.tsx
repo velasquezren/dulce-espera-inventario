@@ -24,7 +24,6 @@ export default function Sidebar() {
     { id: 'requests', label: 'Solicitudes', icon: ClipboardList },
     { id: 'receptions', label: 'Recepciones', icon: Truck },
     { id: 'history', label: 'Historial', icon: History },
-    { id: 'manage-products', label: 'Gestionar Insumos', icon: Settings },
     { id: 'profile', label: 'Mi Perfil', icon: User },
   ];
 

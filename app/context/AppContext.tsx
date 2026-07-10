@@ -224,7 +224,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch(`${API_URL}/insumos`);
+      const res = await fetch(`${API_URL}/insumos?t=${Date.now()}`, {
+        cache: 'no-store'
+      });
       if (res.ok) {
         const data = await res.json();
         if (data && data.length > 0) {
@@ -254,7 +256,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const fetchRequests = async () => {
     if (!user) return;
     try {
-      const res = await fetch(`${API_URL}/pedidos?solicitante=${encodeURIComponent(user.name)}`);
+      const res = await fetch(`${API_URL}/pedidos?solicitante=${encodeURIComponent(user.name)}&t=${Date.now()}`, {
+        cache: 'no-store'
+      });
       if (res.ok) {
         const data = await res.json();
         const mapped: RequestItem[] = data.map((req: any) => ({

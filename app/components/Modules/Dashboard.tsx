@@ -23,14 +23,6 @@ export default function Dashboard() {
       hoverBorder: 'hover:border-primary'
     },
     {
-      id: 'manage-products',
-      title: 'Organizar Insumos',
-      description: 'Clasifica los productos de la base de datos en tus categorías.',
-      icon: Layers,
-      colorClass: 'text-primary bg-primary-light',
-      hoverBorder: 'hover:border-primary'
-    },
-    {
       id: 'requests',
       title: 'Mis Solicitudes',
       description: 'Consulta el estado y avance de tus pedidos enviados.',
