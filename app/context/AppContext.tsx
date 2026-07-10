@@ -14,6 +14,19 @@ import {
   INITIAL_NOTIFICATIONS
 } from '../lib/mockData';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://107.172.193.34.nip.io';
+
+const mapStatusToFrontend = (status: string): 'Pendiente' | 'En revisión' | 'Aprobado' | 'Comprado' | 'Entregado' | 'Cancelado' => {
+  const normalized = (status || '').toLowerCase().trim();
+  if (normalized === 'pendiente') return 'Pendiente';
+  if (normalized === 'en revision' || normalized === 'en revisión') return 'En revisión';
+  if (normalized === 'aprobado') return 'Aprobado';
+  if (normalized === 'comprado') return 'Comprado';
+  if (normalized === 'entregado') return 'Entregado';
+  if (normalized === 'cancelado') return 'Cancelado';
+  return 'Pendiente';
+};
+
 export type AppModule = 
   | 'login' 
   | 'dashboard' 
@@ -79,6 +92,7 @@ interface AppContextType {
   clearNotifications: () => void;
   exportToPDF: (data: any[], title: string) => void;
   exportToExcel: (data: any[], title: string) => void;
+  refreshRequests: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -208,6 +222,90 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch(`${API_URL}/insumos`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.length > 0) {
+          const mapped: Product[] = data.map((i: any) => ({
+            id: i.id_publico,
+            name: i.nombre || '',
+            category: i.categoria || 'Otros',
+            unit: i.presentacion || 'Unidades',
+            stock: 0,
+            minStock: 0,
+            description: 'Producto cargado desde el catálogo de FileMaker.',
+            avgConsumption: '-',
+            lastDelivery: '-'
+          }));
+          setProducts(mapped);
+          saveState('montalvo_products', mapped);
+        } else {
+          setProducts([]);
+          saveState('montalvo_products', []);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching products from API:", error);
+    }
+  };
+
+  const fetchRequests = async () => {
+    if (!user) return;
+    try {
+      const res = await fetch(`${API_URL}/pedidos?solicitante=${encodeURIComponent(user.name)}`);
+      if (res.ok) {
+        const data = await res.json();
+        const mapped: RequestItem[] = data.map((req: any) => ({
+          id: req.id_publico.slice(0, 8),
+          date: req.fecha_solicitud ? req.fecha_solicitud.replace('T', ' ').slice(0, 16) : '',
+          status: mapStatusToFrontend(req.estado),
+          user: req.solicitante || '',
+          items: req.lineas.map((line: any) => ({
+            productId: line.insumo_id_publico,
+            productName: line.nombre_insumo || 'Insumo sin nombre',
+            quantity: Number(line.cantidad),
+            unit: line.presentacion_insumo || 'Unidades',
+            notes: ''
+          }))
+        }));
+        setRequests(mapped);
+        saveState('montalvo_requests', mapped);
+      }
+    } catch (error) {
+      console.error("Error fetching requests from API:", error);
+    }
+  };
+
+  const postRequestToAPI = async (solicitante: string, lineas: Array<{ insumo_id_publico: string, cantidad: number }>) => {
+    const res = await fetch(`${API_URL}/pedidos`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        solicitante,
+        lineas
+      })
+    });
+    if (!res.ok) {
+      const errData = await res.json();
+      throw new Error(errData.detail || 'Error al crear el pedido en la API');
+    }
+    return await res.json();
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      fetchRequests();
+    }
+  }, [user]);
+
   // Helper to persist state updates
   const saveState = (key: string, data: any) => {
     if (typeof window !== 'undefined') {
@@ -267,45 +365,25 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const sendDraftList = async (reason?: string) => {
     if (draftItems.length === 0 || !user) return;
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    const newRequest: RequestItem = {
-      id: `req-${Date.now().toString().slice(-4)}`,
-      date: new Date().toISOString().replace('T', ' ').slice(0, 16),
-      status: 'Pendiente',
-      user: user.name,
-      reason: reason || '',
-      items: draftItems.map((item) => ({
-        productId: item.productId,
-        productName: item.productName,
-        quantity: item.quantity,
-        unit: item.unit,
-        notes: item.notes
-      }))
-    };
-    setRequests((prev) => {
-      const updated = [newRequest, ...prev];
-      saveState('montalvo_requests', updated);
-      return updated;
-    });
-    const newLogs: MovementLog[] = draftItems.map((item, idx) => ({
-      id: `log-${Date.now()}-${idx}-${Math.floor(Math.random() * 1000)}`,
-      date: newRequest.date,
-      productId: item.productId,
-      productName: item.productName,
-      type: 'Solicitud',
-      quantity: item.quantity,
-      unit: item.unit,
-      user: user.name,
-      status: 'Solicitado en cocina'
-    }));
-    setHistory((prev) => {
-      const updated = [...newLogs, ...prev];
-      saveState('montalvo_history', updated);
-      return updated;
-    });
-    saveDrafts([]);
-    setActiveModule('requests');
-    saveState('montalvo_module', 'requests');
+    setIsLoading(true);
+    try {
+      const apiLines = draftItems.map((item) => ({
+        insumo_id_publico: item.productId,
+        cantidad: item.quantity
+      }));
+
+      await postRequestToAPI(user.name, apiLines);
+
+      saveDrafts([]);
+      await fetchRequests();
+      
+      setActiveModule('requests');
+      saveState('montalvo_module', 'requests');
+    } catch (e: any) {
+      alert(`Error al enviar pedido: ${e.message || e}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const addCategory = (category: string) => {
@@ -383,52 +461,25 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const sendSingleItem = async (productId: string, quantity: number, notes?: string) => {
-    const product = products.find((p) => p.id === productId);
-    if (!product || !user) return;
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    const newRequest: RequestItem = {
-      id: `req-${Date.now().toString().slice(-4)}`,
-      date: new Date().toISOString().replace('T', ' ').slice(0, 16),
-      status: 'Pendiente',
-      user: user.name,
-      items: [
+    if (!user) return;
+    setIsLoading(true);
+    try {
+      await postRequestToAPI(user.name, [
         {
-          productId,
-          productName: product.name,
-          quantity,
-          unit: product.unit,
-          notes: notes || ''
+          insumo_id_publico: productId,
+          cantidad: quantity
         }
-      ]
-    };
-
-    setRequests((prev) => {
-      const updated = [newRequest, ...prev];
-      saveState('montalvo_requests', updated);
-      return updated;
-    });
-
-    const newLog: MovementLog = {
-      id: `log-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-      date: newRequest.date,
-      productId,
-      productName: product.name,
-      type: 'Solicitud',
-      quantity,
-      unit: product.unit,
-      user: user.name,
-      status: 'Solicitado en cocina'
-    };
-
-    setHistory((prev) => {
-      const updated = [newLog, ...prev];
-      saveState('montalvo_history', updated);
-      return updated;
-    });
-
-    setActiveModule('requests');
-    saveState('montalvo_module', 'requests');
+      ]);
+      
+      await fetchRequests();
+      
+      setActiveModule('requests');
+      saveState('montalvo_module', 'requests');
+    } catch (e: any) {
+      alert(`Error al enviar pedido: ${e.message || e}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // JWT Mock Authentication
@@ -492,54 +543,26 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   // Create Kitchen request
-  const createRequest = (productId: string, quantity: number, notes?: string) => {
-    const product = products.find((p) => p.id === productId);
-    if (!product || !user) return;
-
-    const newRequest: RequestItem = {
-      id: `req-${Date.now().toString().slice(-4)}`,
-      date: new Date().toISOString().replace('T', ' ').slice(0, 16),
-      status: 'Pendiente',
-      user: user.name,
-      items: [
+  const createRequest = async (productId: string, quantity: number, notes?: string) => {
+    if (!user) return;
+    setIsLoading(true);
+    try {
+      await postRequestToAPI(user.name, [
         {
-          productId,
-          productName: product.name,
-          quantity,
-          unit: product.unit,
-          notes: notes || ''
+          insumo_id_publico: productId,
+          cantidad: quantity
         }
-      ]
-    };
-
-    setRequests((prev) => {
-      const updated = [newRequest, ...prev];
-      saveState('montalvo_requests', updated);
-      return updated;
-    });
-
-    // Register movement log
-    const newLog: MovementLog = {
-      id: `log-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-      date: newRequest.date,
-      productId,
-      productName: product.name,
-      type: 'Solicitud',
-      quantity,
-      unit: product.unit,
-      user: user.name,
-      status: 'Solicitado en cocina'
-    };
-
-    setHistory((prev) => {
-      const updated = [newLog, ...prev];
-      saveState('montalvo_history', updated);
-      return updated;
-    });
-
-    // Navigate back to my requests list
-    setActiveModule('requests');
-    saveState('montalvo_module', 'requests');
+      ]);
+      
+      await fetchRequests();
+      
+      setActiveModule('requests');
+      saveState('montalvo_module', 'requests');
+    } catch (e: any) {
+      alert(`Error al enviar pedido: ${e.message || e}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Confirm Supplier Order Reception
@@ -782,7 +805,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         markNotificationRead,
         clearNotifications,
         exportToPDF,
-        exportToExcel
+        exportToExcel,
+        refreshRequests: fetchRequests
       }}
     >
       {children}

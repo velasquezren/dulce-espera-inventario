@@ -12,12 +12,13 @@ import {
   Calendar as CalendarIcon, 
   ChevronLeft, 
   ChevronRight,
-  HelpCircle
+  HelpCircle,
+  RotateCw
 } from 'lucide-react';
 import { RequestItem } from '../../lib/mockData';
 
 export default function MyRequests() {
-  const { requests } = useApp();
+  const { requests, refreshRequests } = useApp();
   const [activeView, setActiveView] = useState<'list' | 'calendar'>('calendar');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
@@ -341,6 +342,15 @@ export default function MyRequests() {
               aria-label="Ayuda"
             >
               <HelpCircle className="w-5 h-5" />
+            </button>
+            <button 
+              type="button"
+              onClick={refreshRequests}
+              className="p-1 text-slate-400 hover:text-primary hover:bg-slate-100 rounded-full transition-colors focus:outline-none cursor-pointer inline-flex items-center justify-center tap-bounce"
+              title="Actualizar pedidos"
+              aria-label="Actualizar"
+            >
+              <RotateCw className="w-5 h-5" />
             </button>
           </h1>
           {showHelp && (
