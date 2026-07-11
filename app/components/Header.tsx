@@ -57,7 +57,7 @@ export default function Header() {
           <h2 className="font-extrabold text-slate-800 text-lg tracking-tight">
             {currentTitle}
           </h2>
-          <span className="text-xs font-semibold text-[#39ADA3] bg-[#ebf7f6] px-2.5 py-0.5 rounded-full">
+          <span className="hidden lg:inline-block text-xs font-semibold text-[#39ADA3] bg-[#ebf7f6] px-2.5 py-0.5 rounded-full">
             Cocina y Nutrición
           </span>
         </div>
@@ -157,7 +157,7 @@ export default function Header() {
             <div className="w-8 h-8 rounded-full bg-[#006156]/10 text-[#006156] font-bold flex items-center justify-center text-sm">
               {user.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
             </div>
-            <div className="text-left">
+            <div className="hidden lg:block text-left">
               <div className="text-xs font-bold text-slate-800">{user.name}</div>
               <div className="text-[10px] text-slate-400 font-medium">{user.role}</div>
             </div>
