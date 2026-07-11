@@ -7,7 +7,8 @@ import {
   Package, 
   ClipboardList, 
   Truck, 
-  User 
+  User,
+  MessageCircle
 } from 'lucide-react';
 
 export default function BottomNav() {
@@ -20,11 +21,12 @@ export default function BottomNav() {
     { id: 'inventory', label: 'Cuaderno', icon: Package },
     { id: 'requests', label: 'Solicitudes', icon: ClipboardList },
     { id: 'receptions', label: 'Recepciones', icon: Truck },
+    { id: 'whatsapp-dispatch', label: 'WhatsApp', icon: MessageCircle },
     { id: 'profile', label: 'Perfil', icon: User },
   ];
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 pwa-nav-glow border-t border-[#e2e8f0]/60 flex items-center justify-around px-2 pb-safe z-40 no-select">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 pwa-nav-glow border-t border-[#e2e8f0]/60 flex items-center justify-around px-1 pb-safe z-40 bg-white/95 backdrop-blur-md no-select">
       {items.map((item) => {
         const Icon = item.icon;
         const isActive = 
@@ -36,15 +38,16 @@ export default function BottomNav() {
           <button
             key={item.id}
             onClick={() => setModule(item.id)}
-            className={`flex flex-col items-center justify-center gap-1 w-16 h-12 rounded-lg tap-bounce no-select ${
+            className={`flex flex-col items-center justify-center gap-1 flex-1 min-w-[50px] max-w-[76px] h-12 rounded-lg tap-bounce no-select transition-all duration-200 ${
               isActive ? 'text-primary' : 'text-slate-400 hover:text-slate-600'
             }`}
           >
-            <Icon className={`w-5.5 h-5.5 stroke-[1.8]`} />
-            <span className="text-[10px] font-semibold tracking-wide">{item.label}</span>
+            <Icon className="w-5 h-5 stroke-[1.8]" />
+            <span className="text-[9px] font-semibold tracking-wide truncate max-w-full">{item.label}</span>
           </button>
         );
       })}
     </nav>
   );
 }
+

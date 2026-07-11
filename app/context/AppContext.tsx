@@ -102,6 +102,11 @@ interface AppContextType {
   exportToPDF: (data: any[], title: string) => void;
   exportToExcel: (data: any[], title: string) => void;
   refreshRequests: () => Promise<void>;
+  isStandalone: boolean;
+  deferredPrompt: any;
+  showInstallModal: boolean;
+  setShowInstallModal: (show: boolean) => void;
+  installApp: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -113,6 +118,50 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [isOnline, setIsOnline] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isMobileSidebarOpen, setMobileSidebarOpen] = useState<boolean>(false);
+
+  // PWA installation states
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isStandalone, setIsStandalone] = useState<boolean>(false);
+  const [showInstallModal, setShowInstallModal] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const checkStandalone = () => {
+        const isStandaloneMode = 
+          window.matchMedia('(display-mode: standalone)').matches || 
+          (navigator as any).standalone === true;
+        setIsStandalone(isStandaloneMode);
+      };
+
+      checkStandalone();
+      window.addEventListener('resize', checkStandalone);
+
+      const handleBeforeInstallPrompt = (e: Event) => {
+        e.preventDefault();
+        setDeferredPrompt(e);
+      };
+
+      window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+      return () => {
+        window.removeEventListener('resize', checkStandalone);
+        window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      };
+    }
+  }, []);
+
+  const installApp = async () => {
+    if (deferredPrompt) {
+      try {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`PWA install response: ${outcome}`);
+        setDeferredPrompt(null);
+      } catch (err) {
+        console.error("Error triggering PWA install prompt:", err);
+      }
+    }
+  };
   const [isSidebarCollapsed, setSidebarCollapsedState] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('montalvo_sidebar_collapsed');
@@ -846,7 +895,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         exportToPDF,
         exportToExcel,
         refreshRequests: fetchRequests,
-        coordinators
+        coordinators,
+        isStandalone,
+        deferredPrompt,
+        showInstallModal,
+        setShowInstallModal,
+        installApp
       }}
     >
       {children}

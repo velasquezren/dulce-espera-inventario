@@ -5,6 +5,7 @@ import { useApp } from './context/AppContext';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import BottomNav from './components/BottomNav';
+import PWAInstallBanner from './components/PWAInstallBanner';
 
 // Import modules
 import Login from './components/Modules/Login';
@@ -86,6 +87,9 @@ export default function Home() {
         {/* Header containing search, notifications and network state */}
         <Header />
 
+        {/* PWA Install Promo Banner */}
+        <PWAInstallBanner />
+
         {/* Scrollable Container */}
         <main key={activeModule} className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto pb-24 md:pb-8 animate-view-enter min-w-0">
           {renderModule()}
@@ -97,4 +101,5 @@ export default function Home() {
     </div>
   );
 }
+
 

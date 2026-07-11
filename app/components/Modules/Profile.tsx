@@ -3,10 +3,10 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Card, Button } from '../UI';
-import { User, LogOut, UserCheck, HelpCircle } from 'lucide-react';
+import { User, LogOut, UserCheck, HelpCircle, Smartphone } from 'lucide-react';
 
 export default function Profile() {
-  const { user, logout } = useApp();
+  const { user, logout, isStandalone, setShowInstallModal } = useApp();
   const [showHelp, setShowHelp] = useState(false);
 
   if (!user) return null;
@@ -68,6 +68,38 @@ export default function Profile() {
           </div>
         </div>
 
+        {/* PWA App Installation Info */}
+        <div className="border-t border-[#f1f5f9] pt-6 mt-6 space-y-4">
+          <h3 className="font-extrabold text-xs text-slate-400 uppercase tracking-wider">Aplicación Móvil (PWA)</h3>
+          {isStandalone ? (
+            <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center gap-3 text-emerald-800">
+              <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+                <svg className="w-5 h-5 fill-current" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="text-xs">
+                <p className="font-bold">Aplicación Instalada</p>
+                <p className="text-emerald-700 font-semibold mt-0.5">Estás ejecutando la aplicación directamente desde la pantalla de inicio.</p>
+              </div>
+            </div>
+          ) : (
+            <div className="p-4 bg-slate-50 border border-slate-200/80 rounded-xl space-y-3">
+              <p className="text-xs text-slate-500 font-semibold leading-relaxed">
+                Puedes instalar este sistema en tu teléfono o tablet para utilizarlo como una app nativa, con mayor rapidez y soporte sin conexión.
+              </p>
+              <Button
+                variant="outline"
+                onClick={() => setShowInstallModal(true)}
+                className="w-full font-bold h-11 text-primary border-primary/20 hover:bg-primary-light hover:text-primary tracking-wide text-xs"
+              >
+                <Smartphone className="w-4.5 h-4.5 mr-2 text-primary" />
+                Descargar / Instalar Aplicación
+              </Button>
+            </div>
+          )}
+        </div>
+
         {/* Action Triggers */}
         <div className="border-t border-[#f1f5f9] pt-6 mt-6">
           <Button
@@ -83,3 +115,4 @@ export default function Profile() {
     </div>
   );
 }
+

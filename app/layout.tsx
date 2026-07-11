@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "./components/Providers";
 import PWARegister from "./components/PWARegister";
 import ErrorDebugger from "./components/ErrorDebugger";
+import PWAInstallModal from "./components/PWAInstallModal";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,6 +53,7 @@ export default function RootLayout({
       <body className="bg-[#f8fafc] text-[#0f172a] antialiased">
         <Providers>
           <PWARegister />
+          <PWAInstallModal />
           <ErrorDebugger />
           {children}
         </Providers>
@@ -59,4 +61,5 @@ export default function RootLayout({
     </html>
   );
 }
+
 
