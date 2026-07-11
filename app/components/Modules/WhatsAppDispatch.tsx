@@ -406,57 +406,57 @@ export default function WhatsAppDispatch() {
         {/* Action Triggers */}
         {selectedReq && (
           <div className="pt-2 space-y-3">
-            {/* Download/Open PDF Local */}
+            {/* WhatsApp send button */}
+            <button
+              onClick={handleSendWhatsApp}
+              disabled={!selectedCoord}
+              className={`w-full flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl font-black text-sm text-white transition-all active:scale-98 tap-bounce cursor-pointer ${
+                selectedCoord
+                  ? 'bg-[#25D366] hover:bg-[#20ba5a] shadow-clinical-md'
+                  : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
+              }`}
+            >
+              <svg className={`w-5.5 h-5.5 fill-current ${selectedCoord ? 'text-white' : 'text-slate-400'}`} viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+                <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+              </svg>
+              <span>Enviar por WhatsApp</span>
+            </button>
+            {!selectedCoord && (
+              <p className="text-[10px] text-amber-600 font-bold text-center -mt-1">
+                *Selecciona un destinatario arriba para activar el botón de WhatsApp.
+              </p>
+            )}
+
+            {/* Print Local PDF */}
             <button
               onClick={handlePrintLocalPDF}
-              className="w-full flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl font-black text-sm bg-primary hover:bg-primary-hover text-white transition-all shadow-clinical-md active:scale-98 tap-bounce cursor-pointer"
+              className="w-full flex items-center justify-center gap-2.5 px-6 py-3 rounded-xl font-black text-sm bg-primary hover:bg-primary-hover text-white transition-all shadow-clinical-sm active:scale-98 tap-bounce cursor-pointer"
             >
               <Printer className="w-5 h-5 text-white" />
-              <span>Descargar y Abrir PDF (Local)</span>
+              <span>Imprimir</span>
             </button>
+
+            {/* Server link report - Descargar */}
+            <a
+              href={`https://107.172.193.34.nip.io/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center justify-center gap-2.5 px-6 py-3 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 rounded-xl font-bold text-sm text-slate-700 transition-all active:scale-98 tap-bounce cursor-pointer text-center"
+            >
+              <Download className="w-5 h-5 text-primary" />
+              <span>Descargar Reporte</span>
+            </a>
 
             {/* Native Share API */}
             {canShare && (
               <button
                 onClick={handleNativeShare}
-                className="w-full flex items-center justify-center gap-2.5 px-6 py-3 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 rounded-xl font-bold text-sm text-slate-700 transition-all shadow-clinical-sm active:scale-98 tap-bounce cursor-pointer"
+                className="w-full flex items-center justify-center gap-2.5 px-6 py-3 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 rounded-xl font-bold text-sm text-slate-700 transition-all active:scale-98 tap-bounce cursor-pointer"
               >
                 <Share2 className="w-5 h-5 text-primary" />
-                <span>Compartir PDF / Reporte</span>
+                <span>Compartir Enlace</span>
               </button>
             )}
-
-            {/* WhatsApp send button */}
-            <button
-              onClick={handleSendWhatsApp}
-              disabled={!selectedCoord}
-              className={`w-full flex items-center justify-center gap-2.5 px-6 py-3 rounded-xl font-extrabold text-sm text-white transition-all active:scale-98 tap-bounce cursor-pointer ${
-                selectedCoord
-                  ? 'bg-[#25D366] hover:bg-[#20ba5a] shadow-clinical-sm'
-                  : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
-              }`}
-            >
-              <svg className={`w-5 h-5 fill-current ${selectedCoord ? 'text-white' : 'text-slate-400'}`} viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
-                <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
-              </svg>
-              <span>Enviar Mensaje por WhatsApp</span>
-            </button>
-            {!selectedCoord && (
-              <p className="text-[10px] text-amber-600 font-bold text-center">
-                *Selecciona un destinatario arriba para activar el botón de WhatsApp.
-              </p>
-            )}
-
-            {/* Server link report */}
-            <a
-              href={`https://107.172.193.34.nip.io/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 px-5 py-3 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 rounded-xl font-bold text-xs text-slate-500 transition-all active:scale-98 tap-bounce cursor-pointer text-center"
-            >
-              <Download className="w-4 h-4 text-slate-400" />
-              <span>Abrir Reporte en Servidor</span>
-            </a>
           </div>
         )}
 
@@ -466,10 +466,10 @@ export default function WhatsAppDispatch() {
             <AlertCircle className="w-5.5 h-5.5 shrink-0 text-amber-600 mt-0.5" />
             <div className="text-[11px] leading-relaxed font-semibold">
               <strong className="text-amber-900 block mb-0.5">¿Cómo enviar el archivo PDF por WhatsApp?</strong>
-              Los navegadores web no permiten enviar un archivo adjunto directo por un enlace de WhatsApp. Te recomendamos:
+              Los navegadores web no permiten adjuntar archivos automáticamente en enlaces de WhatsApp. Te recomendamos:
               <ol className="list-decimal pl-4 mt-1 space-y-1">
-                <li>Toca <strong className="text-amber-900">"Descargar y Abrir PDF (Local)"</strong> arriba.</li>
-                <li>En la pantalla de impresión, selecciona <strong className="text-amber-900">Guardar como PDF</strong> o usa el botón de <strong className="text-amber-900">Compartir</strong> de tu teléfono para enviarlo directamente como archivo a WhatsApp.</li>
+                <li>Toca <strong className="text-amber-900">"Imprimir"</strong> arriba.</li>
+                <li>En la pantalla de impresión, selecciona <strong className="text-amber-900">Guardar como PDF</strong> o usa el botón de <strong className="text-amber-900">Compartir</strong> de tu teléfono para enviarlo directamente como archivo a tu contacto.</li>
               </ol>
             </div>
           </div>
