@@ -481,7 +481,7 @@ export default function WhatsAppDispatch() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {coordinators.map((c) => {
                 const isSelected = String(selectedCoordId) === String(c.id);
-                const initials = c.nombre.split(' ').map(n => n[0]).join('').slice(0, 2);
+                const initials = c.nombre.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
                 
                 return (
                   <button
@@ -500,11 +500,8 @@ export default function WhatsAppDispatch() {
                       {initials}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <div className="font-extrabold text-slate-800 text-xs truncate leading-snug">
+                      <div className="font-extrabold text-slate-800 text-xs truncate leading-none">
                         {c.nombre}
-                      </div>
-                      <div className="text-[10px] text-slate-400 font-bold tracking-tight mt-0.5">
-                        {c.telefono}
                       </div>
                     </div>
                     {isSelected && (
