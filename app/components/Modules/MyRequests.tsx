@@ -130,7 +130,7 @@ export default function MyRequests() {
 
   const totalMonthly = monthlyRequests.length;
   const pendingMonthly = monthlyRequests.filter((r) => r.status === 'Pendiente' || r.status === 'En revisión').length;
-  const approvedMonthly = monthlyRequests.filter((r) => r.status === 'Aprobado' || r.status === 'Comprado' || r.status === 'Entregado').length;
+  const approvedMonthly = monthlyRequests.filter((r) => r.status === 'Aceptado' || r.status === 'Aprobado' || r.status === 'Comprado' || r.status === 'Entregado').length;
 
   const selectedRequests = requests.filter((r) => r.date.split(' ')[0] === selectedDate);
 
@@ -140,12 +140,14 @@ export default function MyRequests() {
     const totalProducts = req.items ? req.items.length : 0;
     
     // Status colors for left accent bar
-    const statusConfig = {
+    const statusConfig: Record<string, { bar: string; text: string }> = {
       Cancelado: { bar: 'bg-rose-500', text: 'text-rose-600 bg-rose-50' },
+      Rechazado: { bar: 'bg-rose-500', text: 'text-rose-600 bg-rose-50' },
       Pendiente: { bar: 'bg-amber-500', text: 'text-amber-600 bg-amber-50' },
       'En revisión': { bar: 'bg-amber-500', text: 'text-amber-600 bg-amber-50' },
+      Aceptado: { bar: 'bg-emerald-500', text: 'text-emerald-600 bg-emerald-50' },
       Aprobado: { bar: 'bg-emerald-500', text: 'text-emerald-600 bg-emerald-50' },
-      Comprado: { bar: 'bg-emerald-500', text: 'text-emerald-600 bg-emerald-50' },
+      Comprado: { bar: 'bg-sky-500', text: 'text-sky-600 bg-sky-50' },
       Entregado: { bar: 'bg-emerald-500', text: 'text-emerald-600 bg-emerald-50' },
     };
     
@@ -417,8 +419,9 @@ export default function MyRequests() {
               >
                 <option value="All">Todos los Estados</option>
                 <option value="Pendiente">Pendiente</option>
+                <option value="Aceptado">Aceptado</option>
+                <option value="Rechazado">Rechazado</option>
                 <option value="En revisión">En revisión</option>
-                <option value="Aprobado">Aprobado</option>
                 <option value="Comprado">Comprado</option>
                 <option value="Entregado">Entregado</option>
                 <option value="Cancelado">Cancelado</option>

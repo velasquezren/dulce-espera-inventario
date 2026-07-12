@@ -16,11 +16,12 @@ import {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://107.172.193.34.nip.io';
 
-const mapStatusToFrontend = (status: string): 'Pendiente' | 'En revisión' | 'Aprobado' | 'Comprado' | 'Entregado' | 'Cancelado' => {
+const mapStatusToFrontend = (status: string): string => {
   const normalized = (status || '').toLowerCase().trim();
   if (normalized === 'pendiente') return 'Pendiente';
   if (normalized === 'en revision' || normalized === 'en revisión') return 'En revisión';
-  if (normalized === 'aprobado') return 'Aprobado';
+  if (normalized === 'aceptado' || normalized === 'aprobado') return 'Aceptado';
+  if (normalized === 'rechazado') return 'Rechazado';
   if (normalized === 'comprado') return 'Comprado';
   if (normalized === 'entregado') return 'Entregado';
   if (normalized === 'cancelado') return 'Cancelado';
@@ -313,9 +314,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const fetchRequests = async () => {
-    if (!user) return;
     try {
-      const res = await fetch(`${API_URL}/pedidos?solicitante=${encodeURIComponent(user.name)}&t=${Date.now()}`, {
+      const res = await fetch(`${API_URL}/pedidos/todos?t=${Date.now()}`, {
         cache: 'no-store'
       });
       if (res.ok) {
@@ -561,42 +561,29 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // JWT Mock Authentication
+  // Autenticación contra la API FastAPI
   const login = async (username: string, password: string): Promise<boolean> => {
-    // Simulating API call latency
-    await new Promise((resolve) => setTimeout(resolve, 600));
+    try {
+      const res = await fetch(`${API_URL}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: username.trim().toLowerCase(),
+          password: password.trim()
+        })
+      });
 
-    const normUser = username.trim().toLowerCase();
-    const normPass = password.trim();
-
-    // Accept simple credentials where password equals username
-    if (normUser && normPass === normUser) {
-      let displayName = username.charAt(0).toUpperCase() + username.slice(1);
-      let role = 'Personal de Cocina';
-
-      if (normUser === 'maria') {
-        displayName = 'María López';
-        role = 'Auxiliar de Cocina';
-      } else if (normUser === 'pedro') {
-        displayName = 'Pedro Gómez';
-        role = 'Cocinero Turno Mañana';
-      } else if (normUser === 'sistemas') {
-        displayName = 'Sistemas Dulce Espera';
-        role = 'Administrador de Cocina';
-      } else if (normUser === 'teresa') {
-        displayName = 'Chef Teresa Ortiz';
-        role = 'Jefe de Cocina';
-      } else if (normUser === 'mariana') {
-        displayName = 'Nutrióloga Mariana Ríos';
-        role = 'Coordinadora de Nutrición';
+      if (!res.ok) {
+        return false;
       }
 
-      const mockJwtToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mockUserTokenFor-${normUser}`;
+      const data = await res.json();
+
       const newUser = {
-        name: displayName,
-        username: normUser,
-        role,
-        token: mockJwtToken
+        name: data.nombre,
+        username: data.username,
+        role: data.rol,
+        token: data.token
       };
 
       setUser(newUser);
@@ -604,8 +591,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       saveState('montalvo_module', 'dashboard');
       setActiveModule('dashboard');
       return true;
+    } catch (error) {
+      console.error('Error en login:', error);
+      return false;
     }
-    return false;
   };
 
   const logout = () => {

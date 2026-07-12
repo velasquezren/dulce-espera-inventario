@@ -14,7 +14,7 @@ export interface RequestItem {
   id: string;
   idPublico?: string;
   date: string;
-  status: 'Pendiente' | 'En revisión' | 'Aprobado' | 'Comprado' | 'Entregado' | 'Cancelado';
+  status: 'Pendiente' | 'En revisión' | 'Aprobado' | 'Aceptado' | 'Rechazado' | 'Comprado' | 'Entregado' | 'Cancelado';
   user: string;
   reason?: string;
   items: Array<{
