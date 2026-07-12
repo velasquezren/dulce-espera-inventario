@@ -97,7 +97,7 @@ export default function Header() {
             </button>
 
             {showNotifications && (
-              <div className="absolute right-0 mt-2.5 w-80 bg-white rounded-card border border-[#e2e8f0]/80 shadow-clinical-lg py-2 z-50 animate-view-enter max-h-96 overflow-y-auto">
+              <div className="fixed inset-x-4 max-w-[340px] mx-auto md:absolute md:inset-x-auto md:right-0 md:max-w-none md:w-80 top-18 md:top-auto mt-2.5 bg-white rounded-card border border-[#e2e8f0]/80 shadow-clinical-lg py-2 z-50 animate-view-enter max-h-[70vh] md:max-h-96 overflow-y-auto">
                 <div className="px-4 py-2 border-b border-[#e2e8f0] flex items-center justify-between">
                   <h3 className="font-bold text-sm text-primary">Notificaciones</h3>
                   {unreadCount > 0 && (

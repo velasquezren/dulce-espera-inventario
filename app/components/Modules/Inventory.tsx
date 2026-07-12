@@ -45,7 +45,8 @@ export default function Inventory() {
 
   // Filter products by search query and category selection
   const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      (product.category || '').toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategoryFilters.length === 0 || selectedCategoryFilters.includes(product.category || 'Otros');
     return matchesSearch && matchesCategory;
   });

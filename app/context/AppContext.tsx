@@ -243,9 +243,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         };
 
         const loadedProducts = parseOrFallback('montalvo_products', INITIAL_PRODUCTS);
-        const loadedRequests = parseOrFallback('montalvo_requests', INITIAL_REQUESTS);
-        const loadedReceptions = parseOrFallback('montalvo_receptions', INITIAL_RECEPTIONS);
-        const loadedHistory = parseOrFallback('montalvo_history', INITIAL_HISTORY);
+        const loadedRequests = parseOrFallback('montalvo_requests', []);
+        const loadedReceptions = parseOrFallback('montalvo_receptions', []);
+        const loadedHistory = parseOrFallback('montalvo_history', []);
         const loadedNotifications = parseOrFallback('montalvo_notifications', INITIAL_NOTIFICATIONS);
         const loadedDrafts = parseOrFallback('montalvo_drafts', []);
         const DEFAULT_CATEGORIES = ['Lácteos', 'Carnes y Proteínas', 'Granos y Cereales', 'Nutrición Clínica', 'Abarrotes', 'Verduras', 'Otros'];
@@ -263,18 +263,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
         // Seed initial local storage if not set
         if (!localStorage.getItem('montalvo_products')) localStorage.setItem('montalvo_products', JSON.stringify(INITIAL_PRODUCTS));
-        if (!localStorage.getItem('montalvo_requests')) localStorage.setItem('montalvo_requests', JSON.stringify(INITIAL_REQUESTS));
-        if (!localStorage.getItem('montalvo_receptions')) localStorage.setItem('montalvo_receptions', JSON.stringify(INITIAL_RECEPTIONS));
-        if (!localStorage.getItem('montalvo_history')) localStorage.setItem('montalvo_history', JSON.stringify(INITIAL_HISTORY));
+        if (!localStorage.getItem('montalvo_requests')) localStorage.setItem('montalvo_requests', JSON.stringify([]));
+        if (!localStorage.getItem('montalvo_receptions')) localStorage.setItem('montalvo_receptions', JSON.stringify([]));
+        if (!localStorage.getItem('montalvo_history')) localStorage.setItem('montalvo_history', JSON.stringify([]));
         if (!localStorage.getItem('montalvo_notifications')) localStorage.setItem('montalvo_notifications', JSON.stringify(INITIAL_NOTIFICATIONS));
       } catch (globalError) {
         console.error('Error al inicializar la base de datos local:', globalError);
         // Fallback to initial values
         setActiveModule('login');
         setProducts(INITIAL_PRODUCTS);
-        setRequests(INITIAL_REQUESTS);
-        setReceptions(INITIAL_RECEPTIONS);
-        setHistory(INITIAL_HISTORY);
+        setRequests([]);
+        setReceptions([]);
+        setHistory([]);
         setNotifications(INITIAL_NOTIFICATIONS);
       } finally {
         setIsLoading(false);
@@ -384,6 +384,71 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       fetchRequests();
     }
   }, [user]);
+
+  // Calcular recepciones e historial dinámicamente desde MySQL (pedidos)
+  useEffect(() => {
+    // 1. Recepciones pendientes: pedidos aceptados o comprados (esperando ser entregados)
+    const computedReceptions: any[] = [];
+    requests.forEach(req => {
+      const isPending = req.status === 'Aceptado' || req.status === 'Comprado' || req.status === 'En revisión';
+      if (isPending) {
+        req.items.forEach(item => {
+          computedReceptions.push({
+            id: `${req.idPublico}_${item.productId}`, // ID único compuesto por pedido + producto
+            productId: item.productId,
+            productName: item.productName,
+            quantity: item.quantity,
+            unit: item.unit,
+            date: req.date.split(' ')[0], // Fecha del pedido original
+            supplier: 'Proveedor',
+            status: 'Pendiente'
+          });
+        });
+      }
+    });
+    setReceptions(computedReceptions);
+    saveState('montalvo_receptions', computedReceptions);
+
+    // 2. Historial de movimientos: cada línea de cada pedido es una Solicitud.
+    // Si el estado es 'Entregado', se añade además un movimiento de Recepción.
+    const computedHistory: any[] = [];
+    requests.forEach(req => {
+      req.items.forEach(item => {
+        // Log de Solicitud
+        computedHistory.push({
+          id: `hist-req-${req.id}-${item.productId}`,
+          date: req.date,
+          productId: item.productId,
+          productName: item.productName,
+          type: 'Solicitud',
+          quantity: item.quantity,
+          unit: item.unit,
+          user: req.user,
+          status: `Solicitado (${req.status})`
+        });
+
+        // Log de Recepción (cuando ya fue entregado a cocina)
+        if (req.status === 'Entregado') {
+          computedHistory.push({
+            id: `hist-rec-${req.id}-${item.productId}`,
+            date: req.date, // Usamos la misma fecha al no tener fecha_entrega separada
+            productId: item.productId,
+            productName: item.productName,
+            type: 'Recepción',
+            quantity: item.quantity,
+            unit: item.unit,
+            user: req.user,
+            status: 'Recibido en Cocina'
+          });
+        }
+      });
+    });
+
+    // Ordenar de más reciente a más antiguo
+    computedHistory.sort((a, b) => b.date.localeCompare(a.date));
+    setHistory(computedHistory);
+    saveState('montalvo_history', computedHistory);
+  }, [requests]);
 
   // Helper to persist state updates
   const saveState = (key: string, data: any) => {
@@ -649,73 +714,54 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     if (!user) return;
 
-    setReceptions((prevReceptions) => {
-      const receptionIndex = prevReceptions.findIndex((r) => r.id === receptionId);
-      if (receptionIndex === -1) return prevReceptions;
+    // Parse the request id publico and the product id from receptionId
+    const parts = receptionId.split('_');
+    const pedidoIdPublico = parts[0];
+    
+    if (!pedidoIdPublico) return;
 
-      const reception = prevReceptions[receptionIndex];
-      
-      const updatedReceptions = [...prevReceptions];
-      updatedReceptions[receptionIndex] = {
-        ...reception,
-        status: 'Recibido',
-        receivedBy: user.name,
-        receivedDate: new Date().toISOString().replace('T', ' ').slice(0, 16)
-      };
-      saveState('montalvo_receptions', updatedReceptions);
+    try {
+      // Send PATCH request to update order status to 'entregado'
+      const res = await fetch(`${API_URL}/pedidos/actualizar-estado`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          id_publico: pedidoIdPublico,
+          estado: 'entregado'
+        })
+      });
 
-      // Perform child updates within the atomic update frame
-      setProducts((prevProducts) => {
-        const updatedProducts = prevProducts.map((prod) => {
-          if (prod.id === reception.productId) {
-            const newStock = prod.stock + reception.quantity;
-            return {
-              ...prod,
-              stock: newStock,
-              lastDelivery: new Date().toISOString().slice(0, 10)
-            };
-          }
-          return prod;
+      if (!res.ok) {
+        throw new Error('Error al actualizar el estado del pedido en la base de datos.');
+      }
+
+      // Add a notification that it was received
+      const targetReception = receptions.find(r => r.id === receptionId);
+      if (targetReception) {
+        const newNotif: NotificationItem = {
+          id: `not-${Date.now()}`,
+          type: 'delivered',
+          title: 'Pedido Recibido',
+          message: `Se confirmaron ${targetReception.quantity} ${targetReception.unit} de ${targetReception.productName} por ${user.name}.`,
+          date: 'Justo ahora',
+          read: false
+        };
+
+        setNotifications((prevNotifs) => {
+          const updatedNotifs = [newNotif, ...prevNotifs];
+          saveState('montalvo_notifications', updatedNotifs);
+          return updatedNotifs;
         });
-        saveState('montalvo_products', updatedProducts);
-        return updatedProducts;
-      });
+      }
 
-      const newLog: MovementLog = {
-        id: `log-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-        date: new Date().toISOString().replace('T', ' ').slice(0, 16),
-        productId: reception.productId,
-        productName: reception.productName,
-        type: 'Recepción',
-        quantity: reception.quantity,
-        unit: reception.unit,
-        user: user.name,
-        status: `Recepción de ${reception.supplier}`
-      };
-
-      setHistory((prevHistory) => {
-        const updatedHistory = [newLog, ...prevHistory];
-        saveState('montalvo_history', updatedHistory);
-        return updatedHistory;
-      });
-
-      const newNotif: NotificationItem = {
-        id: `not-${Date.now()}`,
-        type: 'delivered',
-        title: 'Pedido Recibido',
-        message: `Se confirmaron ${reception.quantity} ${reception.unit} de ${reception.productName} por ${user.name}.`,
-        date: 'Justo ahora',
-        read: false
-      };
-
-      setNotifications((prevNotifs) => {
-        const updatedNotifs = [newNotif, ...prevNotifs];
-        saveState('montalvo_notifications', updatedNotifs);
-        return updatedNotifs;
-      });
-
-      return updatedReceptions;
-    });
+      // Refresh requests list from DB (which will automatically compute new receptions and history lists!)
+      await fetchRequests();
+    } catch (error) {
+      console.error('Error al confirmar recepción:', error);
+      throw error;
+    }
   };
 
   const markNotificationRead = (notificationId: string) => {
