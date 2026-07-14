@@ -326,6 +326,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           date: req.fecha_solicitud ? req.fecha_solicitud.replace('T', ' ').slice(0, 16) : '',
           status: mapStatusToFrontend(req.estado),
           user: req.solicitante || '',
+          reason: req.motivo || '',
           items: req.lineas.map((line: any) => ({
             productId: line.insumo_id_publico,
             productName: line.nombre_insumo || 'Insumo sin nombre',
@@ -342,7 +343,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const postRequestToAPI = async (solicitante: string, lineas: Array<{ insumo_id_publico: string, cantidad: number }>) => {
+  const postRequestToAPI = async (solicitante: string, lineas: Array<{ insumo_id_publico: string, cantidad: number }>, motivo?: string) => {
     const res = await fetch(`${API_URL}/pedidos`, {
       method: 'POST',
       headers: {
@@ -350,7 +351,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       },
       body: JSON.stringify({
         solicitante,
-        lineas
+        lineas,
+        motivo: motivo || null
       })
     });
     if (!res.ok) {
@@ -516,7 +518,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         cantidad: item.quantity
       }));
 
-      await postRequestToAPI(user.name, apiLines);
+      await postRequestToAPI(user.name, apiLines, reason);
 
       saveDrafts([]);
       await fetchRequests();
@@ -613,7 +615,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           insumo_id_publico: productId,
           cantidad: quantity
         }
-      ]);
+      ], notes);
       
       await fetchRequests();
       
@@ -694,7 +696,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           insumo_id_publico: productId,
           cantidad: quantity
         }
-      ]);
+      ], notes);
       
       await fetchRequests();
       

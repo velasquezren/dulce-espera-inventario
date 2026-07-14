@@ -122,7 +122,8 @@ def crear_pedido(pedido_in: schemas.PedidoCreate, db: Session = Depends(get_db))
             solicitante=pedido_in.solicitante,
             fecha_solicitud=ahora,
             estado="pendiente",
-            fecha_estado=ahora
+            fecha_estado=ahora,
+            motivo=pedido_in.motivo
         )
         db.add(db_pedido)
 
@@ -253,6 +254,7 @@ def obtener_pedidos_pendientes_fm(db: Session = Depends(get_db)):
             "id_publico": p.id_publico,
             "solicitante": p.solicitante,
             "fecha_solicitud": p.fecha_solicitud.strftime("%Y-%m-%d %H:%M:%S") if p.fecha_solicitud else None,
+            "motivo": p.motivo,
             "detalles": detalles_lista
         })
 
@@ -282,6 +284,7 @@ def obtener_detalles_pendientes_flat_fm(db: Session = Depends(get_db)):
                 "solicitante": p.solicitante,
                 "fecha_solicitud": p.fecha_solicitud.strftime("%Y-%m-%d %H:%M:%S") if p.fecha_solicitud else None,
                 "estado": p.estado,
+                "motivo": p.motivo,
                 "detalle_id_publico": l.id_publico,
                 "insumo_id_publico": l.insumo_id_publico,
                 "nombre_insumo": l.insumo.nombre if l.insumo else None,
@@ -373,6 +376,7 @@ def pedidos_pendientes(estado: str = "pendiente", db: Session = Depends(get_db))
             "fecha_solicitud": p.fecha_solicitud.isoformat() if p.fecha_solicitud else None,
             "estado": p.estado,
             "fecha_estado": p.fecha_estado.isoformat() if p.fecha_estado else None,
+            "motivo": p.motivo,
             "total_lineas": len(lineas_plano),
             "lineas": lineas_plano
         })
