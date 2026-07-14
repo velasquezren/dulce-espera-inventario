@@ -206,7 +206,6 @@ export default function WhatsAppDispatch() {
         </div>
         <div style="text-align:right">
           <div><strong style="color:#0f172a">Destino:</strong> Cocina Central Dulce Espera</div>
-          <div><strong style="color:#0f172a">Generado vía:</strong> App Móvil PWA</div>
         </div>
       </div>
 
@@ -238,16 +237,16 @@ export default function WhatsAppDispatch() {
       <div style="display:flex;justify-content:space-between;margin-top:50px;gap:40px">
         <div style="flex:1;text-align:center">
           <div style="border-top:1px solid #94a3b8;margin-top:40px;margin-bottom:6px"></div>
-          <div style="font-size:10px;color:#64748b;font-weight:600">Firma del Solicitante<br/>(${selectedReq.user})</div>
+          <div style="font-size:10px;color:#64748b;font-weight:700">Firma de Solicitante</div>
         </div>
         <div style="flex:1;text-align:center">
           <div style="border-top:1px solid #94a3b8;margin-top:40px;margin-bottom:6px"></div>
-          <div style="font-size:10px;color:#64748b;font-weight:600">Firma Coordinación de Nutrición<br/>(Autorización)</div>
+          <div style="font-size:10px;color:#64748b;font-weight:700">Firma de Autorización</div>
         </div>
       </div>
 
       <div style="margin-top:40px;border-top:1px solid #e2e8f0;padding-top:12px;text-align:center;font-size:9px;color:#94a3b8">
-        &copy; ${new Date().getFullYear()} Dulce Espera &mdash; Documento oficial para control de insumos y nutrición clínica.
+        &copy; ${new Date().getFullYear()} Dulce Espera &mdash; Documento oficial para control de insumos.
       </div>
 
       <script>window.onload=function(){window.print();setTimeout(function(){window.close()},500)}<\/script>
