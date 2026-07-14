@@ -394,17 +394,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     requests.forEach(req => {
       const isPending = req.status === 'Aceptado' || req.status === 'Comprado' || req.status === 'En revisión';
       if (isPending) {
-        req.items.forEach(item => {
-          computedReceptions.push({
-            id: `${req.idPublico}_${item.productId}`, // ID único compuesto por pedido + producto
+        computedReceptions.push({
+          id: req.idPublico || req.id,
+          idPublico: req.idPublico || req.id,
+          date: req.date.split(' ')[0], // Fecha del pedido original
+          solicitante: req.user,
+          status: 'Pendiente',
+          items: req.items.map(item => ({
             productId: item.productId,
             productName: item.productName,
             quantity: item.quantity,
-            unit: item.unit,
-            date: req.date.split(' ')[0], // Fecha del pedido original
-            supplier: 'Proveedor',
-            status: 'Pendiente'
-          });
+            unit: item.unit
+          }))
         });
       }
     });
@@ -710,17 +711,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   // Confirm Supplier Order Reception
-  const confirmReception = async (receptionId: string) => {
+  const confirmReception = async (pedidoIdPublico: string) => {
     // Simulate delay for modern clinical software feel (skeletons/toasts)
     await new Promise((resolve) => setTimeout(resolve, 800));
 
     if (!user) return;
-
-    // Parse the request id publico and the product id from receptionId
-    const parts = receptionId.split('_');
-    const pedidoIdPublico = parts[0];
-    
-    if (!pedidoIdPublico) return;
 
     try {
       // Send PATCH request to update order status to 'entregado'
@@ -740,13 +735,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       }
 
       // Add a notification that it was received
-      const targetReception = receptions.find(r => r.id === receptionId);
+      const targetReception = receptions.find(r => r.id === pedidoIdPublico);
       if (targetReception) {
         const newNotif: NotificationItem = {
           id: `not-${Date.now()}`,
           type: 'delivered',
           title: 'Pedido Recibido',
-          message: `Se confirmaron ${targetReception.quantity} ${targetReception.unit} de ${targetReception.productName} por ${user.name}.`,
+          message: `Se confirmó la recepción del pedido #${targetReception.id.slice(0, 8).toUpperCase()} de ${targetReception.solicitante} por ${user.name}.`,
           date: 'Justo ahora',
           read: false
         };

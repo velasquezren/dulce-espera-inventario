@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Card, Button, ConfirmModal, EmptyState } from '../UI';
-import { Check, HelpCircle } from 'lucide-react';
+import { Check, HelpCircle, Package, Calendar, User } from 'lucide-react';
 import { useToast } from '../UI';
 
 export default function Reception() {
@@ -30,7 +30,7 @@ export default function Reception() {
     setIsConfirming(true);
     try {
       await confirmReception(confirmId);
-      showToast('Pedido recibido en cocina', 'success');
+      showToast('Pedido recibido en cocina con éxito', 'success');
     } catch {
       showToast('Error al confirmar recepción', 'error');
     } finally {
@@ -42,10 +42,10 @@ export default function Reception() {
   const selectedReception = receptions.find((r) => r.id === confirmId);
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6 animate-fade-in w-full max-w-4xl mx-auto pb-24 md:pb-8">
       {/* Title */}
-      <div className="flex flex-col gap-2.5">
-        <h1 className="text-2xl font-bold tracking-tight text-[#006156] flex items-center gap-2">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-xl font-extrabold tracking-tight text-slate-800 flex items-center gap-2">
           <span>Recepciones de Pedido</span>
           <button 
             type="button"
@@ -55,14 +55,18 @@ export default function Reception() {
             }`}
             aria-label="Ayuda"
           >
-            <HelpCircle className="w-5 h-5" />
+            <HelpCircle className="w-4 h-4" />
           </button>
         </h1>
+        <p className="text-xs text-slate-400 font-semibold">
+          Confirma el ingreso de pedidos completos a la cocina
+        </p>
+
         {showHelp && (
-          <div className="p-4 bg-primary-light border border-primary/10 rounded-xl animate-view-enter text-xs text-primary leading-relaxed shadow-clinical-sm">
+          <div className="p-4 bg-primary-light border border-primary/10 rounded-xl animate-view-enter text-xs text-primary leading-relaxed shadow-clinical-sm mt-2">
             <p className="font-semibold text-primary">Sobre esta página</p>
             <p className="mt-1 text-primary-hover font-semibold">
-              Confirma la llegada de los insumos solicitados para la cocina.
+              Aquí puedes confirmar la llegada de pedidos completos a la cocina central. Se muestra un resumen de insumos solicitados para que verifiques todo antes de presionar confirmar.
             </p>
           </div>
         )}
@@ -76,46 +80,52 @@ export default function Reception() {
           icon={<Check className="w-12 h-12 text-[#39ADA3] stroke-[3]" />}
         />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {pendingReceptions.map((item) => (
-            <Card key={item.id} className="p-4 border border-slate-200/80 hover:border-slate-300 shadow-clinical-sm transition-all duration-150 flex flex-col gap-3.5">
-              {/* Product Info & Quantity badge */}
-              <div className="flex justify-between items-start gap-3">
-                <div className="space-y-1 min-w-0 flex-1 text-left">
-                  {/* Date (Small and subtle) */}
-                  <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">
-                    Entrega: {item.date.split('-').reverse().join('/')}
-                  </span>
-                  
-                  <h3 className="text-sm font-extrabold text-slate-800 tracking-tight leading-snug">
-                    {item.productName}
+            <Card key={item.id} className="p-5 border border-slate-200/80 hover:border-slate-300 shadow-clinical-sm transition-all duration-150 flex flex-col gap-4 bg-white rounded-2xl">
+              {/* Header Info */}
+              <div className="flex justify-between items-start border-b border-slate-100 pb-3">
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    <Calendar className="w-3.5 h-3.5 text-primary" />
+                    <span>Entrega: {item.date.split('-').reverse().join('/')}</span>
+                  </div>
+                  <h3 className="text-sm font-black text-slate-800 flex items-center gap-1.5 mt-1">
+                    <User className="w-3.5 h-3.5 text-primary shrink-0" />
+                    Pedido de {item.solicitante}
                   </h3>
-                  
-                  
-                  {/* ID Badge: Hidden on mobile, shown on desktop (sm and up) */}
-                  <span className="hidden sm:inline-block mt-1 bg-[#ebf7f6] text-secondary text-[9px] font-bold px-2 py-0.5 rounded border border-secondary/10 uppercase tracking-wider">
-                    ID: #{item.id}
+                  <span className="inline-block mt-1 bg-slate-100 text-slate-500 text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+                    ID: #{item.id.slice(0, 8).toUpperCase()}
                   </span>
                 </div>
                 
-                {/* Quantity badge */}
-                <div className="shrink-0 text-right bg-primary-light border border-primary/10 px-2.5 py-1.5 rounded-xl flex flex-col items-center justify-center min-w-[75px]">
-                  <span className="text-[8px] font-black text-primary uppercase tracking-widest leading-none mb-1">Esperado</span>
-                  <span className="text-xs font-black text-primary leading-none whitespace-nowrap">
-                    {item.quantity} {item.unit}
-                  </span>
-                </div>
+                <span className="text-[10px] font-extrabold bg-primary-light text-primary px-2.5 py-1 rounded-full border border-primary/10 flex items-center gap-1">
+                  <Package className="w-3 h-3" />
+                  {item.items.length} Insumo{item.items.length !== 1 ? 's' : ''}
+                </span>
+              </div>
+
+              {/* Products list inside the order */}
+              <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1">
+                {item.items.map((prod, idx) => (
+                  <div key={idx} className="flex justify-between items-center text-xs bg-slate-50/50 p-2 rounded-lg border border-slate-100/60">
+                    <span className="font-semibold text-slate-700 truncate pr-2">{prod.productName}</span>
+                    <span className="font-black text-primary shrink-0 whitespace-nowrap bg-primary-light/60 px-2 py-0.5 rounded-md text-[11px]">
+                      {prod.quantity} {prod.unit}
+                    </span>
+                  </div>
+                ))}
               </div>
 
               {/* Confirm Reception Button */}
-              <div className="border-t border-[#f1f5f9] pt-3">
+              <div className="border-t border-slate-100 pt-3 mt-auto">
                 <Button
                   variant="primary"
                   onClick={() => handleOpenConfirm(item.id)}
-                  className="w-full font-bold h-9.5 text-xs tracking-wide"
+                  className="w-full font-bold h-10 text-xs tracking-wide bg-primary hover:bg-primary-hover text-white rounded-xl flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-98"
                 >
-                  <Check className="w-3.5 h-3.5 mr-1 stroke-[2.5]" />
-                  Confirmar Recepción
+                  <Check className="w-4 h-4 stroke-[3]" />
+                  Confirmar Entrega de Pedido
                 </Button>
               </div>
             </Card>
@@ -129,7 +139,7 @@ export default function Reception() {
         onClose={handleCloseConfirm}
         onConfirm={handleConfirm}
         title="Confirmar Recepción de Mercancía"
-        message={`¿Confirmas que has recibido la cantidad de ${selectedReception?.quantity} ${selectedReception?.unit} de ${selectedReception?.productName}? Se registrará el ingreso de inmediato.`}
+        message={`¿Confirmas que has recibido todos los insumos del pedido de ${selectedReception?.solicitante}? Se registrará el ingreso de inmediato en cocina.`}
         confirmText="Confirmar"
         cancelText="Cancelar"
         isConfirming={isConfirming}

@@ -28,15 +28,16 @@ export interface RequestItem {
 
 export interface ReceptionItem {
   id: string;
-  productId: string;
-  productName: string;
-  quantity: number;
-  unit: string;
+  idPublico?: string;
   date: string;
-  supplier: string;
+  solicitante: string;
   status: 'Pendiente' | 'Recibido';
-  receivedBy?: string;
-  receivedDate?: string;
+  items: Array<{
+    productId: string;
+    productName: string;
+    quantity: number;
+    unit: string;
+  }>;
 }
 
 export interface MovementLog {
@@ -202,35 +203,37 @@ export const INITIAL_REQUESTS: RequestItem[] = [
 export const INITIAL_RECEPTIONS: ReceptionItem[] = [
   {
     id: 'rec-201',
-    productId: 'prod-2',
-    productName: 'Leche Semidescremada Pasteurizada',
-    quantity: 60,
-    unit: 'Litros',
     date: '2026-07-08',
-    supplier: 'Distribuidora Lácteos del Norte',
-    status: 'Pendiente'
-  },
-  {
-    id: 'rec-202',
-    productId: 'prod-4',
-    productName: 'Arroz Integral Premium',
-    quantity: 30,
-    unit: 'Kilogramos',
-    date: '2026-07-08',
-    supplier: 'Abarrotes Mayoristas S.A.',
-    status: 'Pendiente'
+    solicitante: 'Chef Teresa Ortiz',
+    status: 'Pendiente',
+    items: [
+      {
+        productId: 'prod-2',
+        productName: 'Leche Semidescremada Pasteurizada',
+        quantity: 60,
+        unit: 'Litros'
+      },
+      {
+        productId: 'prod-4',
+        productName: 'Arroz Integral Premium',
+        quantity: 30,
+        unit: 'Kilogramos'
+      }
+    ]
   },
   {
     id: 'rec-203',
-    productId: 'prod-1',
-    productName: 'Fórmula Enteral Polimérica',
-    quantity: 20,
-    unit: 'Latas de 400g',
     date: '2026-07-07',
-    supplier: 'Fármacos Clínicos Integrales',
+    solicitante: 'Auxiliar Luis Mena',
     status: 'Recibido',
-    receivedBy: 'Chef Teresa Ortiz',
-    receivedDate: '2026-07-07 13:40'
+    items: [
+      {
+        productId: 'prod-1',
+        productName: 'Fórmula Enteral Polimérica',
+        quantity: 20,
+        unit: 'Latas de 400g'
+      }
+    ]
   }
 ];
 
