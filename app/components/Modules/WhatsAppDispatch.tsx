@@ -21,7 +21,8 @@ import {
   ArrowUpDown,
   X,
   ExternalLink,
-  ShoppingCart
+  ShoppingCart,
+  ArrowLeft
 } from 'lucide-react';
 
 /* ────────────────────── types ────────────────────── */
@@ -35,6 +36,7 @@ export default function WhatsAppDispatch() {
   /* selection */
   const [selectedReqId, setSelectedReqId] = useState('');
   const [selectedCoordId, setSelectedCoordId] = useState('');
+  const [mobileStep, setMobileStep] = useState<'list' | 'details'>('list');
 
   /* search / filter / sort */
   const [searchOrderQuery, setSearchOrderQuery] = useState('');
@@ -306,7 +308,7 @@ export default function WhatsAppDispatch() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
 
         {/* ═══════ COL 1: ORDER LIST (compact, scalable) ═══════ */}
-        <div className="lg:col-span-4 xl:col-span-4">
+        <div className={`lg:col-span-4 xl:col-span-4 ${mobileStep === 'list' ? 'block' : 'hidden lg:block'}`}>
           <Card className="border border-slate-200/80 rounded-2xl shadow-clinical-sm overflow-hidden">
 
             {/* Search + filter bar */}
@@ -407,7 +409,10 @@ export default function WhatsAppDispatch() {
                   return (
                     <button
                       key={req.idPublico || req.id}
-                      onClick={() => setSelectedReqId(req.idPublico || req.id)}
+                      onClick={() => {
+                        setSelectedReqId(req.idPublico || req.id);
+                        setMobileStep('details');
+                      }}
                       className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-all duration-100 cursor-pointer group ${
                         isSelected
                           ? 'bg-primary-light/40 border-l-[3px] border-l-primary'
@@ -460,7 +465,16 @@ export default function WhatsAppDispatch() {
         </div>
 
         {/* ═══════ COL 2: PREVIEW + COORDINATOR (unified) ═══════ */}
-        <div className="lg:col-span-4 xl:col-span-5 space-y-5">
+        <div className={`lg:col-span-4 xl:col-span-5 space-y-5 ${mobileStep === 'details' ? 'block' : 'hidden lg:block'}`}>
+          {selectedReq && (
+            <button
+              onClick={() => setMobileStep('list')}
+              className="lg:hidden flex items-center gap-1.5 px-4 py-2 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 rounded-xl font-bold text-xs text-slate-700 transition-all active:scale-98 cursor-pointer w-fit bg-white mb-2 shadow-sm"
+            >
+              <ArrowLeft className="w-4 h-4 text-primary" />
+              <span>Volver a la Lista</span>
+            </button>
+          )}
 
           {!selectedReq ? (
             /* Empty state */
@@ -628,7 +642,7 @@ export default function WhatsAppDispatch() {
         </div>
 
         {/* ═══════ COL 3: ACTIONS (sticky sidebar) ═══════ */}
-        <div className="lg:col-span-4 xl:col-span-3">
+        <div className={`lg:col-span-4 xl:col-span-3 ${mobileStep === 'details' ? 'block' : 'hidden lg:block'}`}>
           <div className="lg:sticky lg:top-6 space-y-4">
 
             {/* Actions card */}
