@@ -123,9 +123,7 @@ export default function WhatsAppDispatch() {
       msg += `\n*Motivo:* _"${selectedReq.reason}"_\n`;
     }
     const reportUrl = `https://107.172.193.34.nip.io/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte`;
-    const adminReportUrl = `https://107.172.193.34.nip.io/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte-admin`;
-    msg += `\n*Ver Reporte Cocina:* \n${reportUrl}\n`;
-    msg += `*Ver Reporte Compras (Organizado por Grupo):* \n${adminReportUrl}\n\n`;
+    msg += `\n*Ver Reporte Cocina:* \n${reportUrl}\n\n`;
     msg += `Por favor, revise y proceda con la aprobación correspondiente en FileMaker.`;
     return msg;
   };
@@ -709,17 +707,6 @@ export default function WhatsAppDispatch() {
                       Descargar Reporte
                     </a>
 
-                    {/* Admin report */}
-                    <a
-                      href={`https://107.172.193.34.nip.io/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte-admin`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs bg-primary-light hover:bg-[#d0e5e3] text-primary transition-all active:scale-[0.98] cursor-pointer text-center"
-                    >
-                      <ShoppingCart className="w-4 h-4" />
-                      Reporte Compras
-                    </a>
-
                     {/* Share */}
                     {canShare && (
                       <button
@@ -730,28 +717,6 @@ export default function WhatsAppDispatch() {
                         Compartir
                       </button>
                     )}
-
-                    {/* Quick links */}
-                    <div className="pt-1 space-y-1.5">
-                      <a
-                        href={`https://107.172.193.34.nip.io/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-[10px] font-semibold text-primary hover:underline"
-                      >
-                        <ExternalLink className="w-3 h-3" />
-                        Ver reporte cocina en navegador
-                      </a>
-                      <a
-                        href={`https://107.172.193.34.nip.io/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte-admin`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 text-[10px] font-semibold text-secondary hover:underline"
-                      >
-                        <ExternalLink className="w-3 h-3" />
-                        Ver reporte compras en navegador
-                      </a>
-                    </div>
                   </>
                 )}
               </div>
