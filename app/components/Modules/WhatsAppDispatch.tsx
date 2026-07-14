@@ -153,67 +153,101 @@ export default function WhatsAppDispatch() {
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
 
+    const totalUnits = selectedReq.items.reduce((sum, i) => sum + i.quantity, 0);
+
     const rowsHtml = selectedReq.items.map((item, idx) => `
-      <tr>
-        <td style="width: 40px; text-align: center; color: #94a3b8; font-weight: bold;">${idx + 1}</td>
-        <td><div class="prod-name">${item.productName}</div></td>
-        <td><span class="qty-badge">${item.quantity} ${item.unit}</span></td>
-        <td class="notes-text">${item.notes || '-'}</td>
+      <tr style="${idx % 2 === 0 ? '' : 'background:#f8fafb;'}">
+        <td style="width:36px;text-align:center;color:#94a3b8;font-weight:700;font-size:11px;padding:9px 6px">${idx + 1}</td>
+        <td style="padding:9px 10px;font-weight:600;color:#0f172a;font-size:12px">${item.productName}</td>
+        <td style="padding:9px 10px;text-align:center;font-size:12px;color:#64748b">${item.unit}</td>
+        <td style="padding:9px 10px;text-align:right;font-weight:800;color:#006156;font-size:13px">${item.quantity}</td>
       </tr>
     `).join('');
 
     const reasonHtml = selectedReq.reason ? `
-      <div class="section-title">Comentarios / Justificación</div>
-      <div class="reason-box">&ldquo;${selectedReq.reason}&rdquo;</div>
+      <div style="margin-top:24px;padding:14px 16px;border-left:3px solid #39ADA3;background:#f0faf9">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#006156;margin-bottom:4px">Motivo / Justificación</div>
+        <div style="font-size:12px;color:#334155;font-style:italic;line-height:1.6">&ldquo;${selectedReq.reason}&rdquo;</div>
+      </div>
     ` : '';
 
     printWindow.document.write(`<!DOCTYPE html><html><head>
-      <title>Solicitud Insumos Nº ${selectedReq.id.toUpperCase()}</title>
+      <title>Solicitud Insumos N° ${selectedReq.id.toUpperCase()}</title>
       <style>
-        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:40px;color:#0f172a;background:#fff;line-height:1.5}
-        .header-container{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #006156;padding-bottom:20px;margin-bottom:25px}
-        .clinic-info{display:flex;align-items:center;gap:15px}
-        .clinic-title{font-size:22px;font-weight:800;color:#006156;margin:0;letter-spacing:-.5px}
-        .clinic-subtitle{font-size:12px;color:#39ADA3;font-weight:700;margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
-        .doc-meta{text-align:right;font-size:11px;color:#475569}
-        .doc-meta div{margin-bottom:4px}
-        .section-title{font-size:13px;font-weight:800;color:#006156;text-transform:uppercase;letter-spacing:.5px;margin-top:25px;margin-bottom:12px;border-left:3px solid #39ADA3;padding-left:8px}
-        .details-grid{display:flex;justify-content:space-between;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:15px;margin-bottom:25px;font-size:12px}
-        .details-item{line-height:1.6}
-        table{width:100%;border-collapse:collapse;margin-top:10px;margin-bottom:30px}
-        th{background-color:#f8fafc;color:#0f172a;text-align:left;padding:10px;font-size:11px;font-weight:700;text-transform:uppercase;border-bottom:2px solid #cbd5e1}
-        td{padding:10px;font-size:12px;border-bottom:1px solid #e2e8f0;color:#334155}
-        .prod-name{font-weight:600;color:#0f172a}
-        .qty-badge{font-weight:750;color:#006156}
-        .notes-text{font-style:italic;color:#64748b}
-        .reason-box{background-color:#ebf7f6;border-radius:8px;padding:12px;font-size:12px;font-style:italic;color:#006156;margin-bottom:30px}
-        .signatures-container{display:flex;justify-content:space-between;margin-top:60px;gap:40px}
-        .signature-box{flex:1;text-align:center}
-        .signature-line{border-top:1px solid #cbd5e1;margin-bottom:6px;margin-top:40px}
-        .signature-title{font-size:11px;color:#64748b;font-weight:600}
-        .footer{margin-top:60px;border-top:1px solid #e2e8f0;padding-top:15px;text-align:center;font-size:10px;color:#94a3b8}
-        @media print{body{padding:0}}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:36px 40px;color:#0f172a;background:#fff;line-height:1.5;font-size:12px}
+        table{width:100%;border-collapse:collapse}
+        @media print{body{padding:20px 24px}}
       </style></head><body>
-      <div class="header-container">
-        <div class="clinic-info">
-          <img src="/logo.svg" alt="Logo" style="width:44px;height:44px;object-fit:contain"/>
-          <div><h1 class="clinic-title">DULCE ESPERA</h1><div class="clinic-subtitle">Cocina y Nutrición Clínica</div></div>
+
+      <!-- Header -->
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:18px;border-bottom:3px solid #006156;margin-bottom:20px">
+        <div style="display:flex;align-items:center;gap:14px">
+          <img src="/logo.svg" alt="Logo" style="width:40px;height:40px;object-fit:contain"/>
+          <div>
+            <div style="font-size:20px;font-weight:800;color:#006156;letter-spacing:-.5px">DULCE ESPERA</div>
+            <div style="font-size:10px;color:#39ADA3;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-top:2px">Cocina y Nutrición Clínica</div>
+          </div>
         </div>
-        <div class="doc-meta">
-          <div><strong>Nº LISTA:</strong> ${selectedReq.id.toUpperCase()}</div>
+        <div style="text-align:right;font-size:11px;color:#475569;line-height:1.8">
+          <div><strong>N° LISTA:</strong> ${selectedReq.id.toUpperCase()}</div>
           <div><strong>FECHA:</strong> ${selectedReq.date}</div>
-          <div><strong>ESTADO:</strong> ${selectedReq.status.toUpperCase()}</div>
+          <div><strong>ESTADO:</strong> <span style="color:#006156;font-weight:700">${selectedReq.status.toUpperCase()}</span></div>
         </div>
       </div>
-      <div class="details-grid">
-        <div class="details-item"><div><strong>Solicitado por:</strong> ${selectedReq.user}</div><div><strong>Cargo:</strong> Personal de Cocina Clínica</div></div>
-        <div class="details-item" style="text-align:right"><div><strong>Destino:</strong> Cocina Central Dulce Espera</div><div><strong>Generado vía:</strong> App Móvil PWA</div></div>
+
+      <!-- Info row -->
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:#475569;margin-bottom:22px;line-height:1.7">
+        <div>
+          <div><strong style="color:#0f172a">Solicitado por:</strong> ${selectedReq.user}</div>
+          <div><strong style="color:#0f172a">Cargo:</strong> Personal de Cocina Clínica</div>
+        </div>
+        <div style="text-align:right">
+          <div><strong style="color:#0f172a">Destino:</strong> Cocina Central Dulce Espera</div>
+          <div><strong style="color:#0f172a">Generado vía:</strong> App Móvil PWA</div>
+        </div>
       </div>
-      <div class="section-title">Productos Solicitados</div>
-      <table><thead><tr><th style="width:40px;text-align:center">Item</th><th>Descripción del Insumo</th><th>Cantidad</th><th>Observaciones</th></tr></thead><tbody>${rowsHtml}</tbody></table>
+
+      <!-- Section title -->
+      <div style="font-size:11px;font-weight:800;color:#006156;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;border-left:3px solid #39ADA3;padding-left:8px">Productos Solicitados</div>
+
+      <!-- Table -->
+      <table>
+        <thead>
+          <tr style="border-bottom:2px solid #006156">
+            <th style="width:36px;text-align:center;padding:8px 6px;font-size:10px;font-weight:700;color:#006156;text-transform:uppercase">N°</th>
+            <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:#006156;text-transform:uppercase">Descripción del Insumo</th>
+            <th style="text-align:center;padding:8px 10px;font-size:10px;font-weight:700;color:#006156;text-transform:uppercase">Unidad</th>
+            <th style="text-align:right;padding:8px 10px;font-size:10px;font-weight:700;color:#006156;text-transform:uppercase">Cant.</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml}
+          <tr style="border-top:2px solid #006156;background:#f0faf9">
+            <td colspan="3" style="padding:10px;font-weight:800;color:#006156;font-size:12px;text-align:right">TOTAL: ${selectedReq.items.length} producto${selectedReq.items.length !== 1 ? 's' : ''}</td>
+            <td style="padding:10px;text-align:right;font-weight:800;color:#006156;font-size:14px">${totalUnits}</td>
+          </tr>
+        </tbody>
+      </table>
+
       ${reasonHtml}
-      <div class="signatures-container"><div class="signature-box"><div class="signature-line"></div><div class="signature-title">Firma del Solicitante<br/>(${selectedReq.user})</div></div><div class="signature-box"><div class="signature-line"></div><div class="signature-title">Firma Coordinación de Nutrición<br/>(Autorización)</div></div></div>
-      <div class="footer">&copy; ${new Date().getFullYear()} Dulce Espera. Documento oficial para control de insumos y nutrición clínica.</div>
+
+      <!-- Signatures -->
+      <div style="display:flex;justify-content:space-between;margin-top:50px;gap:40px">
+        <div style="flex:1;text-align:center">
+          <div style="border-top:1px solid #94a3b8;margin-top:40px;margin-bottom:6px"></div>
+          <div style="font-size:10px;color:#64748b;font-weight:600">Firma del Solicitante<br/>(${selectedReq.user})</div>
+        </div>
+        <div style="flex:1;text-align:center">
+          <div style="border-top:1px solid #94a3b8;margin-top:40px;margin-bottom:6px"></div>
+          <div style="font-size:10px;color:#64748b;font-weight:600">Firma Coordinación de Nutrición<br/>(Autorización)</div>
+        </div>
+      </div>
+
+      <div style="margin-top:40px;border-top:1px solid #e2e8f0;padding-top:12px;text-align:center;font-size:9px;color:#94a3b8">
+        &copy; ${new Date().getFullYear()} Dulce Espera &mdash; Documento oficial para control de insumos y nutrición clínica.
+      </div>
+
       <script>window.onload=function(){window.print();setTimeout(function(){window.close()},500)}<\/script>
     </body></html>`);
     printWindow.document.close();
@@ -487,23 +521,25 @@ export default function WhatsAppDispatch() {
                 </div>
 
                 {/* Items table */}
-                <div ref={previewRef} className={`px-5 transition-all duration-300 ${expandedPreview ? 'max-h-[600px]' : 'max-h-[240px]'} overflow-y-auto`}>
+                <div ref={previewRef} className={`transition-all duration-300 ${expandedPreview ? 'max-h-[600px]' : 'max-h-[260px]'} overflow-y-auto`}>
                   <table className="w-full text-xs">
-                    <thead className="sticky top-0 bg-white z-10">
-                      <tr className="border-b border-slate-200">
-                        <th className="py-2.5 text-left text-[10px] font-black text-slate-400 uppercase tracking-wide w-6">#</th>
-                        <th className="py-2.5 text-left text-[10px] font-black text-slate-400 uppercase tracking-wide">Producto</th>
-                        <th className="py-2.5 text-right text-[10px] font-black text-slate-400 uppercase tracking-wide">Cantidad</th>
+                    <thead className="sticky top-0 z-10">
+                      <tr className="bg-primary/[0.04]">
+                        <th className="py-2 pl-5 pr-2 text-left text-[9px] font-black text-primary uppercase tracking-widest w-8">#</th>
+                        <th className="py-2 px-2 text-left text-[9px] font-black text-primary uppercase tracking-widest">Producto</th>
+                        <th className="py-2 px-2 text-center text-[9px] font-black text-primary uppercase tracking-widest w-16">Unidad</th>
+                        <th className="py-2 pl-2 pr-5 text-right text-[9px] font-black text-primary uppercase tracking-widest w-14">Cant.</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100">
+                    <tbody>
                       {selectedReq.items.map((item, idx) => (
-                        <tr key={idx} className="group hover:bg-slate-50/50 transition-colors">
-                          <td className="py-2 text-slate-400 font-semibold">{idx + 1}</td>
-                          <td className="py-2 font-semibold text-slate-700 truncate max-w-[180px]">{item.productName}</td>
-                          <td className="py-2 text-right">
-                            <span className="font-black text-primary bg-primary-light/60 px-2 py-0.5 rounded-md whitespace-nowrap">
-                              {item.quantity} {item.unit}
+                        <tr key={idx} className={`group transition-colors ${idx % 2 === 1 ? 'bg-slate-50/40' : 'bg-white'} hover:bg-primary-light/30`}>
+                          <td className="py-2 pl-5 pr-2 text-slate-400 font-bold text-[10px]">{idx + 1}</td>
+                          <td className="py-2 px-2 font-semibold text-slate-700">{item.productName}</td>
+                          <td className="py-2 px-2 text-center text-slate-400 font-medium text-[10px]">{item.unit}</td>
+                          <td className="py-2 pl-2 pr-5 text-right">
+                            <span className="font-black text-primary text-sm">
+                              {item.quantity}
                             </span>
                           </td>
                         </tr>
