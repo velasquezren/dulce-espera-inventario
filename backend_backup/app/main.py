@@ -746,7 +746,7 @@ def ver_reporte_pedido_admin(id_publico: str, db: Session = Depends(get_db)):
     if lineas_mercado:
         html_mercado += f"""
         <div style="margin-bottom: 30px;">
-            <h3 style="font-size: 15px; margin-bottom: 12px; font-weight: 800; color: #b45309; border-left: 4px solid #b45309; padding-left: 10px; text-transform: uppercase; letter-spacing: 0.05em;">
+            <h3 style="font-size: 13px; margin-bottom: 12px; font-weight: 800; color: #475569; border-left: 3px solid #cbd5e1; padding-left: 8px; text-transform: uppercase; letter-spacing: 0.05em;">
                 Grupo A: Plaza de Mercado (Perecederos / Carnes y Verduras)
             </h3>
             <table class="details-table">
@@ -793,7 +793,7 @@ def ver_reporte_pedido_admin(id_publico: str, db: Session = Depends(get_db)):
     if lineas_supermercado:
         html_supermercado += f"""
         <div style="margin-bottom: 30px;">
-            <h3 style="font-size: 15px; margin-bottom: 12px; font-weight: 800; color: #006156; border-left: 4px solid #006156; padding-left: 10px; text-transform: uppercase; letter-spacing: 0.05em;">
+            <h3 style="font-size: 13px; margin-bottom: 12px; font-weight: 800; color: #475569; border-left: 3px solid #cbd5e1; padding-left: 8px; text-transform: uppercase; letter-spacing: 0.05em;">
                 Grupo B: Supermercado y Abarrotes (Secos / Víveres / Fórmulas)
             </h3>
             <table class="details-table">
@@ -858,13 +858,12 @@ def ver_reporte_pedido_admin(id_publico: str, db: Session = Depends(get_db)):
             border-radius: 20px;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
             padding: 45px;
-            box-sizing: border-box;
         }}
         .header {{
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            border-bottom: 4px solid #006156;
+            border-bottom: 2px solid #cbd5e1;
             padding-bottom: 24px;
             margin-bottom: 30px;
         }}
@@ -889,12 +888,9 @@ def ver_reporte_pedido_admin(id_publico: str, db: Session = Depends(get_db)):
             letter-spacing: 0.05em;
         }}
         .doc-type {{
-            background-color: #006156;
-            color: #ffffff;
-            font-size: 11px;
-            font-weight: 800;
-            padding: 4px 10px;
-            border-radius: 6px;
+            color: #475569;
+            font-size: 12px;
+            font-weight: 700;
             display: inline-block;
             margin-top: 6px;
             letter-spacing: 0.05em;
@@ -1014,10 +1010,9 @@ def ver_reporte_pedido_admin(id_publico: str, db: Session = Depends(get_db)):
     <div class="container">
         <div class="header">
             <div class="brand">
-                <img src="https://dulce-espera-inventario.vercel.app/icon.svg" alt="Logo" style="width: 55px; height: 55px; object-fit: contain;" onerror="this.style.display='none'">
+                <img src="https://dulce-espera-inventario.vercel.app/icon.svg" alt="Logo" style="width: 75px; height: 75px; object-fit: contain;" onerror="this.style.display='none'">
                 <div>
                     <h1 class="brand-title">DULCE ESPERA</h1>
-                    <div class="brand-subtitle">Cocina y Nutrición Hospitalaria</div>
                     <span class="doc-type">CONTROL DE COMPRAS E INSUMOS</span>
                 </div>
             </div>
@@ -1030,7 +1025,7 @@ def ver_reporte_pedido_admin(id_publico: str, db: Session = Depends(get_db)):
             </div>
         </div>
 
-        <div style="display: flex; gap: 40px; margin-bottom: 30px; border-bottom: 2px solid #006156; padding-bottom: 12px; flex-wrap: wrap;">
+        <div style="display: flex; gap: 40px; margin-bottom: 30px; border-bottom: 2px solid #cbd5e1; padding-bottom: 12px; flex-wrap: wrap;">
             <div style="font-size: 12px; color: #475569; font-weight: 600;">
                 TOTAL INSUMOS: <span style="font-size: 15px; font-weight: 800; color: #0f172a; margin-left: 4px;">{len(pedido.lineas)}</span>
             </div>
@@ -1058,7 +1053,7 @@ def ver_reporte_pedido_admin(id_publico: str, db: Session = Depends(get_db)):
         </div>
 
         <div class="footer">
-            Este informe está clasificado por canales de compra para optimizar los procesos logísticos de la Clínica Dulce Espera.<br>
+            Este informe está clasificado por canales de compra para optimizar los procesos logísticos.<br>
             Generado automáticamente el {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}.
         </div>
     </div>
