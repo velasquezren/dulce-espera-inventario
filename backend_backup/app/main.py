@@ -1061,3 +1061,324 @@ def ver_reporte_pedido_admin(id_publico: str, db: Session = Depends(get_db)):
 </html>"""
     return HTMLResponse(content=html_content)
 
+
+@app.get("/pedidos/{id_publico}/reporte-abastecimiento", response_class=HTMLResponse, tags=["Pedidos"])
+def ver_reporte_pedido_abastecimiento(id_publico: str, db: Session = Depends(get_db)):
+    """
+    Genera un informe de abastecimiento y cobertura de inventario para el pedido,
+    comparando la cantidad solicitada con el stock actual en almacén.
+    """
+    pedido = db.query(models.Pedido).options(
+        joinedload(models.Pedido.lineas).joinedload(models.DetallePedido.insumo)
+    ).filter(models.Pedido.id_publico == id_publico).first()
+
+    if not pedido:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Pedido no encontrado"
+        )
+
+    fecha_str = pedido.fecha_solicitud.strftime("%Y-%m-%d %H:%M") if pedido.fecha_solicitud else "N/A"
+
+    lineas_suficientes = []
+    lineas_insuficientes = []
+
+    for idx, linea in enumerate(pedido.lineas, 1):
+        nombre = linea.insumo.nombre if linea.insumo else "Insumo sin nombre"
+        presentacion = linea.insumo.presentacion if linea.insumo else "Unidades"
+        categoria = linea.insumo.categoria if linea.insumo else "Otros"
+        cantidad_val = float(linea.cantidad) if linea.cantidad else 0.0
+        stock_actual = float(linea.insumo.stock_actual) if (linea.insumo and linea.insumo.stock_actual is not None) else 0.0
+        stock_minimo = float(linea.insumo.stock_minimo) if (linea.insumo and linea.insumo.stock_minimo is not None) else 0.0
+        id_insumo = linea.insumo_id_publico or "N/A"
+
+        item_data = {
+            "nombre": nombre,
+            "presentacion": presentacion,
+            "categoria": categoria,
+            "cantidad": cantidad_val,
+            "stock_actual": stock_actual,
+            "stock_minimo": stock_minimo,
+            "id_insumo": id_insumo
+        }
+
+        if stock_actual >= cantidad_val:
+            lineas_suficientes.append(item_data)
+        else:
+            lineas_insuficientes.append(item_data)
+
+    # Render Table for Insufficient Stock (Requiere Compra)
+    html_insuficientes = ""
+    if lineas_insuficientes:
+        html_insuficientes += f"""
+        <div style="margin-bottom: 30px;">
+            <h3 style="font-size: 13px; margin-bottom: 12px; font-weight: 800; color: #ef4444; border-left: 3px solid #ef4444; padding-left: 8px; text-transform: uppercase; letter-spacing: 0.05em;">
+                Insumos por Comprar (Stock Insuficiente en Almacén)
+            </h3>
+            <table class="details-table">
+                <thead>
+                    <tr>
+                        <th style="width: 45px; text-align: center;">Item</th>
+                        <th style="width: 80px; text-align: left;">Código</th>
+                        <th style="text-align: left;">Descripción Insumo</th>
+                        <th style="text-align: right; width: 100px;">Solicitado</th>
+                        <th style="text-align: right; width: 100px;">Stock Disp.</th>
+                        <th style="text-align: right; width: 100px; color: #ef4444;">Faltante</th>
+                        <th style="text-align: left; width: 100px;">Unidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+        """
+        for idx, item in enumerate(lineas_insuficientes, 1):
+            faltante = item['cantidad'] - item['stock_actual']
+            html_insuficientes += f"""
+                    <tr style="border-bottom: 1px solid #e2e8f0; background: #fff5f5;">
+                        <td style="padding: 10px; text-align: center; font-weight: bold; color: #64748b; font-size: 13px;">{idx}</td>
+                        <td style="padding: 10px; color: #64748b; font-size: 11px; font-family: monospace;">{item['id_insumo'][:8]}</td>
+                        <td style="padding: 10px; font-weight: 700; color: #0f172a; text-align: left; font-size: 13px;">{item['nombre']}</td>
+                        <td style="padding: 10px; text-align: right; font-weight: 700; color: #475569; font-size: 13px;">{item['cantidad']:.2f}</td>
+                        <td style="padding: 10px; text-align: right; color: #475569; font-size: 13px;">{item['stock_actual']:.2f}</td>
+                        <td style="padding: 10px; text-align: right; font-weight: 800; color: #ef4444; font-size: 14px;">{faltante:.2f}</td>
+                        <td style="padding: 10px; color: #475569; font-weight: 500; font-size: 12px; text-align: left;">{item['presentacion']}</td>
+                    </tr>
+            """
+        html_insuficientes += """
+                </tbody>
+            </table>
+        </div>
+        """
+    else:
+        html_insuficientes += """
+        <div style="padding: 12px 15px; border-left: 3px solid #10b981; background-color: #f0fdf4; color: #15803d; font-size: 12px; font-weight: 500; margin-bottom: 30px; font-style: italic;">
+            ¡Excelente! Todos los insumos del pedido tienen cobertura de stock 100% en almacén. No se requiere realizar compras externas.
+        </div>
+        """
+
+    # Render Table for Sufficient Stock (Despachar desde Almacén)
+    html_suficientes = ""
+    if lineas_suficientes:
+        html_suficientes += f"""
+        <div style="margin-bottom: 30px;">
+            <h3 style="font-size: 13px; margin-bottom: 12px; font-weight: 800; color: #10b981; border-left: 3px solid #10b981; padding-left: 8px; text-transform: uppercase; letter-spacing: 0.05em;">
+                Insumos Disponibles (Despachar Directamente de Almacén)
+            </h3>
+            <table class="details-table">
+                <thead>
+                    <tr>
+                        <th style="width: 45px; text-align: center;">Item</th>
+                        <th style="width: 80px; text-align: left;">Código</th>
+                        <th style="text-align: left;">Descripción Insumo</th>
+                        <th style="text-align: right; width: 100px;">Solicitado</th>
+                        <th style="text-align: right; width: 100px;">Stock Disp.</th>
+                        <th style="text-align: left; width: 100px;">Unidad</th>
+                    </tr>
+                </thead>
+                <tbody>
+        """
+        for idx, item in enumerate(lineas_suficientes, 1):
+            html_suficientes += f"""
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; text-align: center; font-weight: bold; color: #64748b; font-size: 13px;">{idx}</td>
+                        <td style="padding: 10px; color: #64748b; font-size: 11px; font-family: monospace;">{item['id_insumo'][:8]}</td>
+                        <td style="padding: 10px; font-weight: 700; color: #0f172a; text-align: left; font-size: 13px;">{item['nombre']}</td>
+                        <td style="padding: 10px; text-align: right; font-weight: 700; color: #006156; font-size: 13px;">{item['cantidad']:.2f}</td>
+                        <td style="padding: 10px; text-align: right; color: #475569; font-size: 13px;">{item['stock_actual']:.2f}</td>
+                        <td style="padding: 10px; color: #475569; font-weight: 500; font-size: 12px; text-align: left;">{item['presentacion']}</td>
+                    </tr>
+            """
+        html_suficientes += """
+                </tbody>
+            </table>
+        </div>
+        """
+
+    html_content = f"""<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Abastecimiento - Dulce Espera</title>
+    <style>
+        body {{
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #0f172a;
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 30px 20px;
+        }}
+        .container {{
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            padding: 45px;
+            box-sizing: border-box;
+        }}
+        .header {{
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid #cbd5e1;
+            padding-bottom: 24px;
+            margin-bottom: 30px;
+        }}
+        .brand {{
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }}
+        .brand-title {{
+            font-size: 26px;
+            font-weight: 900;
+            color: #006156;
+            margin: 0;
+            letter-spacing: -0.03em;
+        }}
+        .doc-type {{
+            color: #475569;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-block;
+            margin-top: 6px;
+            letter-spacing: 0.05em;
+        }}
+        .meta {{
+            text-align: right;
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.6;
+        }}
+        .meta strong {{
+            color: #0f172a;
+        }}
+        .details-table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+        }}
+        .details-table th {{
+            background-color: #f8fafc;
+            color: #475569;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.05em;
+            padding: 10px;
+            border-bottom: 2px solid #cbd5e1;
+        }}
+        .print-btn {{
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #006156;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 20px;
+            gap: 8px;
+            text-decoration: none;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }}
+        .print-btn:hover {{
+            background-color: #004d45;
+            transform: translateY(-1px);
+        }}
+        .no-print {{
+            display: flex;
+            justify-content: flex-end;
+            max-width: 900px;
+            margin: 0 auto;
+        }}
+        .footer {{
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 50px;
+            line-height: 1.5;
+        }}
+        @media print {{
+            body {{
+                background-color: #ffffff;
+                padding: 0;
+            }}
+            .container {{
+                border: none;
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+            }}
+            .no-print {{
+                display: none !important;
+            }}
+        }}
+    </style>
+</head>
+<body>
+    <div class="no-print">
+        <button class="print-btn" onclick="window.print()">
+            <svg style="width: 18px; height: 18px;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+            </svg>
+            Imprimir / Guardar PDF
+        </button>
+    </div>
+    <div class="container">
+        <div class="header">
+            <div class="brand">
+                <img src="https://dulce-espera-inventario.vercel.app/icon.svg" alt="Logo" style="width: 75px; height: 75px; object-fit: contain;" onerror="this.style.display='none'">
+                <div>
+                    <h1 class="brand-title">DULCE ESPERA</h1>
+                    <span class="doc-type">REPORTE DE ABASTECIMIENTO Y COBERTURA DE STOCK</span>
+                </div>
+            </div>
+            <div class="meta">
+                <div><strong>ID Pedido:</strong> {pedido.id_publico[:8].upper()}</div>
+                <div style="font-size: 10px; color: #94a3b8; margin-bottom: 2px;">UUID: {pedido.id_publico}</div>
+                <div><strong>Fecha Pedido:</strong> {fecha_str}</div>
+                <div><strong>Solicitante:</strong> {pedido.solicitante}</div>
+                <div><strong>Estado Actual:</strong> <span style="text-transform: uppercase; font-weight: 800; color: #006156;">{pedido.estado}</span></div>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 40px; margin-bottom: 30px; border-bottom: 2px solid #cbd5e1; padding-bottom: 12px; flex-wrap: wrap;">
+            <div style="font-size: 12px; color: #475569; font-weight: 600;">
+                TOTAL ITEMS PEDIDO: <span style="font-size: 15px; font-weight: 800; color: #0f172a; margin-left: 4px;">{len(pedido.lineas)}</span>
+            </div>
+            <div style="font-size: 12px; color: #475569; font-weight: 600;">
+                ITEMS CUBIERTOS (STOCK OK): <span style="font-size: 15px; font-weight: 800; color: #10b981; margin-left: 4px;">{len(lineas_suficientes)}</span>
+            </div>
+            <div style="font-size: 12px; color: #475569; font-weight: 600;">
+                ITEMS POR COMPRAR: <span style="font-size: 15px; font-weight: 800; color: #ef4444; margin-left: 4px;">{len(lineas_insuficientes)}</span>
+            </div>
+        </div>
+
+        {html_insuficientes}
+        {html_suficientes}
+
+        <div style="margin-top: 70px; display: flex; justify-content: space-between; gap: 30px;">
+            <div style="text-align: center; flex: 1; border-top: 1px solid #cbd5e1; padding-top: 8px; font-size: 11px; color: #475569; font-weight: 600;">
+                Responsable Almacén / Inventario
+            </div>
+            <div style="text-align: center; flex: 1; border-top: 1px solid #cbd5e1; padding-top: 8px; font-size: 11px; color: #475569; font-weight: 600;">
+                Autorizado Compras y Adquisiciones
+            </div>
+        </div>
+
+        <div class="footer">
+            Este reporte contrasta la solicitud de la cocina contra las existencias físicas del almacén en tiempo real.<br>
+            Generado automáticamente el {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}.
+        </div>
+    </div>
+</body>
+</html>"""
+    return HTMLResponse(content=html_content)
+
