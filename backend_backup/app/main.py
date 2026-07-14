@@ -94,6 +94,9 @@ def crear_pedido(pedido_in: schemas.PedidoCreate, db: Session = Depends(get_db))
     """
     pedido_uuid = str(uuid.uuid4())
     ahora = datetime.now()
+    import logging
+    logger = logging.getLogger("uvicorn")
+    logger.info(f"RECIBIDO CREAR PEDIDO: {pedido_in.model_dump()}")
 
     # 1. Verificar insumos
     insumo_ids = {linea.insumo_id_publico for linea in pedido_in.lineas}
@@ -781,8 +784,8 @@ def ver_reporte_pedido_admin(id_publico: str, db: Session = Depends(get_db)):
         """
     else:
         html_mercado += """
-        <div style="padding: 15px; background-color: #fffbeb; border: 1px solid #fef3c7; border-radius: 12px; color: #b45309; font-size: 13px; font-weight: 600; margin-bottom: 30px; display: flex; align-items: center; gap: 8px;">
-            <span>⚠️ No se solicitaron insumos para el grupo de Plaza de Mercado (Perecederos).</span>
+        <div style="padding: 12px 15px; border-left: 3px solid #cbd5e1; background-color: #f8fafc; color: #64748b; font-size: 12px; font-weight: 500; margin-bottom: 30px; font-style: italic;">
+            No se registraron requerimientos para el grupo de Plaza de Mercado (Perecederos).
         </div>
         """
 
@@ -828,8 +831,8 @@ def ver_reporte_pedido_admin(id_publico: str, db: Session = Depends(get_db)):
         """
     else:
         html_supermercado += """
-        <div style="padding: 15px; background-color: #f0fdf4; border: 1px solid #dcfce7; border-radius: 12px; color: #166534; font-size: 13px; font-weight: 600; margin-bottom: 30px; display: flex; align-items: center; gap: 8px;">
-            <span>⚠️ No se solicitaron insumos para el grupo de Supermercado y Abarrotes.</span>
+        <div style="padding: 12px 15px; border-left: 3px solid #cbd5e1; background-color: #f8fafc; color: #64748b; font-size: 12px; font-weight: 500; margin-bottom: 30px; font-style: italic;">
+            No se registraron requerimientos para el grupo de Supermercado y Abarrotes.
         </div>
         """
 
@@ -1027,18 +1030,15 @@ def ver_reporte_pedido_admin(id_publico: str, db: Session = Depends(get_db)):
             </div>
         </div>
 
-        <div class="stats-row">
-            <div class="stat-card">
-                <div class="stat-title">Total Insumos</div>
-                <div class="stat-value" style="color: #0f172a;">{len(pedido.lineas)}</div>
+        <div style="display: flex; gap: 40px; margin-bottom: 30px; border-bottom: 2px solid #006156; padding-bottom: 12px; flex-wrap: wrap;">
+            <div style="font-size: 12px; color: #475569; font-weight: 600;">
+                TOTAL INSUMOS: <span style="font-size: 15px; font-weight: 800; color: #0f172a; margin-left: 4px;">{len(pedido.lineas)}</span>
             </div>
-            <div class="stat-card">
-                <div class="stat-title" style="color: #b45309;">Plaza / Mercado</div>
-                <div class="stat-value" style="color: #b45309;">{len(lineas_mercado)}</div>
+            <div style="font-size: 12px; color: #475569; font-weight: 600;">
+                PLAZA / MERCADO: <span style="font-size: 15px; font-weight: 800; color: #b45309; margin-left: 4px;">{len(lineas_mercado)}</span>
             </div>
-            <div class="stat-card">
-                <div class="stat-title" style="color: #006156;">Supermercado</div>
-                <div class="stat-value" style="color: #006156;">{len(lineas_supermercado)}</div>
+            <div style="font-size: 12px; color: #475569; font-weight: 600;">
+                SUPERMERCADO: <span style="font-size: 15px; font-weight: 800; color: #006156; margin-left: 4px;">{len(lineas_supermercado)}</span>
             </div>
         </div>
 
