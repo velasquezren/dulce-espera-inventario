@@ -70,7 +70,9 @@ export default function WhatsAppDispatch() {
     }
     
     const reportUrl = `https://107.172.193.34.nip.io/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte`;
-    msg += `\n*Ver Reporte completo para imprimir:* \n${reportUrl}\n\n`;
+    const adminReportUrl = `https://107.172.193.34.nip.io/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte-admin`;
+    msg += `\n*Ver Reporte Cocina:* \n${reportUrl}\n`;
+    msg += `*Ver Reporte Compras (Organizado por Grupo):* \n${adminReportUrl}\n\n`;
     msg += `Por favor, revise y proceda con la aprobación correspondiente en FileMaker.`;
     return msg;
   };
@@ -554,9 +556,9 @@ export default function WhatsAppDispatch() {
                 {selectedReq.reason && (
                   <div className="p-3 bg-amber-50/40 border border-amber-100/50 rounded-xl">
                     <span className="text-[9px] font-bold uppercase text-amber-700 block mb-0.5">Motivo / Justificación</span>
-                    <p className="text-xs text-slate-500 font-semibold italic">
-                      "{selectedReq.reason}"
-                    </p>
+                <p className="text-xs text-slate-500 font-semibold italic">
+                  &ldquo;{selectedReq.reason}&rdquo;
+                </p>
                   </div>
                 )}
               </Card>
@@ -612,6 +614,17 @@ export default function WhatsAppDispatch() {
                     </a>
                   </div>
 
+                  {/* Reporte Compras Admin */}
+                  <a
+                    href={`https://107.172.193.34.nip.io/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte-admin`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2.5 px-6 py-3 bg-[#e6f0ef] hover:bg-[#d0e5e3] rounded-xl font-black text-xs text-primary transition-all active:scale-98 tap-bounce cursor-pointer text-center"
+                  >
+                    <FileText className="w-4 h-4 text-primary shrink-0" />
+                    <span>Reporte Compras (Mercado / Supermercado)</span>
+                  </a>
+
                   {/* Native Share */}
                   {canShare && (
                     <button
@@ -630,7 +643,7 @@ export default function WhatsAppDispatch() {
                 <AlertCircle className="w-5 h-5 shrink-0 text-amber-600 mt-0.5" />
                 <div className="text-[11px] leading-relaxed font-semibold">
                   <strong className="text-amber-900 block mb-0.5">¿Cómo enviar el reporte en PDF?</strong>
-                  Los navegadores bloquean el adjuntar archivos locales. Al presionar <strong className="text-amber-900">"Imprimir"</strong>, selecciona <strong className="text-amber-900">Guardar como PDF</strong> y envíaselo al contacto.
+                  Los navegadores bloquean el adjuntar archivos locales. Al presionar <strong className="text-amber-900">&quot;Imprimir&quot;</strong>, selecciona <strong className="text-amber-900">Guardar como PDF</strong> y envíaselo al contacto.
                 </div>
               </div>
             </div>
