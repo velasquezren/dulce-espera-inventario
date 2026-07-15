@@ -98,8 +98,12 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
                      (req.items.length * rowHeight) + tableFooterHeight + reasonHeight + 
                      signatureHeight + footerHeight;
 
-      canvas.width = width;
-      canvas.height = height;
+      const scale = 3;
+      canvas.width = width * scale;
+      canvas.height = height * scale;
+
+      // Scale drawing context for retina sharpness
+      ctx.scale(scale, scale);
 
       // Reset styles
       ctx.textAlign = 'left';
@@ -506,12 +510,10 @@ export default function WhatsAppDispatch() {
         const img = new Image();
         img.src = base64data;
         img.onload = () => {
-          const widthPx = img.width;
-          const heightPx = img.height;
-          
-          // Convert pixels to mm for PDF (1 px = 0.264583 mm)
-          const widthMm = widthPx * 0.264583;
-          const heightMm = heightPx * 0.264583;
+          // Since the canvas was drawn at 3x resolution, we divide pixels by 3 to calculate physical mm size
+          const scale = 3;
+          const widthMm = (img.width / scale) * 0.264583;
+          const heightMm = (img.height / scale) * 0.264583;
           
           const pdf = new jsPDF({
             orientation: 'portrait',
