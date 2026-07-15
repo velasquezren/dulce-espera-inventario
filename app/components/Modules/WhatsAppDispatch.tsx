@@ -8,20 +8,15 @@ import {
   Download, 
   Share2, 
   FileText, 
-  AlertCircle, 
   Check, 
   Search,
-  User,
-  Calendar,
-  Layers,
   ChevronRight,
   ChevronDown,
   Package,
   Clock,
   ArrowUpDown,
   X,
-  Copy,
-  ArrowLeft
+  Copy
 } from 'lucide-react';
 
 /* ────────────────────── types ────────────────────── */
@@ -182,7 +177,7 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
     req.items.forEach((item: any, idx: number) => {
       // Row alternating background
       if (idx % 2 === 1) {
-        ctx.fillStyle = '#f8fafb';
+        ctx.fillStyle = '#f8fafc';
         ctx.fillRect(30, currentY - 16, 540, 22);
       }
       
@@ -403,45 +398,6 @@ export default function WhatsAppDispatch() {
     setTimeout(() => setToastMessage(''), 3000);
   };
 
-  /* ─── WhatsApp message ─── */
-  const generateMessage = () => {
-    if (!selectedReq) return '';
-    let msg = `*DULCE ESPERA - SOLICITUD DE INSUMOS* 🏥🥣\n`;
-    msg += `----------------------------------------\n`;
-    msg += `Se ha registrado una nueva solicitud de insumos.\n\n`;
-    msg += `• *Solicitado por:* ${selectedReq.user}\n`;
-    msg += `• *ID Pedido:* ${selectedReq.id.toUpperCase()}\n`;
-    msg += `• *Fecha:* ${selectedReq.date}\n\n`;
-    msg += `*Productos Solicitados:*\n`;
-    selectedReq.items.forEach((item) => {
-      msg += `- ${item.productName}: *${item.quantity} ${item.unit}*\n`;
-    });
-    if (selectedReq.reason) {
-      msg += `\n*Motivo:* _"${selectedReq.reason}"_\n`;
-    }
-    const reportUrl = `https://107.172.193.34.nip.io/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte`;
-    msg += `\n*Ver Reporte Cocina:* \n${reportUrl}\n\n`;
-    msg += `Por favor, revise y proceda con la aprobación correspondiente en FileMaker.`;
-    return msg;
-  };
-
-  const handleSendWhatsApp = () => {
-    if (!selectedReq) return;
-    const text = generateMessage();
-    // Open WhatsApp select chat screen
-    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank');
-  };
-
-  const handleCopyText = async () => {
-    try {
-      await navigator.clipboard.writeText(generateMessage());
-      showToast('¡Texto copiado al portapapeles!');
-    } catch {
-      showToast('Error al copiar el texto');
-    }
-  };
-
   const handleCopyImage = async () => {
     if (!selectedReq) return;
     try {
@@ -467,7 +423,7 @@ export default function WhatsAppDispatch() {
         await navigator.share({
           files: [file],
           title: `Pedido ${selectedReq.id}`,
-          text: `Solicitud de insumos de ${selectedReq.user}`
+          text: `Reporte de insumos de ${selectedReq.user}`
         });
       } else {
         handleDownloadImage();
@@ -640,7 +596,7 @@ export default function WhatsAppDispatch() {
               Despacho de Pedidos
             </h1>
             <p className="text-xs text-slate-400 font-semibold mt-0.5">
-              Comparte reportes oficiales de insumos y comprobantes directamente por WhatsApp
+              Genera y comparte reportes oficiales de insumos en formato de PDF e Imagen
             </p>
           </div>
         </div>
@@ -787,42 +743,30 @@ export default function WhatsAppDispatch() {
             {/* Actions Card */}
             <Card className="border border-slate-200/80 rounded-2xl shadow-clinical-md overflow-hidden bg-white p-5 space-y-4">
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block border-b border-slate-100 pb-3">
-                Acciones de Despacho
+                Compartir y Descargar
               </span>
 
               <div className="space-y-3">
                 
-                {/* 1. Main Action: Send Text WhatsApp */}
-                <button
-                  onClick={handleSendWhatsApp}
-                  disabled={!selectedReq}
-                  className={`w-full flex items-center justify-center gap-2.5 h-12 rounded-xl font-bold text-sm text-white transition-all active:scale-[0.98] cursor-pointer bg-[#25D366] hover:bg-[#20ba5a] shadow-md shadow-[#25D366]/20 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed disabled:shadow-none`}
-                >
-                  <svg className="w-5 h-5 fill-current" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
-                  </svg>
-                  <span>Enviar Texto por WhatsApp</span>
-                </button>
-
-                {/* 2. Share Image (Native API) */}
+                {/* 1. Main Action: Share Image (Native API) */}
                 <button
                   onClick={handleShareImage}
                   disabled={!selectedReq}
-                  className="w-full flex items-center justify-center gap-2 h-11 rounded-xl font-bold text-xs bg-primary hover:bg-primary-hover text-white transition-all active:scale-[0.98] cursor-pointer shadow-clinical-sm"
+                  className={`w-full flex items-center justify-center gap-2.5 h-12 rounded-xl font-bold text-sm text-white transition-all active:scale-[0.98] cursor-pointer bg-[#25D366] hover:bg-[#20ba5a] shadow-md shadow-[#25D366]/20 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed disabled:shadow-none`}
                 >
-                  <Share2 className="w-4 h-4" />
-                  <span>Compartir Reporte (Imagen)</span>
+                  <Share2 className="w-5 h-5 stroke-[2.5]" />
+                  <span>Compartir Imagen</span>
                 </button>
 
-                {/* Grid of helpers: Copy / Download / Copy Text */}
+                {/* Grid of helpers: Copy / Download */}
                 <div className="grid grid-cols-2 gap-2">
                   
                   {/* Copy Voucher Image */}
                   <button
                     onClick={handleCopyImage}
                     disabled={!selectedReq}
-                    className="flex items-center justify-center gap-1.5 h-10 border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer"
-                    title="Copia la imagen del reporte oficial para pegarlo directamente en WhatsApp (Cmd+V / Ctrl+V)"
+                    className="flex items-center justify-center gap-1.5 h-11 border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer"
+                    title="Copia el reporte en imagen al portapapeles para pegarlo directamente en WhatsApp (Cmd+V o Ctrl+V)"
                   >
                     <Copy className="w-3.5 h-3.5 text-primary" />
                     <span>Copiar Imagen</span>
@@ -832,27 +776,18 @@ export default function WhatsAppDispatch() {
                   <button
                     onClick={handleDownloadImage}
                     disabled={!selectedReq}
-                    className="flex items-center justify-center gap-1.5 h-10 border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer"
+                    className="flex items-center justify-center gap-1.5 h-11 border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer"
                   >
                     <Download className="w-3.5 h-3.5 text-primary" />
                     <span>Bajar Imagen</span>
                   </button>
                   
-                  {/* Copy WhatsApp Text */}
-                  <button
-                    onClick={handleCopyText}
-                    disabled={!selectedReq}
-                    className="flex items-center justify-center gap-1.5 h-10 border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer col-span-2"
-                  >
-                    <Copy className="w-3.5 h-3.5 text-primary" />
-                    <span>Copiar Texto Formateado</span>
-                  </button>
                 </div>
 
                 {/* Section divider */}
                 <div className="flex items-center gap-2 py-1">
                   <div className="flex-1 h-px bg-slate-200" />
-                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Documentos PDF</span>
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Documentos Oficiales</span>
                   <div className="flex-1 h-px bg-slate-200" />
                 </div>
 
@@ -861,24 +796,13 @@ export default function WhatsAppDispatch() {
                   <button
                     onClick={handlePrintLocalPDF}
                     disabled={!selectedReq}
-                    className="flex items-center justify-center gap-1.5 h-11 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer"
+                    className="flex items-center justify-center gap-2.5 h-12 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-clinical-sm"
                   >
-                    <Download className="w-4 h-4" />
+                    <Printer className="w-4 h-4 text-white" />
                     <span>Descargar PDF</span>
                   </button>
                 </div>
 
-              </div>
-            </Card>
-
-            {/* Informative Tip Box */}
-            <Card className="p-4 border border-slate-200/80 rounded-2xl bg-white shadow-clinical-sm">
-              <div className="flex gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0 text-amber-500 mt-0.5" />
-                <div className="text-[10px] leading-relaxed font-semibold text-amber-800">
-                  <strong className="text-amber-900 block mb-0.5">Tip: Compartir Imagen en WhatsApp Web</strong>
-                  Haz clic en <strong className="font-bold">Copiar Imagen</strong>, abre el chat en WhatsApp Web y presiona <kbd className="bg-amber-100 px-1 py-0.5 rounded border border-amber-200">Ctrl + V</kbd> o <kbd className="bg-amber-100 px-1 py-0.5 rounded border border-amber-200">Cmd + V</kbd> para adjuntar el comprobante inmediatamente.
-                </div>
               </div>
             </Card>
 
