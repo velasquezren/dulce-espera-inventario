@@ -39,290 +39,285 @@ interface RequestItem {
   }>;
 }
 
-/* ────────────────────── helper: dynamic jsPDF loader ────────────────────── */
-const loadJsPDF = () => {
-  return new Promise<any>((resolve, reject) => {
-    if (typeof window === 'undefined') {
-      reject(new Error('jsPDF can only be loaded on the client'));
-      return;
-    }
-    if ((window as any).jspdf) {
-      resolve((window as any).jspdf);
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-    script.onload = () => {
-      resolve((window as any).jspdf);
-    };
-    script.onerror = reject;
-    document.body.appendChild(script);
-  });
-};
-
 /* ────────────────────── helper: canvas image generation ────────────────────── */
 const generateRequestImage = (req: RequestItem): Promise<Blob> => {
   return new Promise((resolve, reject) => {
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-      reject(new Error('Could not get canvas context'));
-      return;
-    }
-
-    const width = 600;
+    const logoImg = new Image();
+    logoImg.src = '/logo.svg';
     
-    // Calculate heights dynamically
-    const headerHeight = 110;
-    const infoHeight = 65;
-    const sectionTitleHeight = 35;
-    const tableHeaderHeight = 30;
-    const rowHeight = 26;
-    const tableFooterHeight = 35;
-    const reasonHeight = req.reason ? 70 : 0;
-    const signatureHeight = 110;
-    const footerHeight = 55;
+    logoImg.onload = () => {
+      drawCanvas(logoImg);
+    };
+    logoImg.onerror = () => {
+      drawCanvas(null);
+    };
 
-    const height = headerHeight + infoHeight + sectionTitleHeight + tableHeaderHeight + 
-                   (req.items.length * rowHeight) + tableFooterHeight + reasonHeight + 
-                   signatureHeight + footerHeight;
-
-    canvas.width = width;
-    canvas.height = height;
-
-    // Reset styles
-    ctx.textAlign = 'left';
-    ctx.textBaseline = 'alphabetic';
-
-    // Background
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, width, height);
-
-    // Document border
-    ctx.strokeStyle = '#e2e8f0';
-    ctx.lineWidth = 4;
-    ctx.strokeRect(2, 2, width - 4, height - 4);
-
-    // Header Logo Icon (Circle + Cross)
-    ctx.fillStyle = '#006156';
-    ctx.beginPath();
-    ctx.arc(55, 52, 22, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(52, 40, 6, 24);
-    ctx.fillRect(43, 49, 24, 6);
-
-    // Brand Name Text
-    ctx.fillStyle = '#006156';
-    ctx.font = 'bold 20px system-ui, -apple-system, sans-serif';
-    ctx.fillText('DULCE ESPERA', 92, 47);
-
-    ctx.fillStyle = '#39ADA3';
-    ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
-    ctx.fillText('COCINA Y NUTRICIÓN CLÍNICA', 92, 63);
-
-    // Top Right Metadata
-    ctx.fillStyle = '#475569';
-    ctx.font = 'bold 10px monospace';
-    ctx.textAlign = 'right';
-    ctx.fillText(`N° LISTA: ${req.id.toUpperCase()}`, 570, 38);
-    ctx.fillText(`FECHA: ${req.date}`, 570, 54);
-    
-    ctx.fillStyle = '#006156';
-    ctx.fillText(`ESTADO: ${req.status.toUpperCase()}`, 570, 70);
-    ctx.textAlign = 'left'; // reset
-
-    // Thick teal header divider line
-    ctx.strokeStyle = '#006156';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(30, 92);
-    ctx.lineTo(570, 92);
-    ctx.stroke();
-
-    // Info section (Solicitado por, Cargo, Destino)
-    ctx.fillStyle = '#0f172a';
-    ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
-    ctx.fillText('Solicitado por:', 30, 118);
-
-    ctx.fillStyle = '#475569';
-    ctx.font = '500 11px system-ui, -apple-system, sans-serif';
-    ctx.fillText(req.user, 115, 118);
-
-    ctx.fillStyle = '#475569';
-    ctx.font = '500 10px system-ui, -apple-system, sans-serif';
-    ctx.fillText('Cargo: Personal de Cocina Clínica', 30, 136);
-
-    ctx.textAlign = 'right';
-    ctx.fillText('Destino: Cocina Central Dulce Espera', 570, 136);
-    ctx.textAlign = 'left'; // reset
-
-    // Section title
-    ctx.fillStyle = '#39ADA3';
-    ctx.fillRect(30, 155, 3, 14);
-
-    ctx.fillStyle = '#006156';
-    ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
-    ctx.fillText('PRODUCTOS SOLICITADOS', 40, 166);
-
-    // Table Header
-    let currentY = 194;
-    ctx.fillStyle = '#006156';
-    ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
-    
-    ctx.textAlign = 'center';
-    ctx.fillText('N°', 42, currentY);
-    
-    ctx.textAlign = 'left';
-    ctx.fillText('Descripción del Insumo', 70, currentY);
-    
-    ctx.textAlign = 'center';
-    ctx.fillText('Unidad', 440, currentY);
-    
-    ctx.textAlign = 'right';
-    ctx.fillText('Cant.', 570, currentY);
-    ctx.textAlign = 'left'; // reset
-
-    // Table Header divider line
-    ctx.strokeStyle = '#006156';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(30, 202);
-    ctx.lineTo(570, 202);
-    ctx.stroke();
-
-    currentY += 24;
-
-    // Items
-    req.items.forEach((item: any, idx: number) => {
-      // Row alternating background
-      if (idx % 2 === 1) {
-        ctx.fillStyle = '#f8fafc';
-        ctx.fillRect(30, currentY - 16, 540, 22);
+    function drawCanvas(logo: HTMLImageElement | null) {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        reject(new Error('Could not get canvas context'));
+        return;
       }
+
+      const width = 600;
       
-      // Index
-      ctx.fillStyle = '#94a3b8';
-      ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(String(idx + 1), 42, currentY);
-      
-      // Product Name
-      ctx.fillStyle = '#0f172a';
-      ctx.font = '600 11px system-ui, -apple-system, sans-serif';
+      // Calculate heights dynamically
+      const headerHeight = 110;
+      const infoHeight = 65;
+      const sectionTitleHeight = 35;
+      const tableHeaderHeight = 30;
+      const rowHeight = 26;
+      const tableFooterHeight = 35;
+      const reasonHeight = req.reason ? 70 : 0;
+      const signatureHeight = 110;
+      const footerHeight = 55;
+
+      const height = headerHeight + infoHeight + sectionTitleHeight + tableHeaderHeight + 
+                     (req.items.length * rowHeight) + tableFooterHeight + reasonHeight + 
+                     signatureHeight + footerHeight;
+
+      canvas.width = width;
+      canvas.height = height;
+
+      // Reset styles
       ctx.textAlign = 'left';
-      let pName = item.productName || 'Producto';
-      if (pName.length > 44) pName = pName.slice(0, 41) + '...';
-      ctx.fillText(pName, 70, currentY);
+      ctx.textBaseline = 'alphabetic';
 
-      // Unit
-      ctx.fillStyle = '#64748b';
-      ctx.font = '500 11px system-ui, -apple-system, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(item.unit || 'uds', 440, currentY);
+      // Background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, width, height);
 
-      // Quantity
+      // Document border
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(2, 2, width - 4, height - 4);
+
+      // Header Logo Icon
+      if (logo) {
+        ctx.drawImage(logo, 30, 30, 40, 40);
+      } else {
+        // Fallback vector icon
+        ctx.fillStyle = '#006156';
+        ctx.beginPath();
+        ctx.arc(50, 50, 20, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(47, 38, 6, 24);
+        ctx.fillRect(38, 47, 24, 6);
+      }
+
+      // Brand Name Text
       ctx.fillStyle = '#006156';
-      ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
-      ctx.textAlign = 'right';
-      ctx.fillText(String(item.quantity), 570, currentY);
-
-      ctx.textAlign = 'left'; // reset
-      currentY += rowHeight;
-    });
-
-    // Divider line before total
-    ctx.strokeStyle = '#006156';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(30, currentY - 12);
-    ctx.lineTo(570, currentY - 12);
-    ctx.stroke();
-
-    // Summary Box
-    ctx.fillStyle = '#f0faf9';
-    ctx.fillRect(30, currentY - 8, 540, 28);
-    
-    ctx.fillStyle = '#006156';
-    ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
-    ctx.fillText(`TOTAL: ${req.items.length} producto${req.items.length !== 1 ? 's' : ''}`, 40, currentY + 10);
-
-    const totalUnits = req.items.reduce((acc: number, item: any) => acc + item.quantity, 0);
-    ctx.textAlign = 'right';
-    ctx.fillText(String(totalUnits), 570, currentY + 10);
-    ctx.textAlign = 'left'; // reset
-
-    currentY += tableFooterHeight;
-
-    // Reason Box
-    if (req.reason) {
-      currentY += 15;
-      
-      ctx.fillStyle = '#f0faf9';
-      ctx.fillRect(33, currentY - 15, 537, 45);
+      ctx.font = 'bold 20px system-ui, -apple-system, sans-serif';
+      ctx.fillText('DULCE ESPERA', 84, 47);
 
       ctx.fillStyle = '#39ADA3';
-      ctx.fillRect(30, currentY - 15, 3, 45);
+      ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
+      ctx.fillText('Cocina y Nutrición Clínica', 84, 63);
+
+      // Top Right Metadata
+      ctx.fillStyle = '#475569';
+      ctx.font = 'bold 11px monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText(`N° LISTA: ${req.id.toUpperCase()}`, 570, 38);
+      ctx.fillText(`FECHA: ${req.date}`, 570, 54);
+      
+      ctx.fillStyle = '#006156';
+      ctx.fillText(`ESTADO: ${req.status.toUpperCase()}`, 570, 70);
+      ctx.textAlign = 'left'; // reset
+
+      // Thick teal header divider line
+      ctx.strokeStyle = '#006156';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(30, 92);
+      ctx.lineTo(570, 92);
+      ctx.stroke();
+
+      // Info section (Solicitado por, Cargo, Destino)
+      ctx.fillStyle = '#0f172a';
+      ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+      ctx.fillText('Solicitado por:', 30, 118);
+
+      ctx.fillStyle = '#475569';
+      ctx.font = '500 11px system-ui, -apple-system, sans-serif';
+      ctx.fillText(req.user, 115, 118);
+
+      ctx.fillStyle = '#475569';
+      ctx.font = '500 10px system-ui, -apple-system, sans-serif';
+      ctx.fillText('Cargo: Personal de Cocina Clínica', 30, 136);
+
+      ctx.textAlign = 'right';
+      ctx.fillText('Destino: Cocina Central Dulce Espera', 570, 136);
+      ctx.textAlign = 'left'; // reset
+
+      // Section title
+      ctx.fillStyle = '#39ADA3';
+      ctx.fillRect(30, 155, 3, 14);
 
       ctx.fillStyle = '#006156';
-      ctx.font = 'bold 9px system-ui, -apple-system, sans-serif';
-      ctx.fillText('Motivo / Justificación', 46, currentY);
+      ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
+      ctx.fillText('PRODUCTOS SOLICITADOS', 40, 166);
 
-      ctx.fillStyle = '#334155';
-      ctx.font = 'italic 11px system-ui, -apple-system, sans-serif';
-      ctx.fillText(`"${req.reason}"`, 46, currentY + 18);
+      // Table Header
+      let currentY = 194;
+      ctx.fillStyle = '#006156';
+      ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
+      
+      ctx.textAlign = 'center';
+      ctx.fillText('N°', 42, currentY);
+      
+      ctx.textAlign = 'left';
+      ctx.fillText('Descripción del Insumo', 70, currentY);
+      
+      ctx.textAlign = 'center';
+      ctx.fillText('Unidad', 440, currentY);
+      
+      ctx.textAlign = 'right';
+      ctx.fillText('Cant.', 570, currentY);
+      ctx.textAlign = 'left'; // reset
 
-      currentY += reasonHeight;
-    }
+      // Table Header divider line
+      ctx.strokeStyle = '#006156';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(30, 202);
+      ctx.lineTo(570, 202);
+      ctx.stroke();
 
-    // Signature Area
-    currentY += 35;
-    
-    // Sign line Solicitante
-    ctx.strokeStyle = '#94a3b8';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(50, currentY);
-    ctx.lineTo(250, currentY);
-    ctx.stroke();
+      currentY += 24;
 
-    ctx.fillStyle = '#64748b';
-    ctx.font = 'bold 9px system-ui, -apple-system, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Firma de Solicitante', 150, currentY + 14);
+      // Items
+      req.items.forEach((item: any, idx: number) => {
+        // Row alternating background
+        if (idx % 2 === 1) {
+          ctx.fillStyle = '#f8fafb';
+          ctx.fillRect(30, currentY - 16, 540, 22);
+        }
+        
+        // Index
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(String(idx + 1), 42, currentY);
+        
+        // Product Name
+        ctx.fillStyle = '#0f172a';
+        ctx.font = '600 11px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'left';
+        let pName = item.productName || 'Producto';
+        if (pName.length > 44) pName = pName.slice(0, 41) + '...';
+        ctx.fillText(pName, 70, currentY);
 
-    // Sign line Autorización
-    ctx.beginPath();
-    ctx.moveTo(350, currentY);
-    ctx.lineTo(550, currentY);
-    ctx.stroke();
-    
-    ctx.fillText('Firma de Autorización', 450, currentY + 14);
-    ctx.textAlign = 'left'; // reset
+        // Unit
+        ctx.fillStyle = '#64748b';
+        ctx.font = '500 11px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(item.unit || 'uds', 440, currentY);
 
-    currentY += signatureHeight - 35;
+        // Quantity
+        ctx.fillStyle = '#006156';
+        ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(String(item.quantity), 570, currentY);
 
-    // Footer copyright
-    ctx.strokeStyle = '#e2e8f0';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(30, currentY);
-    ctx.lineTo(570, currentY);
-    ctx.stroke();
+        ctx.textAlign = 'left'; // reset
+        currentY += rowHeight;
+      });
 
-    ctx.fillStyle = '#94a3b8';
-    ctx.font = '500 8px system-ui, -apple-system, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(`© ${new Date().getFullYear()} Dulce Espera — Documento oficial para control de insumos.`, width / 2, currentY + 18);
+      // Divider line before total
+      ctx.strokeStyle = '#006156';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(30, currentY - 12);
+      ctx.lineTo(570, currentY - 12);
+      ctx.stroke();
 
-    canvas.toBlob((blob) => {
-      if (blob) {
-        resolve(blob);
-      } else {
-        reject(new Error('Canvas generated null blob'));
+      // Summary Box
+      ctx.fillStyle = '#f0faf9';
+      ctx.fillRect(30, currentY - 8, 540, 28);
+      
+      ctx.fillStyle = '#006156';
+      ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+      ctx.fillText(`TOTAL: ${req.items.length} producto${req.items.length !== 1 ? 's' : ''}`, 40, currentY + 10);
+
+      const totalUnits = req.items.reduce((acc: number, item: any) => acc + item.quantity, 0);
+      ctx.textAlign = 'right';
+      ctx.fillText(String(totalUnits), 570, currentY + 10);
+      ctx.textAlign = 'left'; // reset
+
+      currentY += tableFooterHeight;
+
+      // Reason Box
+      if (req.reason) {
+        currentY += 15;
+        
+        ctx.fillStyle = '#f0faf9';
+        ctx.fillRect(33, currentY - 15, 537, 45);
+
+        ctx.fillStyle = '#39ADA3';
+        ctx.fillRect(30, currentY - 15, 3, 45);
+
+        ctx.fillStyle = '#006156';
+        ctx.font = 'bold 9px system-ui, -apple-system, sans-serif';
+        ctx.fillText('Motivo / Justificación', 46, currentY);
+
+        ctx.fillStyle = '#334155';
+        ctx.font = 'italic 11px system-ui, -apple-system, sans-serif';
+        ctx.fillText(`"${req.reason}"`, 46, currentY + 18);
+
+        currentY += reasonHeight;
       }
-    }, 'image/png');
+
+      // Signature Area
+      currentY += 35;
+      
+      // Sign line Solicitante
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(50, currentY);
+      ctx.lineTo(250, currentY);
+      ctx.stroke();
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = 'bold 9px system-ui, -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Firma de Solicitante', 150, currentY + 14);
+
+      // Sign line Autorización
+      ctx.beginPath();
+      ctx.moveTo(350, currentY);
+      ctx.lineTo(550, currentY);
+      ctx.stroke();
+      
+      ctx.fillText('Firma de Autorización', 450, currentY + 14);
+      ctx.textAlign = 'left'; // reset
+
+      currentY += signatureHeight - 35;
+
+      // Footer copyright
+      ctx.strokeStyle = '#e2e8f0';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(30, currentY);
+      ctx.lineTo(570, currentY);
+      ctx.stroke();
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '500 8px system-ui, -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(`© ${new Date().getFullYear()} Dulce Espera — Documento oficial para control de insumos.`, width / 2, currentY + 18);
+
+      canvas.toBlob((blob) => {
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject(new Error('Canvas generated null blob'));
+        }
+      }, 'image/png');
+    }
   });
 };
 
@@ -471,47 +466,6 @@ export default function WhatsAppDispatch() {
     } catch (err) {
       console.error(err);
       showToast('Error al descargar la imagen');
-    }
-  };
-
-  const handleDownloadPDFDirect = async () => {
-    if (!selectedReq) return;
-    try {
-      showToast('Generando PDF...');
-      const jspdfModule = await loadJsPDF();
-      const { jsPDF } = jspdfModule;
-      
-      const blob = await generateRequestImage(selectedReq);
-      const reader = new FileReader();
-      reader.readAsDataURL(blob);
-      reader.onloadend = () => {
-        const base64data = reader.result as string;
-        
-        const img = new Image();
-        img.src = base64data;
-        img.onload = () => {
-          const widthPx = img.width;
-          const heightPx = img.height;
-          
-          // Convert pixels to mm for PDF (1 px = 0.264583 mm)
-          const widthMm = widthPx * 0.264583;
-          const heightMm = heightPx * 0.264583;
-          
-          const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: [widthMm, heightMm]
-          });
-          
-          pdf.addImage(base64data, 'PNG', 0, 0, widthMm, heightMm);
-          pdf.save(`Pedido_${selectedReq.id.toUpperCase()}.pdf`);
-          showToast('¡PDF Descargado!');
-        };
-      };
-    } catch (err) {
-      console.error('Error generating PDF:', err);
-      showToast('Error al generar PDF. Abriendo impresión...');
-      handlePrintLocalPDF();
     }
   };
 
@@ -837,15 +791,26 @@ export default function WhatsAppDispatch() {
                   <div className="flex-1 h-px bg-slate-200" />
                 </div>
 
-                <div className="grid grid-cols-1 gap-2">
-                  {/* Download PDF (Direct file download) */}
-                  <button
-                    onClick={handleDownloadPDFDirect}
-                    disabled={!selectedReq}
-                    className="w-full flex items-center justify-center gap-2.5 h-12 border-2 border-primary text-primary hover:bg-primary-light font-bold text-sm rounded-xl transition-all active:scale-[0.98] cursor-pointer disabled:bg-slate-50 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed"
+                <div className="grid grid-cols-2 gap-2">
+                  {/* Download PDF (Backend Link) */}
+                  <a
+                    href={selectedReq ? `https://107.172.193.34.nip.io/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte` : '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 h-12 border-2 border-primary text-primary hover:bg-primary-light font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer text-center flex items-center justify-center"
                   >
-                    <Download className="w-5 h-5 text-primary" />
-                    <span>Descargar PDF</span>
+                    <Download className="w-4 h-4 text-primary shrink-0" />
+                    <span className="ml-1">Descargar PDF</span>
+                  </a>
+
+                  {/* Print PDF (Local print window) */}
+                  <button
+                    onClick={handlePrintLocalPDF}
+                    disabled={!selectedReq}
+                    className="w-full flex items-center justify-center gap-2 h-12 bg-secondary hover:bg-secondary-hover text-white font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-md shadow-secondary/15 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed"
+                  >
+                    <Printer className="w-4 h-4 text-white shrink-0" />
+                    <span className="ml-1">Imprimir PDF</span>
                   </button>
                 </div>
 
