@@ -674,8 +674,7 @@ def ver_reporte_pedido(id_publico: str, db: Session = Depends(get_db)):
         </div>
 
         <div class="footer">
-            Este es un documento de uso interno para la Clínica Dulce Espera.<br>
-            Generado automáticamente el {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}.
+            &copy; {datetime.now().year} Dulce Espera.
         </div>
     </div>
 </body>
@@ -871,8 +870,7 @@ def ver_reporte_pedido_pdf(id_publico: str, db: Session = Depends(get_db)):
     </table>
 
     <div class="footer">
-        Este es un documento de uso interno para la Clínica Dulce Espera.<br>
-        Generado automáticamente el {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}.
+        &copy; {datetime.now().year} Dulce Espera.
     </div>
 </body>
 </html>"""
@@ -1264,7 +1262,7 @@ def ver_reporte_pedido_admin(id_publico: str, db: Session = Depends(get_db)):
 
         <div class="footer">
             Este informe está clasificado por canales de compra para optimizar los procesos logísticos.<br>
-            Generado automáticamente el {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}.
+            &copy; {datetime.now().year} Dulce Espera.
         </div>
     </div>
 </body>
@@ -1499,7 +1497,7 @@ def ver_reporte_pedido_abastecimiento(id_publico: str, db: Session = Depends(get
 
         <div class="footer">
             Este documento físico de control de calidad debe archivarse para auditorías sanitarias y control interno de la cocina.<br>
-            Generado automáticamente el {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}.
+            &copy; {datetime.now().year} Dulce Espera.
         </div>
     </div>
 </body>
@@ -1761,7 +1759,7 @@ def ver_reporte_pedido_categorias(id_publico: str, db: Session = Depends(get_db)
 
         <div class="footer">
             Este informe desglosa de manera detallada las compras solicitadas de acuerdo con la categorización del catálogo.<br>
-            Generado automáticamente el {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}.
+            &copy; {datetime.now().year} Dulce Espera.
         </div>
     </div>
 </body>
