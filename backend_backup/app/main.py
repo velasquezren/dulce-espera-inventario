@@ -683,6 +683,216 @@ def ver_reporte_pedido(id_publico: str, db: Session = Depends(get_db)):
     return HTMLResponse(content=html_content)
 
 
+@app.get("/pedidos/{id_publico}/reporte/pdf", tags=["Pedidos"])
+def ver_reporte_pedido_pdf(id_publico: str, db: Session = Depends(get_db)):
+    """
+    Genera y descarga un archivo PDF del reporte del pedido de forma directa en base al HTML.
+    """
+    from xhtml2pdf import pisa
+    import io
+    from fastapi.responses import StreamingResponse
+
+    pedido = db.query(models.Pedido).options(
+        joinedload(models.Pedido.lineas).joinedload(models.DetallePedido.insumo)
+    ).filter(models.Pedido.id_publico == id_publico).first()
+
+    if not pedido:
+        raise HTTPException(
+            status_code=404,
+            detail="Pedido no encontrado"
+        )
+
+    fecha_str = pedido.fecha_solicitud.strftime("%Y-%m-%d %H:%M") if pedido.fecha_solicitud else "N/A"
+    
+    # Generar filas de la tabla
+    lineas_html = ""
+    for idx, linea in enumerate(pedido.lineas, 1):
+        nombre = linea.insumo.nombre if linea.insumo else "Insumo sin nombre"
+        presentacion = linea.insumo.presentacion if linea.insumo else "Unidades"
+        categoria = linea.insumo.categoria if linea.insumo else "Otros"
+        cantidad_val = float(linea.cantidad) if linea.cantidad else 0.0
+        
+        lineas_html += f"""
+        <tr>
+            <td style="padding: 8px 6px; text-align: center; border-bottom: 1px solid #e2e8f0;">{idx}</td>
+            <td style="padding: 8px 10px; font-weight: bold; text-align: left; border-bottom: 1px solid #e2e8f0;">{nombre}</td>
+            <td style="padding: 8px 10px; text-align: left; border-bottom: 1px solid #e2e8f0;">{categoria}</td>
+            <td style="padding: 8px 10px; text-align: right; font-weight: bold; color: #006156; border-bottom: 1px solid #e2e8f0;">{cantidad_val:.2f}</td>
+            <td style="padding: 8px 10px; text-align: left; border-bottom: 1px solid #e2e8f0;">{presentacion}</td>
+        </tr>
+        """
+
+    html_content = f"""<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Reporte de Pedido - Dulce Espera</title>
+    <style>
+        @page {{
+            size: letter;
+            margin: 20mm 20mm 20mm 20mm;
+        }}
+        body {{
+            font-family: Helvetica, Arial, sans-serif;
+            color: #0f172a;
+            font-size: 11px;
+            line-height: 1.4;
+        }}
+        .header-table {{
+            width: 100%;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #006156;
+            padding-bottom: 10px;
+        }}
+        .brand-title {{
+            font-size: 18px;
+            font-weight: bold;
+            color: #006156;
+        }}
+        .brand-subtitle {{
+            font-size: 10px;
+            color: #39ADA3;
+            font-weight: bold;
+        }}
+        .meta-text {{
+            font-size: 10px;
+            color: #475569;
+            text-align: right;
+            line-height: 1.4;
+        }}
+        .info-table {{
+            width: 100%;
+            margin-bottom: 15px;
+        }}
+        .section-title {{
+            font-size: 11px;
+            font-weight: bold;
+            color: #006156;
+            border-left: 3px solid #39ADA3;
+            padding-left: 8px;
+            margin-bottom: 10px;
+        }}
+        .details-table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 25px;
+        }}
+        .details-table th {{
+            background-color: #f8fafc;
+            border-bottom: 2px solid #006156;
+            color: #006156;
+            font-weight: bold;
+            font-size: 10px;
+            padding: 8px 10px;
+        }}
+        .details-table td {{
+            padding: 8px 10px;
+            font-size: 10px;
+        }}
+        .footer {{
+            border-top: 1px solid #cbd5e1;
+            padding-top: 15px;
+            text-align: center;
+            font-size: 9px;
+            color: #64748b;
+            margin-top: 30px;
+        }}
+        .signature-table {{
+            width: 100%;
+            margin-top: 40px;
+        }}
+        .signature-line {{
+            border-top: 1px solid #cbd5e1;
+            text-align: center;
+            font-size: 10px;
+            color: #475569;
+            font-weight: bold;
+            padding-top: 5px;
+        }}
+    </style>
+</head>
+<body>
+    <table class="header-table">
+        <tr>
+            <td style="width: 55px; vertical-align: middle;">
+                <img src="https://dulce-espera-inventario.vercel.app/icon.png" style="width: 45px; height: 45px;" />
+            </td>
+            <td style="vertical-align: middle;">
+                <div class="brand-title">DULCE ESPERA</div>
+                <div class="brand-subtitle">Cocina y Nutrición Clínica</div>
+            </td>
+            <td class="meta-text" style="vertical-align: middle;">
+                <strong>N° LISTA:</strong> {pedido.id_publico[:8].upper()}<br>
+                <strong>FECHA:</strong> {fecha_str}<br>
+                <strong>ESTADO:</strong> <span style="color: #006156; font-weight: bold;">{pedido.estado.upper()}</span>
+            </td>
+        </tr>
+    </table>
+
+    <table class="info-table">
+        <tr>
+            <td style="font-size: 10px; color: #475569; line-height: 1.4;">
+                <strong>Solicitado por:</strong> {pedido.solicitante}<br>
+                <strong>Cargo:</strong> Personal de Cocina Clínica
+            </td>
+            <td style="font-size: 10px; color: #475569; text-align: right; line-height: 1.4; vertical-align: top;">
+                <strong>Destino:</strong> Cocina Central Dulce Espera
+            </td>
+        </tr>
+    </table>
+
+    <div class="section-title">Productos Solicitados</div>
+
+    <table class="details-table">
+        <thead>
+            <tr>
+                <th style="width: 30px; text-align: center;">N°</th>
+                <th style="text-align: left;">Descripción Insumo</th>
+                <th style="text-align: left; width: 140px;">Categoría</th>
+                <th style="text-align: right; width: 80px;">Cant.</th>
+                <th style="text-align: left; width: 80px;">Unidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            {lineas_html}
+        </tbody>
+    </table>
+
+    <table class="signature-table">
+        <tr>
+            <td style="width: 45%;">
+                <div class="signature-line">Firma Solicitante Cocina</div>
+            </td>
+            <td style="width: 10%;">&nbsp;</td>
+            <td style="width: 45%;">
+                <div class="signature-line">Firma Autorización</div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        Este es un documento de uso interno para la Clínica Dulce Espera.<br>
+        Generado automáticamente el {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}.
+    </div>
+</body>
+</html>"""
+
+    pdf_buffer = io.BytesIO()
+    pisa_status = pisa.CreatePDF(html_content, dest=pdf_buffer)
+    if pisa_status.err:
+        raise HTTPException(
+            status_code=500,
+            detail="Error al generar el PDF"
+        )
+    pdf_buffer.seek(0)
+    filename = f"Pedido_{pedido.id_publico[:8].upper()}.pdf"
+    return StreamingResponse(
+        pdf_buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+
 def obtener_grupo_insumo(categoria: str) -> str:
     """
     Clasifica dinámicamente una categoría de insumos en 'Mercado' (frescos/plaza)

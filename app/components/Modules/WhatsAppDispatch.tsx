@@ -39,27 +39,6 @@ interface RequestItem {
   }>;
 }
 
-/* ────────────────────── helper: dynamic jsPDF loader ────────────────────── */
-const loadJsPDF = () => {
-  return new Promise<any>((resolve, reject) => {
-    if (typeof window === 'undefined') {
-      reject(new Error('jsPDF can only be loaded on the client'));
-      return;
-    }
-    if ((window as any).jspdf) {
-      resolve((window as any).jspdf);
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-    script.onload = () => {
-      resolve((window as any).jspdf);
-    };
-    script.onerror = reject;
-    document.body.appendChild(script);
-  });
-};
-
 /* ────────────────────── helper: canvas image generation ────────────────────── */
 const generateRequestImage = (req: RequestItem): Promise<Blob> => {
   return new Promise((resolve, reject) => {
@@ -494,44 +473,7 @@ export default function WhatsAppDispatch() {
     }
   };
 
-  const handleDownloadPDFDirect = async () => {
-    if (!selectedReq) return;
-    try {
-      showToast('Generando PDF...');
-      const jspdfModule = await loadJsPDF();
-      const { jsPDF } = jspdfModule;
-      
-      const blob = await generateRequestImage(selectedReq);
-      const reader = new FileReader();
-      reader.readAsDataURL(blob);
-      reader.onloadend = () => {
-        const base64data = reader.result as string;
-        
-        const img = new Image();
-        img.src = base64data;
-        img.onload = () => {
-          // Since the canvas was drawn at 3x resolution, we divide pixels by 3 to calculate physical mm size
-          const scale = 3;
-          const widthMm = (img.width / scale) * 0.264583;
-          const heightMm = (img.height / scale) * 0.264583;
-          
-          const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: [widthMm, heightMm]
-          });
-          
-          pdf.addImage(base64data, 'PNG', 0, 0, widthMm, heightMm);
-          pdf.save(`Pedido_${selectedReq.id.toUpperCase()}.pdf`);
-          showToast('¡PDF Descargado!');
-        };
-      };
-    } catch (err) {
-      console.error('Error generating PDF:', err);
-      showToast('Error al generar PDF. Abriendo impresión...');
-      handlePrintLocalPDF();
-    }
-  };
+
 
   /* ─── Print PDF / Save as PDF ─── */
   const handlePrintLocalPDF = () => {
@@ -856,15 +798,15 @@ export default function WhatsAppDispatch() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
-                  {/* Download PDF (Direct file download) */}
-                  <button
-                    onClick={handleDownloadPDFDirect}
-                    disabled={!selectedReq}
-                    className="w-full flex items-center justify-center gap-2 h-12 border-2 border-primary text-primary hover:bg-primary-light font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer disabled:bg-slate-50 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed flex items-center justify-center"
+                  {/* Download PDF (Backend Link) */}
+                  <a
+                    href={selectedReq ? `${process.env.NEXT_PUBLIC_API_URL || 'https://107.172.193.34.nip.io'}/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte/pdf` : '#'}
+                    download={`Pedido_${selectedReq?.id?.toUpperCase()}.pdf`}
+                    className={`w-full flex items-center justify-center gap-2 h-12 border-2 border-primary text-primary hover:bg-primary-light font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer text-center flex items-center justify-center ${!selectedReq ? 'pointer-events-none opacity-50 bg-slate-50 text-slate-400 border-slate-200' : ''}`}
                   >
                     <Download className="w-4 h-4 text-primary shrink-0" />
                     <span className="ml-1">Descargar PDF</span>
-                  </button>
+                  </a>
 
                   {/* Print PDF (Local print window) */}
                   <button
