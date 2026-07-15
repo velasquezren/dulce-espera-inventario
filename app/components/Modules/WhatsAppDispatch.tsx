@@ -39,6 +39,27 @@ interface RequestItem {
   }>;
 }
 
+/* ────────────────────── helper: dynamic jsPDF loader ────────────────────── */
+const loadJsPDF = () => {
+  return new Promise<any>((resolve, reject) => {
+    if (typeof window === 'undefined') {
+      reject(new Error('jsPDF can only be loaded on the client'));
+      return;
+    }
+    if ((window as any).jspdf) {
+      resolve((window as any).jspdf);
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+    script.onload = () => {
+      resolve((window as any).jspdf);
+    };
+    script.onerror = reject;
+    document.body.appendChild(script);
+  });
+};
+
 /* ────────────────────── helper: canvas image generation ────────────────────── */
 const generateRequestImage = (req: RequestItem): Promise<Blob> => {
   return new Promise((resolve, reject) => {
@@ -453,6 +474,47 @@ export default function WhatsAppDispatch() {
     }
   };
 
+  const handleDownloadPDFDirect = async () => {
+    if (!selectedReq) return;
+    try {
+      showToast('Generando PDF...');
+      const jspdfModule = await loadJsPDF();
+      const { jsPDF } = jspdfModule;
+      
+      const blob = await generateRequestImage(selectedReq);
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = () => {
+        const base64data = reader.result as string;
+        
+        const img = new Image();
+        img.src = base64data;
+        img.onload = () => {
+          const widthPx = img.width;
+          const heightPx = img.height;
+          
+          // Convert pixels to mm for PDF (1 px = 0.264583 mm)
+          const widthMm = widthPx * 0.264583;
+          const heightMm = heightPx * 0.264583;
+          
+          const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: [widthMm, heightMm]
+          });
+          
+          pdf.addImage(base64data, 'PNG', 0, 0, widthMm, heightMm);
+          pdf.save(`Pedido_${selectedReq.id.toUpperCase()}.pdf`);
+          showToast('¡PDF Descargado!');
+        };
+      };
+    } catch (err) {
+      console.error('Error generating PDF:', err);
+      showToast('Error al generar PDF. Abriendo impresión...');
+      handlePrintLocalPDF();
+    }
+  };
+
   /* ─── Print PDF / Save as PDF ─── */
   const handlePrintLocalPDF = () => {
     if (!selectedReq) return;
@@ -758,31 +820,15 @@ export default function WhatsAppDispatch() {
                   <span>Compartir Imagen</span>
                 </button>
 
-                {/* Grid of helpers: Copy / Download */}
-                <div className="grid grid-cols-2 gap-2">
-                  
-                  {/* Copy Voucher Image */}
-                  <button
-                    onClick={handleCopyImage}
-                    disabled={!selectedReq}
-                    className="flex items-center justify-center gap-1.5 h-11 border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer"
-                    title="Copia el reporte en imagen al portapapeles para pegarlo directamente en WhatsApp (Cmd+V o Ctrl+V)"
-                  >
-                    <Copy className="w-3.5 h-3.5 text-primary" />
-                    <span>Copiar Imagen</span>
-                  </button>
-
-                  {/* Download Image */}
-                  <button
-                    onClick={handleDownloadImage}
-                    disabled={!selectedReq}
-                    className="flex items-center justify-center gap-1.5 h-11 border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer"
-                  >
-                    <Download className="w-3.5 h-3.5 text-primary" />
-                    <span>Bajar Imagen</span>
-                  </button>
-                  
-                </div>
+                {/* 2. Secondary Action: Download Image */}
+                <button
+                  onClick={handleDownloadImage}
+                  disabled={!selectedReq}
+                  className="w-full flex items-center justify-center gap-2.5 h-12 rounded-xl font-bold text-sm bg-secondary hover:bg-secondary-hover text-white transition-all active:scale-[0.98] cursor-pointer shadow-md shadow-secondary/20 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed disabled:shadow-none"
+                >
+                  <Download className="w-5 h-5 text-white" />
+                  <span>Descargar Imagen</span>
+                </button>
 
                 {/* Section divider */}
                 <div className="flex items-center gap-2 py-1">
@@ -792,13 +838,13 @@ export default function WhatsAppDispatch() {
                 </div>
 
                 <div className="grid grid-cols-1 gap-2">
-                  {/* Download PDF / Save as PDF */}
+                  {/* Download PDF (Direct file download) */}
                   <button
-                    onClick={handlePrintLocalPDF}
+                    onClick={handleDownloadPDFDirect}
                     disabled={!selectedReq}
-                    className="flex items-center justify-center gap-2.5 h-12 bg-secondary hover:bg-secondary-hover text-white font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-md shadow-secondary/20 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed disabled:shadow-none"
+                    className="w-full flex items-center justify-center gap-2.5 h-12 border-2 border-primary text-primary hover:bg-primary-light font-bold text-sm rounded-xl transition-all active:scale-[0.98] cursor-pointer disabled:bg-slate-50 disabled:text-slate-400 disabled:border-slate-200 disabled:cursor-not-allowed"
                   >
-                    <Printer className="w-4 h-4 text-white" />
+                    <Download className="w-5 h-5 text-primary" />
                     <span>Descargar PDF</span>
                   </button>
                 </div>
