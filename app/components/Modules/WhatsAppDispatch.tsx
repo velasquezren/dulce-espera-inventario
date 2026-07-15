@@ -39,6 +39,41 @@ interface RequestItem {
   }>;
 }
 
+/* ────────────────────── helpers: text wrapping for canvas ────────────────────── */
+const getWrappedLinesCount = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number): number => {
+  const words = text.split(' ');
+  let line = '';
+  let count = 1;
+  for (let n = 0; n < words.length; n++) {
+    const testLine = line + words[n] + ' ';
+    if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+      line = words[n] + ' ';
+      count++;
+    } else {
+      line = testLine;
+    }
+  }
+  return count;
+};
+
+const drawWrappedText = (ctx: CanvasRenderingContext2D, text: string, x: number, y: number, maxWidth: number, lineHeight: number): number => {
+  const words = text.split(' ');
+  let line = '';
+  let currentY = y;
+  for (let n = 0; n < words.length; n++) {
+    const testLine = line + words[n] + ' ';
+    if (ctx.measureText(testLine).width > maxWidth && n > 0) {
+      ctx.fillText(line, x, currentY);
+      line = words[n] + ' ';
+      currentY += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line, x, currentY);
+  return currentY;
+};
+
 /* ────────────────────── helper: canvas image generation ────────────────────── */
 const generateRequestImage = (req: RequestItem): Promise<Blob> => {
   return new Promise((resolve, reject) => {
@@ -64,12 +99,20 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
       
       // Calculate heights dynamically
       const headerHeight = 110;
-      const infoHeight = 65;
+      const infoHeight = 45; // reduced since we removed Cargo/Destino space
       const sectionTitleHeight = 35;
       const tableHeaderHeight = 30;
       const rowHeight = 26;
       const tableFooterHeight = 35;
-      const reasonHeight = req.reason ? 70 : 0;
+
+      // Calculate reason text wrapping height
+      const tempCanvas = document.createElement('canvas');
+      const tempCtx = tempCanvas.getContext('2d')!;
+      tempCtx.font = 'italic 11px Inter, system-ui, -apple-system, sans-serif';
+      const reasonText = req.reason ? `"${req.reason}"` : '';
+      const reasonLinesCount = req.reason ? getWrappedLinesCount(tempCtx, reasonText, 500) : 0;
+      const reasonHeight = req.reason ? 30 + (reasonLinesCount * 16) : 0;
+
       const signatureHeight = 110;
       const footerHeight = 55;
 
@@ -92,11 +135,6 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, width, height);
 
-      // Document border
-      ctx.strokeStyle = '#e2e8f0';
-      ctx.lineWidth = 4;
-      ctx.strokeRect(2, 2, width - 4, height - 4);
-
       // Header Logo Icon
       if (logo) {
         ctx.drawImage(logo, 30, 30, 40, 40);
@@ -111,10 +149,12 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
         ctx.fillRect(38, 47, 24, 6);
       }
 
-      // Brand Name Text
+      // Brand Name Text (centered vertically relative to the 40px logo)
       ctx.fillStyle = '#006156';
-      ctx.font = 'bold 20px system-ui, -apple-system, sans-serif';
-      ctx.fillText('DULCE ESPERA', 84, 55);
+      ctx.font = 'bold 22px Inter, system-ui, -apple-system, sans-serif';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('DULCE ESPERA', 84, 50);
+      ctx.textBaseline = 'alphabetic'; // restore baseline
 
       // Top Right Metadata
       ctx.fillStyle = '#475569';
@@ -135,29 +175,29 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
       ctx.lineTo(570, 92);
       ctx.stroke();
 
-      // Info section (Solicitado por, Cargo, Destino)
+      // Info section (Solicitado por)
+      let currentY = 118;
       ctx.fillStyle = '#0f172a';
-      ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
-      ctx.fillText('Solicitado por:', 30, 118);
+      ctx.font = 'bold 11px Inter, system-ui, -apple-system, sans-serif';
+      ctx.fillText('Solicitado por:', 30, currentY);
 
       ctx.fillStyle = '#475569';
-      ctx.font = '500 11px system-ui, -apple-system, sans-serif';
-      ctx.fillText(req.user, 115, 118);
-
-
+      ctx.font = '500 11px Inter, system-ui, -apple-system, sans-serif';
+      ctx.fillText(req.user, 115, currentY);
 
       // Section title
+      currentY = 155;
       ctx.fillStyle = '#39ADA3';
-      ctx.fillRect(30, 155, 3, 14);
+      ctx.fillRect(30, currentY - 11, 3, 14);
 
       ctx.fillStyle = '#006156';
-      ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
-      ctx.fillText('PRODUCTOS SOLICITADOS', 40, 166);
+      ctx.font = 'bold 10px Inter, system-ui, -apple-system, sans-serif';
+      ctx.fillText('PRODUCTOS SOLICITADOS', 40, currentY);
 
       // Table Header
-      let currentY = 194;
+      currentY = 186;
       ctx.fillStyle = '#006156';
-      ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
+      ctx.font = 'bold 10px Inter, system-ui, -apple-system, sans-serif';
       
       ctx.textAlign = 'center';
       ctx.fillText('N°', 42, currentY);
@@ -176,29 +216,29 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
       ctx.strokeStyle = '#006156';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.moveTo(30, 202);
-      ctx.lineTo(570, 202);
+      ctx.moveTo(30, 194);
+      ctx.lineTo(570, 194);
       ctx.stroke();
 
-      currentY += 24;
+      currentY = 214;
 
       // Items
       req.items.forEach((item: any, idx: number) => {
-        // Row alternating background
+        // Continuous Alternating background rows (no gaps!)
         if (idx % 2 === 1) {
           ctx.fillStyle = '#f8fafb';
-          ctx.fillRect(30, currentY - 16, 540, 22);
+          ctx.fillRect(30, currentY - 18, 540, 26);
         }
         
         // Index
         ctx.fillStyle = '#94a3b8';
-        ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
+        ctx.font = 'bold 10px Inter, system-ui, -apple-system, sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(String(idx + 1), 42, currentY);
         
         // Product Name
         ctx.fillStyle = '#0f172a';
-        ctx.font = '600 11px system-ui, -apple-system, sans-serif';
+        ctx.font = '600 11px Inter, system-ui, -apple-system, sans-serif';
         ctx.textAlign = 'left';
         let pName = item.productName || 'Producto';
         if (pName.length > 44) pName = pName.slice(0, 41) + '...';
@@ -206,13 +246,13 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
 
         // Unit
         ctx.fillStyle = '#64748b';
-        ctx.font = '500 11px system-ui, -apple-system, sans-serif';
+        ctx.font = '500 11px Inter, system-ui, -apple-system, sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText(item.unit || 'uds', 440, currentY);
 
         // Quantity
         ctx.fillStyle = '#006156';
-        ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
+        ctx.font = 'bold 12px Inter, system-ui, -apple-system, sans-serif';
         ctx.textAlign = 'right';
         ctx.fillText(String(item.quantity), 570, currentY);
 
@@ -229,11 +269,13 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
       ctx.stroke();
 
       // Summary Box
+      ctx.beginPath();
+      ctx.roundRect(30, currentY - 8, 540, 28, 6);
       ctx.fillStyle = '#f0faf9';
-      ctx.fillRect(30, currentY - 8, 540, 28);
+      ctx.fill();
       
       ctx.fillStyle = '#006156';
-      ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+      ctx.font = 'bold 11px Inter, system-ui, -apple-system, sans-serif';
       ctx.fillText(`TOTAL: ${req.items.length} producto${req.items.length !== 1 ? 's' : ''}`, 40, currentY + 10);
 
       const totalUnits = req.items.reduce((acc: number, item: any) => acc + item.quantity, 0);
@@ -243,23 +285,27 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
 
       currentY += tableFooterHeight;
 
-      // Reason Box
+      // Reason Box (wrapped correctly with rounded corners)
       if (req.reason) {
         currentY += 15;
         
+        ctx.beginPath();
+        ctx.roundRect(30, currentY - 15, 540, reasonHeight - 15, 6);
         ctx.fillStyle = '#f0faf9';
-        ctx.fillRect(33, currentY - 15, 537, 45);
+        ctx.fill();
 
         ctx.fillStyle = '#39ADA3';
-        ctx.fillRect(30, currentY - 15, 3, 45);
+        ctx.fillRect(30, currentY - 15, 3, reasonHeight - 15);
 
         ctx.fillStyle = '#006156';
-        ctx.font = 'bold 9px system-ui, -apple-system, sans-serif';
+        ctx.font = 'bold 9px Inter, system-ui, -apple-system, sans-serif';
         ctx.fillText('Motivo / Justificación', 46, currentY);
 
         ctx.fillStyle = '#334155';
-        ctx.font = 'italic 11px system-ui, -apple-system, sans-serif';
-        ctx.fillText(`"${req.reason}"`, 46, currentY + 18);
+        ctx.font = 'italic 11px Inter, system-ui, -apple-system, sans-serif';
+        
+        // Draw the wrapped text inside the box
+        drawWrappedText(ctx, reasonText, 46, currentY + 18, 500, 16);
 
         currentY += reasonHeight;
       }
@@ -276,7 +322,7 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
       ctx.stroke();
 
       ctx.fillStyle = '#64748b';
-      ctx.font = 'bold 9px system-ui, -apple-system, sans-serif';
+      ctx.font = 'bold 9px Inter, system-ui, -apple-system, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('Firma de Solicitante', 150, currentY + 14);
 
@@ -300,7 +346,7 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
       ctx.stroke();
 
       ctx.fillStyle = '#94a3b8';
-      ctx.font = '500 8px system-ui, -apple-system, sans-serif';
+      ctx.font = '500 8px Inter, system-ui, -apple-system, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(`© ${new Date().getFullYear()} Dulce Espera — Documento oficial para control de insumos.`, width / 2, currentY + 18);
 
