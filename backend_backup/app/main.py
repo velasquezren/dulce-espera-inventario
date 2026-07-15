@@ -630,7 +630,7 @@ def ver_reporte_pedido(id_publico: str, db: Session = Depends(get_db)):
     <div class="container">
         <div class="header">
             <div class="brand">
-                <img src="https://dulce-espera-inventario.vercel.app/icon.svg" alt="Logo" style="width: 50px; height: 50px; object-fit: contain;" onerror="this.style.display='none'">
+                <img src="https://dulce-espera-inventario.vercel.app/logo.svg" alt="Logo" style="width: 50px; height: 50px; object-fit: contain;" onerror="this.style.display='none'">
                 <div>
                     <h1 class="brand-title">DULCE ESPERA</h1>
                     <div class="brand-subtitle">Cocina y Nutrición</div>
@@ -815,7 +815,7 @@ def ver_reporte_pedido_pdf(id_publico: str, db: Session = Depends(get_db)):
     <table class="header-table">
         <tr>
             <td style="width: 55px; vertical-align: middle;">
-                <img src="https://dulce-espera-inventario.vercel.app/icon.png" style="width: 45px; height: 45px;" />
+                <img src="https://dulce-espera-inventario.vercel.app/icon-192.png" style="width: 45px; height: 45px;" />
             </td>
             <td style="vertical-align: middle;">
                 <div class="brand-title">DULCE ESPERA</div>
@@ -1220,7 +1220,7 @@ def ver_reporte_pedido_admin(id_publico: str, db: Session = Depends(get_db)):
     <div class="container">
         <div class="header">
             <div class="brand">
-                <img src="https://dulce-espera-inventario.vercel.app/icon.svg" alt="Logo" style="width: 75px; height: 75px; object-fit: contain;" onerror="this.style.display='none'">
+                <img src="https://dulce-espera-inventario.vercel.app/logo.svg" alt="Logo" style="width: 75px; height: 75px; object-fit: contain;" onerror="this.style.display='none'">
                 <div>
                     <h1 class="brand-title">DULCE ESPERA</h1>
                     <span class="doc-type">CONTROL DE COMPRAS E INSUMOS</span>
@@ -1452,7 +1452,7 @@ def ver_reporte_pedido_abastecimiento(id_publico: str, db: Session = Depends(get
     <div class="container">
         <div class="header">
             <div class="brand">
-                <img src="https://dulce-espera-inventario.vercel.app/icon.svg" alt="Logo" style="width: 75px; height: 75px; object-fit: contain;" onerror="this.style.display='none'">
+                <img src="https://dulce-espera-inventario.vercel.app/logo.svg" alt="Logo" style="width: 75px; height: 75px; object-fit: contain;" onerror="this.style.display='none'">
                 <div>
                     <h1 class="brand-title">DULCE ESPERA</h1>
                     <span class="doc-type">LISTA DE VERIFICACIÓN Y CONTROL DE CALIDAD DE RECEPCIÓN (HACCP)</span>
@@ -1724,7 +1724,7 @@ def ver_reporte_pedido_categorias(id_publico: str, db: Session = Depends(get_db)
     <div class="container">
         <div class="header">
             <div class="brand">
-                <img src="https://dulce-espera-inventario.vercel.app/icon.svg" alt="Logo" style="width: 75px; height: 75px; object-fit: contain;" onerror="this.style.display='none'">
+                <img src="https://dulce-espera-inventario.vercel.app/logo.svg" alt="Logo" style="width: 75px; height: 75px; object-fit: contain;" onerror="this.style.display='none'">
                 <div>
                     <h1 class="brand-title">DULCE ESPERA</h1>
                     <span class="doc-type">INFORME DE COMPRAS CLASIFICADO POR CATEGORÍAS</span>
