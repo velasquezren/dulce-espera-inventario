@@ -22,42 +22,311 @@ import {
   X,
   ExternalLink,
   ShoppingCart,
-  ArrowLeft
+  ArrowLeft,
+  Copy,
+  Image as ImageIcon,
+  Users
 } from 'lucide-react';
 
 /* ────────────────────── types ────────────────────── */
 type SortKey = 'date' | 'user' | 'items' | 'status';
 type SortDir = 'asc' | 'desc';
 
+interface RequestItem {
+  id: string;
+  idPublico?: string;
+  date: string;
+  status: 'Pendiente' | 'En revisión' | 'Aprobado' | 'Aceptado' | 'Rechazado' | 'Comprado' | 'Entregado' | 'Cancelado';
+  user: string;
+  reason?: string;
+  items: Array<{
+    productId: string;
+    productName: string;
+    quantity: number;
+    unit: string;
+    notes?: string;
+  }>;
+}
+
+/* ────────────────────── helper: canvas image generation ────────────────────── */
+const generateRequestImage = (req: RequestItem): Promise<Blob> => {
+  return new Promise((resolve, reject) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+      reject(new Error('Could not get canvas context'));
+      return;
+    }
+
+    const width = 500;
+    
+    // Calculate heights dynamically
+    const headerHeight = 84;
+    const metadataHeight = 60;
+    const paddingMiddle = 30;
+    const tableHeaderHeight = 25;
+    const itemHeight = 22;
+    const summaryHeight = 44;
+    const reasonHeight = req.reason ? 54 : 0;
+    const footerHeight = 50;
+
+    const height = headerHeight + metadataHeight + paddingMiddle + tableHeaderHeight + 
+                   (req.items.length * itemHeight) + summaryHeight + reasonHeight + footerHeight;
+
+    canvas.width = width;
+    canvas.height = height;
+
+    // Background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, width, height);
+
+    // Border
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(2, 2, width - 4, height - 4);
+
+    // Header (Dulce Espera clinical primary teal color)
+    ctx.fillStyle = '#006156';
+    ctx.fillRect(4, 4, width - 8, 80);
+
+    // Logo icon (Circle + white cross)
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(48, 44, 20, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = '#006156';
+    // vertical
+    ctx.fillRect(45, 32, 6, 24);
+    // horizontal
+    ctx.fillRect(36, 41, 24, 6);
+
+    // Brand texts
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 18px system-ui, -apple-system, sans-serif';
+    ctx.fillText('DULCE ESPERA', 80, 40);
+
+    ctx.fillStyle = '#a7f3d0';
+    ctx.font = 'bold 9px system-ui, -apple-system, sans-serif';
+    ctx.fillText('COCINA Y NUTRICIÓN CLÍNICA', 80, 56);
+
+    // Order ID (top right)
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 11px monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(`#${req.id.toUpperCase()}`, width - 24, 46);
+    ctx.textAlign = 'left';
+
+    // Metadata section (Gray card)
+    ctx.fillStyle = '#f8fafc';
+    ctx.fillRect(4, 84, width - 8, 60);
+
+    // Solicitado por
+    ctx.fillStyle = '#64748b';
+    ctx.font = 'bold 9px system-ui, -apple-system, sans-serif';
+    ctx.fillText('SOLICITADO POR', 24, 107);
+
+    ctx.fillStyle = '#0f172a';
+    ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
+    const userName = req.user || 'Personal de Cocina';
+    ctx.fillText(userName.toUpperCase(), 24, 127);
+
+    // Fecha
+    ctx.fillStyle = '#64748b';
+    ctx.font = 'bold 9px system-ui, -apple-system, sans-serif';
+    ctx.fillText('FECHA REGISTRO', 330, 107);
+
+    ctx.fillStyle = '#0f172a';
+    ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
+    ctx.fillText(req.date.split(' ')[0], 330, 127);
+
+    // Table Header
+    let currentY = 175;
+    ctx.fillStyle = '#006156';
+    ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
+    ctx.fillText('DESCRIPCIÓN DEL INSUMO', 24, currentY);
+
+    ctx.textAlign = 'right';
+    ctx.fillText('CANTIDAD', width - 24, currentY);
+    ctx.textAlign = 'left';
+
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(24, currentY + 8);
+    ctx.lineTo(width - 24, currentY + 8);
+    ctx.stroke();
+
+    currentY += 24;
+
+    // Items
+    req.items.forEach((item: any, idx: number) => {
+      if (idx % 2 === 1) {
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillRect(20, currentY - 14, width - 40, 22);
+      }
+      
+      ctx.fillStyle = '#334155';
+      ctx.font = '600 11px system-ui, -apple-system, sans-serif';
+      let pName = item.productName || 'Producto';
+      if (pName.length > 42) pName = pName.slice(0, 39) + '...';
+      ctx.fillText(pName, 24, currentY + 1);
+
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#006156';
+      ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
+      ctx.fillText(`${item.quantity} ${item.unit || 'uds'}`, width - 24, currentY + 1);
+      ctx.textAlign = 'left';
+
+      currentY += 22;
+    });
+
+    // Divider
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(24, currentY - 6);
+    ctx.lineTo(width - 24, currentY - 6);
+    ctx.stroke();
+
+    currentY += 12;
+
+    // Summary box
+    ctx.fillStyle = '#f0faf9';
+    ctx.fillRect(20, currentY - 10, width - 40, 32);
+    ctx.strokeStyle = '#39ada3';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(20, currentY - 10, width - 40, 32);
+
+    ctx.fillStyle = '#006156';
+    ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
+    ctx.fillText(`PRODUCTOS: ${req.items.length}`, 32, currentY + 10);
+
+    const totalUnits = req.items.reduce((acc: number, item: any) => acc + item.quantity, 0);
+    ctx.textAlign = 'right';
+    ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+    ctx.fillText(`UNIDADES TOTALES: ${totalUnits}`, width - 32, currentY + 10);
+    ctx.textAlign = 'left';
+
+    currentY += 34;
+
+    // Reason
+    if (req.reason) {
+      ctx.fillStyle = '#fffbeb';
+      ctx.fillRect(20, currentY - 6, width - 40, 44);
+      
+      ctx.strokeStyle = '#fef3c7';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(20, currentY - 6, width - 40, 44);
+
+      ctx.fillStyle = '#b45309';
+      ctx.font = 'bold 8px system-ui, -apple-system, sans-serif';
+      ctx.fillText('MOTIVO / JUSTIFICACIÓN:', 30, currentY + 6);
+
+      ctx.fillStyle = '#78350f';
+      ctx.font = 'italic 10px system-ui, -apple-system, sans-serif';
+      let rsn = req.reason;
+      if (rsn.length > 60) rsn = rsn.slice(0, 57) + '...';
+      ctx.fillText(`"${rsn}"`, 30, currentY + 22);
+
+      currentY += 54;
+    }
+
+    // Footer
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = '500 8px system-ui, -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Generado desde el sistema de inventario Dulce Espera', width / 2, currentY);
+    ctx.fillText('Válido para fines de control de insumos y despacho cocina', width / 2, currentY + 12);
+
+    canvas.toBlob((blob) => {
+      if (blob) {
+        resolve(blob);
+      } else {
+        reject(new Error('Canvas generated null blob'));
+      }
+    }, 'image/png');
+  });
+};
+
 /* ────────────────────── component ────────────────────── */
 export default function WhatsAppDispatch() {
   const { requests, coordinators } = useApp();
 
-  /* selection */
+  /* selection ids */
   const [selectedReqId, setSelectedReqId] = useState('');
   const [selectedCoordId, setSelectedCoordId] = useState('');
-  const [mobileStep, setMobileStep] = useState<'list' | 'details'>('list');
 
-  /* search / filter / sort */
+  /* modals states */
+  const [isReqModalOpen, setIsReqModalOpen] = useState(false);
+  const [isCoordModalOpen, setIsCoordModalOpen] = useState(false);
+
+  /* search / filter / sort (inside Request selection modal) */
   const [searchOrderQuery, setSearchOrderQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [sortKey, setSortKey] = useState<SortKey>('date');
   const [sortDir, setSortDir] = useState<SortDir>('desc');
 
-  /* ui */
+  /* ui states */
   const [canShare, setCanShare] = useState(false);
   const [expandedPreview, setExpandedPreview] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('');
+  const [isGenerating, setIsGenerating] = useState(false);
+
   const previewRef = useRef<HTMLDivElement>(null);
 
+  // Check share capabilities
   useEffect(() => {
-    if (typeof navigator !== 'undefined' && !!(navigator as any).share) { // eslint-disable-line @typescript-eslint/no-explicit-any
+    if (typeof navigator !== 'undefined' && !!(navigator as any).share) {
       setCanShare(true);
     }
   }, []);
 
+  // Pre-select latest request on load
+  const latestRequest = useMemo(() => {
+    if (!requests || requests.length === 0) return null;
+    return [...requests].sort((a, b) => b.date.localeCompare(a.date))[0];
+  }, [requests]);
+
+  useEffect(() => {
+    if (latestRequest && !selectedReqId) {
+      setSelectedReqId(latestRequest.idPublico || latestRequest.id);
+    }
+  }, [latestRequest, selectedReqId]);
+
+  // Pre-select first coordinator on load
+  useEffect(() => {
+    if (coordinators && coordinators.length > 0 && !selectedCoordId) {
+      setSelectedCoordId(String(coordinators[0].id));
+    }
+  }, [coordinators, selectedCoordId]);
+
   /* derived data */
-  const selectedReq = requests.find((r) => r.idPublico === selectedReqId || r.id === selectedReqId);
+  const selectedReq = requests.find((r) => r.idPublico === selectedReqId || r.id === selectedReqId) as RequestItem | undefined;
   const selectedCoord = coordinators.find((c) => String(c.id) === String(selectedCoordId));
+
+  // Generate Image Preview Url
+  useEffect(() => {
+    if (selectedReq) {
+      setIsGenerating(true);
+      generateRequestImage(selectedReq)
+        .then((blob) => {
+          const url = URL.createObjectURL(blob);
+          setImagePreviewUrl(url);
+          setIsGenerating(false);
+          return () => {
+            URL.revokeObjectURL(url);
+          };
+        })
+        .catch((err) => {
+          console.error('Error rendering image preview:', err);
+          setIsGenerating(false);
+        });
+    } else {
+      setImagePreviewUrl('');
+    }
+  }, [selectedReq]);
 
   /* unique statuses for filter */
   const uniqueStatuses = useMemo(() => {
@@ -65,16 +334,14 @@ export default function WhatsAppDispatch() {
     return Array.from(set);
   }, [requests]);
 
-  /* filtered + sorted requests */
+  /* filtered + sorted requests (in selection modal) */
   const processedRequests = useMemo(() => {
     let list = [...requests];
 
-    // status filter
     if (statusFilter !== 'all') {
       list = list.filter(r => r.status === statusFilter);
     }
 
-    // search filter
     if (searchOrderQuery.trim()) {
       const q = searchOrderQuery.toLowerCase();
       list = list.filter(r =>
@@ -85,7 +352,6 @@ export default function WhatsAppDispatch() {
       );
     }
 
-    // sort
     list.sort((a, b) => {
       let cmp = 0;
       switch (sortKey) {
@@ -100,10 +366,14 @@ export default function WhatsAppDispatch() {
     return list;
   }, [requests, statusFilter, searchOrderQuery, sortKey, sortDir]);
 
-  /* toggle sort */
   const toggleSort = (key: SortKey) => {
     if (sortKey === key) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
     else { setSortKey(key); setSortDir('desc'); }
+  };
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(''), 3000);
   };
 
   /* ─── WhatsApp message ─── */
@@ -112,9 +382,9 @@ export default function WhatsAppDispatch() {
     let msg = `*DULCE ESPERA - SOLICITUD DE INSUMOS* 🏥🥣\n`;
     msg += `----------------------------------------\n`;
     msg += `Se ha registrado una nueva solicitud de insumos.\n\n`;
-    msg += `• *ID Solicitud:* ${selectedReq.id.toUpperCase()}\n`;
-    msg += `• *Fecha:* ${selectedReq.date}\n`;
-    msg += `• *Solicitado por:* ${selectedReq.user}\n\n`;
+    msg += `• *Solicitado por:* ${selectedReq.user}\n`;
+    msg += `• *ID Pedido:* ${selectedReq.id.toUpperCase()}\n`;
+    msg += `• *Fecha:* ${selectedReq.date}\n\n`;
     msg += `*Productos Solicitados:*\n`;
     selectedReq.items.forEach((item) => {
       msg += `- ${item.productName}: *${item.quantity} ${item.unit}*\n`;
@@ -136,15 +406,68 @@ export default function WhatsAppDispatch() {
     window.open(url, '_blank');
   };
 
-  const handleNativeShare = async () => {
+  const handleCopyText = async () => {
+    try {
+      await navigator.clipboard.writeText(generateMessage());
+      showToast('¡Texto copiado al portapapeles!');
+    } catch {
+      showToast('Error al copiar el texto');
+    }
+  };
+
+  const handleCopyImage = async () => {
     if (!selectedReq) return;
     try {
-      await navigator.share({
-        title: `Solicitud de Insumos - Lista ${selectedReq.id.toUpperCase()}`,
-        text: generateMessage(),
-        url: `https://107.172.193.34.nip.io/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte`
-      });
-    } catch { /* user cancelled */ }
+      const blob = await generateRequestImage(selectedReq);
+      await navigator.clipboard.write([
+        new ClipboardItem({
+          [blob.type]: blob
+        })
+      ]);
+      showToast('¡Imagen copiada! Pégala en WhatsApp.');
+    } catch (err) {
+      console.error(err);
+      showToast('Error al copiar imagen. Prueba a descargar.');
+    }
+  };
+
+  const handleShareImage = async () => {
+    if (!selectedReq) return;
+    try {
+      const blob = await generateRequestImage(selectedReq);
+      const file = new File([blob], `Pedido_${selectedReq.id}.png`, { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `Pedido ${selectedReq.id}`,
+          text: `Solicitud de insumos de ${selectedReq.user}`
+        });
+      } else {
+        handleDownloadImage();
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('No se pudo compartir la imagen');
+    }
+  };
+
+  const handleDownloadImage = async () => {
+    if (!selectedReq) return;
+    try {
+      const blob = await generateRequestImage(selectedReq);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Pedido_${selectedReq.id.toUpperCase()}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('¡Imagen descargada!');
+    } catch (err) {
+      console.error(err);
+      showToast('Error al descargar la imagen');
+    }
   };
 
   /* ─── Print PDF ─── */
@@ -252,7 +575,7 @@ export default function WhatsAppDispatch() {
     printWindow.document.close();
   };
 
-  /* ─── Status badge config ─── */
+  /* Status badge config */
   const statusConfig: Record<string, { bg: string; text: string; dot: string }> = {
     Cancelado: { bg: 'bg-rose-50 border-rose-200', text: 'text-rose-600', dot: 'bg-rose-400' },
     Rechazado: { bg: 'bg-rose-50 border-rose-200', text: 'text-rose-600', dot: 'bg-rose-400' },
@@ -266,86 +589,399 @@ export default function WhatsAppDispatch() {
 
   const getStatusInfo = (s: string) => statusConfig[s] || { bg: 'bg-slate-50 border-slate-200', text: 'text-slate-600', dot: 'bg-slate-400' };
 
-  /* ────────────────────── RENDER ────────────────────── */
   return (
-    <div className="animate-fade-in w-full max-w-[1440px] mx-auto pb-24 md:pb-8">
+    <div className="animate-fade-in w-full max-w-[1280px] mx-auto pb-24 md:pb-8 space-y-6">
+      
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-clinical-lg flex items-center gap-2 animate-fade-in border border-slate-800">
+          <Check className="w-4 h-4 text-emerald-400 stroke-[3]" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
 
       {/* ═══════ HEADER ═══════ */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-[#25D366]/10 text-[#25D366] inline-flex">
-            <svg className="w-6 h-6 fill-current" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div className="flex items-center gap-3.5">
+          <div className="p-3 rounded-2xl bg-[#25D366]/10 text-[#25D366] inline-flex shadow-clinical-sm border border-[#25D366]/15">
+            <svg className="w-7 h-7 fill-current" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
               <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
             </svg>
           </div>
           <div>
-            <h1 className="text-xl font-extrabold tracking-tight text-slate-800">
-              Despacho y Envío
+            <h1 className="text-2xl font-extrabold tracking-tight text-slate-800">
+              Despacho de Pedidos
             </h1>
-            <p className="text-[11px] text-slate-400 font-semibold mt-0.5">
-              Envía reportes por WhatsApp o descárgalos como PDF
+            <p className="text-xs text-slate-400 font-semibold mt-0.5">
+              Comparte reportes de insumos y comprobantes directamente por WhatsApp
             </p>
           </div>
         </div>
 
-        {/* Stats pills */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary-light text-primary text-[11px] font-bold">
+        {/* Status indicators */}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary-light text-primary text-xs font-bold border border-primary/10">
             <Package className="w-3.5 h-3.5" />
-            {requests.length} pedidos
+            {requests.length} Solicitudes
           </div>
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-amber-50 text-amber-700 text-[11px] font-bold border border-amber-200">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-700 text-xs font-bold border border-amber-200/50">
             <Clock className="w-3.5 h-3.5" />
-            {requests.filter(r => r.status === 'Pendiente').length} pendientes
+            {requests.filter(r => r.status === 'Pendiente').length} Pendientes
           </div>
         </div>
       </div>
 
-      {/* ═══════ MAIN 3-COLUMN LAYOUT ═══════ */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+      {!selectedReq ? (
+        /* Empty State */
+        <Card className="p-12 border border-dashed border-slate-300 rounded-3xl text-center flex flex-col items-center justify-center min-h-[400px] bg-white">
+          <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
+            <FileText className="w-8 h-8 text-slate-300 stroke-[1.5]" />
+          </div>
+          <h3 className="font-bold text-base text-slate-600">No hay solicitudes cargadas</h3>
+          <p className="text-xs text-slate-400 mt-1 max-w-[280px]">
+            Crea una solicitud de insumos en el formulario para poder despacharla.
+          </p>
+        </Card>
+      ) : (
+        /* ═══════ MAIN 2-COLUMN LAYOUT ═══════ */
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          
+          {/* ═══════ COL 1: SELECTED ORDER DETAIL & RECIPIENT ═══════ */}
+          <div className="lg:col-span-7 space-y-6">
+            
+            {/* Request Detail Card */}
+            <Card className="border border-slate-200/80 rounded-2xl shadow-clinical-md overflow-hidden bg-white">
+              {/* Header with requester and select button */}
+              <div className="px-6 py-5 bg-gradient-to-b from-slate-50/80 to-white border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm shrink-0">
+                    {selectedReq.user.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                  </div>
+                  <div>
+                    <h2 className="text-base font-extrabold text-slate-800 leading-tight">
+                      Solicitud de {selectedReq.user}
+                    </h2>
+                    <div className="flex items-center gap-2 mt-1 text-[11px] text-slate-400 font-semibold">
+                      <span>ID: #{selectedReq.id.toUpperCase()}</span>
+                      <span>•</span>
+                      <span>{selectedReq.date}</span>
+                    </div>
+                  </div>
+                </div>
 
-        {/* ═══════ COL 1: ORDER LIST (compact, scalable) ═══════ */}
-        <div className={`lg:col-span-4 xl:col-span-4 ${mobileStep === 'list' ? 'block' : 'hidden lg:block'}`}>
-          <Card className="border border-slate-200/80 rounded-2xl shadow-clinical-sm overflow-hidden">
-
-            {/* Search + filter bar */}
-            <div className="p-4 border-b border-slate-100 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  1. Seleccionar Pedido
-                </span>
-                {selectedReq && (
-                  <span className="text-[9px] font-bold bg-primary text-white px-2 py-0.5 rounded-full">
-                    ✓ Seleccionado
-                  </span>
-                )}
+                {/* Change Request Button */}
+                <button
+                  type="button"
+                  onClick={() => setIsReqModalOpen(true)}
+                  className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 border border-primary/30 hover:border-primary bg-white hover:bg-primary/5 rounded-xl font-bold text-xs text-primary transition-all active:scale-98 cursor-pointer"
+                >
+                  <ArrowUpDown className="w-3.5 h-3.5" />
+                  <span>Cambiar Pedido</span>
+                </button>
               </div>
 
-              {/* Search */}
+              {/* Status ribbon */}
+              <div className="px-6 py-2.5 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Estado de Aprobación</span>
+                {(() => {
+                  const si = getStatusInfo(selectedReq.status);
+                  return (
+                    <span className={`inline-flex items-center gap-1 text-xs font-bold px-2.5 py-0.5 rounded-full border ${si.bg} ${si.text}`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${si.dot}`} />
+                      {selectedReq.status}
+                    </span>
+                  );
+                })()}
+              </div>
+
+              {/* Items table */}
+              <div ref={previewRef} className={`transition-all duration-300 ${expandedPreview ? 'max-h-[600px]' : 'max-h-[280px]'} overflow-y-auto`}>
+                <table className="w-full text-xs text-left">
+                  <thead className="sticky top-0 z-10 bg-slate-50/90 backdrop-blur-sm border-b border-slate-100">
+                    <tr>
+                      <th className="py-3 pl-6 pr-2 text-[10px] font-black text-slate-400 uppercase tracking-wider w-8">#</th>
+                      <th className="py-3 px-2 text-[10px] font-black text-slate-400 uppercase tracking-wider">Producto</th>
+                      <th className="py-3 px-2 text-center text-[10px] font-black text-slate-400 uppercase tracking-wider w-20">Unidad</th>
+                      <th className="py-3 pl-2 pr-6 text-right text-[10px] font-black text-slate-400 uppercase tracking-wider w-16">Cant.</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {selectedReq.items.map((item, idx) => (
+                      <tr key={idx} className={`group transition-colors ${idx % 2 === 1 ? 'bg-slate-50/20' : 'bg-white'} hover:bg-slate-50`}>
+                        <td className="py-2.5 pl-6 pr-2 text-slate-400 font-bold text-[11px]">{idx + 1}</td>
+                        <td className="py-2.5 px-2 font-semibold text-slate-700">{item.productName}</td>
+                        <td className="py-2.5 px-2 text-center text-slate-400 font-medium text-[11px]">{item.unit}</td>
+                        <td className="py-2.5 pl-2 pr-6 text-right">
+                          <span className="font-extrabold text-primary text-sm">
+                            {item.quantity}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Expand/Collapse Items Toggle */}
+              {selectedReq.items.length > 5 && (
+                <button
+                  onClick={() => setExpandedPreview(!expandedPreview)}
+                  className="w-full px-6 py-2.5 border-t border-slate-100 flex items-center justify-center gap-1.5 text-xs font-bold text-primary hover:bg-primary/5 transition-colors cursor-pointer border-b"
+                >
+                  <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${expandedPreview ? 'rotate-180' : ''}`} />
+                  {expandedPreview ? 'Ver menos filas' : `Ver todas las ${selectedReq.items.length} filas`}
+                </button>
+              )}
+
+              {/* Justification / Reason */}
+              {selectedReq.reason && (
+                <div className="m-6 p-4 bg-amber-50/60 border border-amber-200/40 rounded-xl">
+                  <span className="text-[10px] font-black uppercase text-amber-700 tracking-wider block mb-1">Motivo / Justificación</span>
+                  <p className="text-xs text-slate-600 font-semibold italic leading-relaxed">
+                    &ldquo;{selectedReq.reason}&rdquo;
+                  </p>
+                </div>
+              )}
+
+              {/* Table Footer totals */}
+              <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-500">
+                <span>Productos: {selectedReq.items.length}</span>
+                <span className="text-slate-700">
+                  Total unidades: <strong className="text-primary font-black text-sm">{selectedReq.items.reduce((acc, i) => acc + i.quantity, 0)}</strong>
+                </span>
+              </div>
+            </Card>
+
+            {/* Coordinator/Recipient Selection Card */}
+            <Card className="border border-slate-200/80 rounded-2xl shadow-clinical-sm bg-white p-5 space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
+                  <Users className="w-4 h-4 text-slate-400" /> Destinatario WhatsApp
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setIsCoordModalOpen(true)}
+                  className="text-xs font-bold text-secondary hover:text-secondary/80 flex items-center gap-1 transition-colors cursor-pointer"
+                >
+                  <span>Cambiar destinatario</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+
+              {selectedCoord ? (
+                /* Contact Card Layout */
+                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-secondary text-white font-bold flex items-center justify-center text-sm shadow-sm">
+                      {selectedCoord.nombre.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
+                    </div>
+                    <div>
+                      <h4 className="font-extrabold text-slate-800 text-sm leading-tight">{selectedCoord.nombre}</h4>
+                      <p className="text-[11px] text-slate-400 font-semibold mt-0.5">{selectedCoord.telefono}</p>
+                    </div>
+                  </div>
+                  <div className="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 text-[10px] font-extrabold uppercase tracking-wide">
+                    WhatsApp Listo
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-4 text-xs text-slate-400 font-bold">
+                  Ningún coordinador seleccionado. Haz clic en Cambiar para seleccionar uno.
+                </div>
+              )}
+            </Card>
+
+          </div>
+
+          {/* ═══════ COL 2: ACTION BUTTONS & VOUCHER PREVIEW ═══════ */}
+          <div className="lg:col-span-5 space-y-6">
+            
+            {/* Actions Card */}
+            <Card className="border border-slate-200/80 rounded-2xl shadow-clinical-md overflow-hidden bg-white p-5 space-y-4">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block border-b border-slate-100 pb-3">
+                Acciones de Envío
+              </span>
+
+              <div className="space-y-3">
+                
+                {/* 1. Main Action: Send Text WhatsApp */}
+                <button
+                  onClick={handleSendWhatsApp}
+                  disabled={!selectedCoord || !selectedReq}
+                  className={`w-full flex items-center justify-center gap-2.5 h-12 rounded-xl font-bold text-sm text-white transition-all active:scale-[0.98] cursor-pointer ${
+                    selectedCoord && selectedReq
+                      ? 'bg-[#25D366] hover:bg-[#20ba5a] shadow-md shadow-[#25D366]/20'
+                      : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
+                  }`}
+                >
+                  <svg className="w-5 h-5 fill-current" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+                  </svg>
+                  <span>Enviar por WhatsApp</span>
+                </button>
+
+                {/* 2. Share Image (Native API) */}
+                <button
+                  onClick={handleShareImage}
+                  disabled={!selectedReq}
+                  className="w-full flex items-center justify-center gap-2 h-11 rounded-xl font-bold text-xs bg-primary/10 hover:bg-primary/15 text-primary transition-all active:scale-[0.98] cursor-pointer"
+                >
+                  <Share2 className="w-4 h-4" />
+                  <span>Compartir Comprobante (Imagen)</span>
+                </button>
+
+                {/* Grid of helpers: Copy / Download / Copy Text */}
+                <div className="grid grid-cols-2 gap-2">
+                  
+                  {/* Copy Voucher Image */}
+                  <button
+                    onClick={handleCopyImage}
+                    disabled={!selectedReq}
+                    className="flex items-center justify-center gap-1.5 h-10 border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer"
+                    title="Copia el voucher de imagen para pegarlo directamente en WhatsApp (Cmd+V / Ctrl+V)"
+                  >
+                    <Copy className="w-3.5 h-3.5 text-primary" />
+                    <span>Copiar Imagen</span>
+                  </button>
+
+                  {/* Download Image */}
+                  <button
+                    onClick={handleDownloadImage}
+                    disabled={!selectedReq}
+                    className="flex items-center justify-center gap-1.5 h-10 border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer"
+                  >
+                    <ImageIcon className="w-3.5 h-3.5 text-primary" />
+                    <span>Bajar Imagen</span>
+                  </button>
+                  
+                  {/* Copy WhatsApp Text */}
+                  <button
+                    onClick={handleCopyText}
+                    disabled={!selectedReq}
+                    className="flex items-center justify-center gap-1.5 h-10 border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer col-span-2"
+                  >
+                    <Copy className="w-3.5 h-3.5 text-primary" />
+                    <span>Copiar Texto Formateado</span>
+                  </button>
+                </div>
+
+                {/* Section divider */}
+                <div className="flex items-center gap-2 py-1">
+                  <div className="flex-1 h-px bg-slate-200" />
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Documentos PDF</span>
+                  <div className="flex-1 h-px bg-slate-200" />
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  {/* Print PDF */}
+                  <button
+                    onClick={handlePrintLocalPDF}
+                    disabled={!selectedReq}
+                    className="flex items-center justify-center gap-1.5 h-10 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer"
+                  >
+                    <Printer className="w-3.5 h-3.5" />
+                    <span>Imprimir PDF</span>
+                  </button>
+
+                  {/* Download PDF */}
+                  <a
+                    href={`https://107.172.193.34.nip.io/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-1.5 h-10 border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl transition-all active:scale-[0.98] text-center"
+                  >
+                    <Download className="w-3.5 h-3.5 text-primary" />
+                    <span>Bajar Reporte</span>
+                  </a>
+                </div>
+
+              </div>
+            </Card>
+
+            {/* Live Voucher Preview Card */}
+            <Card className="border border-slate-200/80 rounded-2xl shadow-clinical-sm overflow-hidden bg-white p-5 space-y-3">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block border-b border-slate-100 pb-2">
+                Vista Previa del Comprobante
+              </span>
+
+              {isGenerating ? (
+                <div className="flex flex-col items-center justify-center py-10 bg-slate-50 rounded-xl gap-2 border border-slate-100">
+                  <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                  <span className="text-[10px] text-slate-400 font-bold">Generando voucher...</span>
+                </div>
+              ) : imagePreviewUrl ? (
+                <div className="bg-slate-100 p-2 rounded-xl border border-slate-200 max-h-[360px] overflow-y-auto flex justify-center shadow-inner">
+                  <img
+                    src={imagePreviewUrl}
+                    alt="Voucher Preview"
+                    className="max-w-full rounded-lg border border-slate-200 shadow-sm object-contain"
+                  />
+                </div>
+              ) : (
+                <div className="text-center py-8 text-xs text-slate-400 font-medium bg-slate-50 rounded-xl border border-slate-100">
+                  No hay comprobante disponible
+                </div>
+              )}
+
+              {/* Informative Tip Box */}
+              <div className="p-3 bg-amber-50/80 border border-amber-100 rounded-xl flex gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 text-amber-500 mt-0.5" />
+                <div className="text-[10px] leading-relaxed font-semibold text-amber-800">
+                  <strong className="text-amber-900 block mb-0.5">Tip: Enviar por WhatsApp Web / PC</strong>
+                  Presiona el botón <strong className="font-bold">Copiar Imagen</strong>, ve a WhatsApp Web, y pégala directamente presionando <kbd className="bg-amber-100 px-1 py-0.5 rounded border border-amber-200">Ctrl + V</kbd> o <kbd className="bg-amber-100 px-1 py-0.5 rounded border border-amber-200">Cmd + V</kbd> en el chat.
+                </div>
+              </div>
+            </Card>
+
+          </div>
+
+        </div>
+      )}
+
+      {/* ═══════ MODAL: SELECT REQUEST (PEDIDO) ═══════ */}
+      {isReqModalOpen && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-clinical-lg w-full max-w-lg overflow-hidden flex flex-col max-h-[85vh] animate-view-enter">
+            {/* Header */}
+            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+              <h3 className="text-sm font-black text-[#006156] uppercase tracking-wide flex items-center gap-2">
+                <Package className="w-4 h-4 text-primary" /> Seleccionar Solicitud
+              </h3>
+              <button
+                onClick={() => setIsReqModalOpen(false)}
+                className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            {/* Search, Filter & Sort */}
+            <div className="p-5 border-b border-slate-100 space-y-4 bg-white">
+              {/* Search input */}
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
-                  placeholder="Buscar por ID, nombre o producto..."
+                  placeholder="Buscar por solicitante, ID, producto..."
                   value={searchOrderQuery}
                   onChange={(e) => setSearchOrderQuery(e.target.value)}
-                  className="w-full h-9 pl-9 pr-8 rounded-lg border border-slate-200 text-xs text-slate-800 placeholder-slate-400 transition-all focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none bg-slate-50/50"
+                  className="w-full h-11 pl-10 pr-9 rounded-xl border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none bg-slate-50/50"
                 />
                 {searchOrderQuery && (
                   <button
                     onClick={() => setSearchOrderQuery('')}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
                   >
-                    <X className="w-3.5 h-3.5" />
+                    <X className="w-4 h-4" />
                   </button>
                 )}
               </div>
 
-              {/* Status filter pills */}
+              {/* Status Filters */}
               <div className="flex gap-1.5 flex-wrap">
                 <button
                   onClick={() => setStatusFilter('all')}
-                  className={`px-2.5 py-1 rounded-full text-[10px] font-bold transition-all cursor-pointer border ${
+                  className={`px-3 py-1 rounded-full text-[10px] font-extrabold transition-all border cursor-pointer ${
                     statusFilter === 'all'
                       ? 'bg-primary text-white border-primary'
                       : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
@@ -360,7 +996,7 @@ export default function WhatsAppDispatch() {
                     <button
                       key={s}
                       onClick={() => setStatusFilter(statusFilter === s ? 'all' : s)}
-                      className={`px-2.5 py-1 rounded-full text-[10px] font-bold transition-all cursor-pointer border ${
+                      className={`px-3 py-1 rounded-full text-[10px] font-extrabold transition-all border cursor-pointer ${
                         statusFilter === s
                           ? `${si.bg} ${si.text} border-current`
                           : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
@@ -372,14 +1008,16 @@ export default function WhatsAppDispatch() {
                 })}
               </div>
 
-              {/* Sort controls (compact) */}
-              <div className="flex items-center gap-1 text-[10px]">
-                <ArrowUpDown className="w-3 h-3 text-slate-400 shrink-0" />
-                {([['date', 'Fecha'], ['user', 'Nombre'], ['items', 'Items'], ['status', 'Estado']] as [SortKey, string][]).map(([k, label]) => (
+              {/* Sorting toolbar */}
+              <div className="flex items-center gap-1.5 border-t border-slate-100 pt-3 text-[10px]">
+                <span className="text-slate-400 font-bold mr-1 flex items-center gap-1">
+                  <ArrowUpDown className="w-3 h-3" /> Ordenar por:
+                </span>
+                {([['date', 'Fecha'], ['user', 'Solicitante'], ['items', 'Items'], ['status', 'Estado']] as [SortKey, string][]).map(([k, label]) => (
                   <button
                     key={k}
                     onClick={() => toggleSort(k)}
-                    className={`px-2 py-0.5 rounded text-[10px] font-semibold cursor-pointer transition-colors ${
+                    className={`px-2.5 py-1 rounded-lg text-[10px] font-bold cursor-pointer transition-colors ${
                       sortKey === k
                         ? 'bg-primary/10 text-primary'
                         : 'text-slate-400 hover:text-slate-600'
@@ -391,349 +1029,128 @@ export default function WhatsAppDispatch() {
               </div>
             </div>
 
-            {/* Order list (virtualized-feeling with compact rows) */}
-            <div className="max-h-[520px] overflow-y-auto divide-y divide-slate-100/80">
+            {/* Request list */}
+            <div className="flex-1 overflow-y-auto divide-y divide-slate-100/80 bg-slate-50/20">
               {processedRequests.length === 0 ? (
-                <div className="text-center py-12 px-4">
-                  <Package className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-                  <p className="text-xs text-slate-400 font-semibold">No se encontraron pedidos</p>
+                <div className="text-center py-12 px-5">
+                  <Package className="w-10 h-10 text-slate-300 mx-auto mb-2" />
+                  <p className="text-xs text-slate-400 font-bold">No se encontraron solicitudes</p>
                 </div>
               ) : (
                 processedRequests.map((req) => {
                   const isSelected = selectedReqId === req.idPublico || selectedReqId === req.id;
                   const si = getStatusInfo(req.status);
-
                   return (
                     <button
                       key={req.idPublico || req.id}
                       onClick={() => {
                         setSelectedReqId(req.idPublico || req.id);
-                        setMobileStep('details');
+                        setIsReqModalOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-3 flex items-center gap-3 transition-all duration-100 cursor-pointer group ${
-                        isSelected
-                          ? 'bg-primary-light/40 border-l-[3px] border-l-primary'
-                          : 'bg-white hover:bg-slate-50/60 border-l-[3px] border-l-transparent'
+                      className={`w-full text-left px-6 py-4 flex items-center gap-3 transition-colors cursor-pointer border-l-4 ${
+                        isSelected 
+                          ? 'bg-primary-light/30 border-l-primary' 
+                          : 'bg-white hover:bg-slate-50 border-l-transparent'
                       }`}
                     >
-                      {/* Compact row layout */}
-                      <div className="min-w-0 flex-1 space-y-0.5">
-                        <div className="flex items-center gap-2">
-                          <span className={`text-xs font-black tracking-tight ${isSelected ? 'text-primary' : 'text-slate-700'}`}>
-                            #{req.id.toUpperCase()}
-                          </span>
-                          <span className={`inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-[1px] rounded-full border ${si.bg} ${si.text}`}>
+                      <div className="min-w-0 flex-1 space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-extrabold text-slate-800 group-hover:text-primary transition-colors">
+                            {req.user}
+                          </h4>
+                          <span className={`inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full border ${si.bg} ${si.text}`}>
                             <span className={`w-1.5 h-1.5 rounded-full ${si.dot}`} />
                             {req.status}
                           </span>
                         </div>
-                        <div className="flex items-center gap-2 text-[10px] text-slate-400 font-medium">
-                          <span className="truncate max-w-[100px]">{req.user}</span>
-                          <span>·</span>
+                        <div className="flex items-center gap-2 text-[10px] text-slate-400 font-semibold">
+                          <span>Pedido N° #{req.id.toUpperCase()}</span>
+                          <span>•</span>
                           <span>{req.date.split(' ')[0]}</span>
-                          <span>·</span>
-                          <span className="font-semibold text-slate-500">{req.items.length} items</span>
+                          <span>•</span>
+                          <span className="text-slate-500 font-bold">{req.items.length} productos</span>
                         </div>
                       </div>
-
-                      {/* Selection indicator */}
-                      <div className="shrink-0">
-                        {isSelected ? (
-                          <div className="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center">
-                            <Check className="w-3 h-3 stroke-[3]" />
-                          </div>
-                        ) : (
-                          <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-400 transition-colors" />
-                        )}
-                      </div>
+                      <ChevronRight className="w-5 h-5 text-slate-400" />
                     </button>
                   );
                 })
               )}
             </div>
-
-            {/* Results footer */}
-            <div className="px-4 py-2 border-t border-slate-100 bg-slate-50/50">
-              <p className="text-[10px] text-slate-400 font-semibold text-center">
-                Mostrando {processedRequests.length} de {requests.length} pedidos
-              </p>
-            </div>
-          </Card>
-        </div>
-
-        {/* ═══════ COL 2: PREVIEW + COORDINATOR (unified) ═══════ */}
-        <div className={`lg:col-span-4 xl:col-span-5 space-y-5 ${mobileStep === 'details' ? 'block' : 'hidden lg:block'}`}>
-          {selectedReq && (
-            <button
-              onClick={() => setMobileStep('list')}
-              className="lg:hidden flex items-center gap-1.5 px-4 py-2 border border-slate-200 hover:border-slate-300 hover:bg-slate-50 rounded-xl font-bold text-xs text-slate-700 transition-all active:scale-98 cursor-pointer w-fit bg-white mb-2 shadow-sm"
-            >
-              <ArrowLeft className="w-4 h-4 text-primary" />
-              <span>Volver a la Lista</span>
-            </button>
-          )}
-
-          {!selectedReq ? (
-            /* Empty state */
-            <Card className="p-10 border border-dashed border-slate-300 rounded-2xl text-center flex flex-col items-center justify-center min-h-[300px] bg-white">
-              <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
-                <FileText className="w-7 h-7 text-slate-300 stroke-[1.5]" />
-              </div>
-              <h3 className="font-bold text-sm text-slate-600">Selecciona un pedido</h3>
-              <p className="text-[11px] text-slate-400 mt-1 max-w-[220px]">
-                Elige un pedido de la lista para ver su detalle, productos e información de envío.
-              </p>
-            </Card>
-          ) : (
-            <>
-              {/* ─── Order preview card ─── */}
-              <Card className="border border-slate-200/80 rounded-2xl shadow-clinical-md overflow-hidden bg-white">
-                {/* Header */}
-                <div className="px-5 py-3.5 bg-gradient-to-r from-primary/[0.03] to-secondary/[0.03] border-b border-slate-100 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <FileText className="w-4 h-4 text-primary" />
-                    <span className="text-xs font-black text-primary uppercase tracking-wide">
-                      Detalle del Pedido
-                    </span>
-                  </div>
-                  <span className="text-[10px] font-black text-slate-400 bg-slate-100 px-2.5 py-1 rounded-full">
-                    #{selectedReq.id.toUpperCase()}
-                  </span>
-                </div>
-
-                {/* Order info row */}
-                <div className="px-5 py-3 bg-slate-50/50 border-b border-slate-100 grid grid-cols-3 gap-3">
-                  <div>
-                    <span className="text-[9px] font-bold text-slate-400 uppercase block">Solicitante</span>
-                    <span className="text-xs font-bold text-slate-700 flex items-center gap-1 mt-0.5">
-                      <User className="w-3 h-3 text-primary shrink-0" />
-                      {selectedReq.user}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-[9px] font-bold text-slate-400 uppercase block">Fecha</span>
-                    <span className="text-xs font-bold text-slate-700 flex items-center gap-1 mt-0.5">
-                      <Calendar className="w-3 h-3 text-primary shrink-0" />
-                      {selectedReq.date.split(' ')[0]}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-[9px] font-bold text-slate-400 uppercase block">Estado</span>
-                    {(() => {
-                      const si = getStatusInfo(selectedReq.status);
-                      return (
-                        <span className={`inline-flex items-center gap-1 text-[10px] font-bold mt-0.5 px-2 py-0.5 rounded-full border ${si.bg} ${si.text}`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${si.dot}`} />
-                          {selectedReq.status}
-                        </span>
-                      );
-                    })()}
-                  </div>
-                </div>
-
-                {/* Items table */}
-                <div ref={previewRef} className={`transition-all duration-300 ${expandedPreview ? 'max-h-[600px]' : 'max-h-[260px]'} overflow-y-auto`}>
-                  <table className="w-full text-xs">
-                    <thead className="sticky top-0 z-10">
-                      <tr className="bg-primary/[0.04]">
-                        <th className="py-2 pl-5 pr-2 text-left text-[9px] font-black text-primary uppercase tracking-widest w-8">#</th>
-                        <th className="py-2 px-2 text-left text-[9px] font-black text-primary uppercase tracking-widest">Producto</th>
-                        <th className="py-2 px-2 text-center text-[9px] font-black text-primary uppercase tracking-widest w-16">Unidad</th>
-                        <th className="py-2 pl-2 pr-5 text-right text-[9px] font-black text-primary uppercase tracking-widest w-14">Cant.</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {selectedReq.items.map((item, idx) => (
-                        <tr key={idx} className={`group transition-colors ${idx % 2 === 1 ? 'bg-slate-50/40' : 'bg-white'} hover:bg-primary-light/30`}>
-                          <td className="py-2 pl-5 pr-2 text-slate-400 font-bold text-[10px]">{idx + 1}</td>
-                          <td className="py-2 px-2 font-semibold text-slate-700">{item.productName}</td>
-                          <td className="py-2 px-2 text-center text-slate-400 font-medium text-[10px]">{item.unit}</td>
-                          <td className="py-2 pl-2 pr-5 text-right">
-                            <span className="font-black text-primary text-sm">
-                              {item.quantity}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Show more / less toggle */}
-                {selectedReq.items.length > 5 && (
-                  <button
-                    onClick={() => setExpandedPreview(!expandedPreview)}
-                    className="w-full px-5 py-2 border-t border-slate-100 flex items-center justify-center gap-1 text-[10px] font-bold text-primary hover:bg-primary-light/30 transition-colors cursor-pointer"
-                  >
-                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${expandedPreview ? 'rotate-180' : ''}`} />
-                    {expandedPreview ? 'Ver menos' : `Ver todos (${selectedReq.items.length} productos)`}
-                  </button>
-                )}
-
-                {/* Reason/motivo bar */}
-                {selectedReq.reason && (
-                  <div className="mx-5 mb-4 mt-2 p-3 bg-amber-50/60 border border-amber-200/50 rounded-xl">
-                    <span className="text-[9px] font-bold uppercase text-amber-600 block mb-0.5">Motivo / Justificación</span>
-                    <p className="text-xs text-slate-600 font-semibold italic leading-relaxed">
-                      &ldquo;{selectedReq.reason}&rdquo;
-                    </p>
-                  </div>
-                )}
-
-                {/* Item count footer */}
-                <div className="px-5 py-2.5 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-slate-400">
-                    Total: {selectedReq.items.length} producto{selectedReq.items.length !== 1 && 's'}
-                  </span>
-                  <span className="text-[10px] font-bold text-slate-400">
-                    {selectedReq.items.reduce((acc, i) => acc + i.quantity, 0)} unidades en total
-                  </span>
-                </div>
-              </Card>
-
-              {/* ─── Coordinator selector ─── */}
-              <Card className="p-4 border border-slate-200/80 rounded-2xl shadow-clinical-sm space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                    2. Destinatario
-                  </span>
-                  {selectedCoord && (
-                    <span className="text-[9px] font-bold bg-secondary text-white px-2 py-0.5 rounded-full">
-                      ✓ {selectedCoord.nombre.split(' ')[0]}
-                    </span>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  {coordinators.map((c) => {
-                    const isSelected = String(selectedCoordId) === String(c.id);
-                    const initials = c.nombre.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
-
-                    return (
-                      <button
-                        key={c.id}
-                        type="button"
-                        onClick={() => setSelectedCoordId(String(c.id))}
-                        className={`p-2.5 rounded-xl border flex items-center gap-2 transition-all duration-100 cursor-pointer ${
-                          isSelected
-                            ? 'bg-secondary-light/30 border-secondary shadow-sm'
-                            : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/40'
-                        }`}
-                      >
-                        <div className={`w-7 h-7 rounded-full font-bold flex items-center justify-center text-[10px] shrink-0 transition-colors ${
-                          isSelected ? 'bg-secondary text-white' : 'bg-slate-100 text-slate-500'
-                        }`}>
-                          {initials}
-                        </div>
-                        <span className="font-bold text-slate-700 text-[11px] truncate leading-none">{c.nombre.split(' ')[0]}</span>
-                        {isSelected && (
-                          <Check className="w-3 h-3 text-secondary shrink-0 ml-auto" />
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              </Card>
-            </>
-          )}
-        </div>
-
-        {/* ═══════ COL 3: ACTIONS (sticky sidebar) ═══════ */}
-        <div className={`lg:col-span-4 xl:col-span-3 ${mobileStep === 'details' ? 'block' : 'hidden lg:block'}`}>
-          <div className="lg:sticky lg:top-6 space-y-4">
-
-            {/* Actions card */}
-            <Card className="border border-slate-200/80 rounded-2xl shadow-clinical-sm overflow-hidden">
-              <div className="p-4 border-b border-slate-100">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                  3. Acciones
-                </span>
-              </div>
-
-              <div className="p-4 space-y-2.5">
-                {/* WhatsApp CTA */}
-                <button
-                  onClick={handleSendWhatsApp}
-                  disabled={!selectedCoord || !selectedReq}
-                  className={`w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-bold text-sm text-white transition-all active:scale-[0.98] cursor-pointer ${
-                    selectedCoord && selectedReq
-                      ? 'bg-[#25D366] hover:bg-[#20ba5a] shadow-md shadow-[#25D366]/20'
-                      : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
-                  }`}
-                >
-                  <svg className={`w-5 h-5 fill-current shrink-0 ${selectedCoord && selectedReq ? 'text-white' : 'text-slate-400'}`} viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
-                  </svg>
-                  Enviar por WhatsApp
-                </button>
-
-                {!selectedReq && (
-                  <p className="text-[10px] text-slate-400 font-semibold text-center py-1">
-                    Selecciona un pedido y un destinatario
-                  </p>
-                )}
-                {selectedReq && !selectedCoord && (
-                  <p className="text-[10px] text-amber-600 font-bold text-center py-1">
-                    * Elige un destinatario para enviar
-                  </p>
-                )}
-
-                {/* Divider */}
-                {selectedReq && (
-                  <>
-                    <div className="flex items-center gap-2 py-1">
-                      <div className="flex-1 h-px bg-slate-200" />
-                      <span className="text-[9px] font-bold text-slate-400 uppercase">Reportes</span>
-                      <div className="flex-1 h-px bg-slate-200" />
-                    </div>
-
-                    {/* Print */}
-                    <button
-                      onClick={handlePrintLocalPDF}
-                      className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs bg-primary hover:bg-primary-hover text-white transition-all active:scale-[0.98] cursor-pointer shadow-sm"
-                    >
-                      <Printer className="w-4 h-4" />
-                      Imprimir PDF
-                    </button>
-
-                    {/* Download */}
-                    <a
-                      href={`https://107.172.193.34.nip.io/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 transition-all active:scale-[0.98] cursor-pointer text-center"
-                    >
-                      <Download className="w-4 h-4 text-primary" />
-                      Descargar Reporte
-                    </a>
-
-                    {/* Share */}
-                    {canShare && (
-                      <button
-                        onClick={handleNativeShare}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-600 transition-all active:scale-[0.98] cursor-pointer"
-                      >
-                        <Share2 className="w-4 h-4 text-primary" />
-                        Compartir
-                      </button>
-                    )}
-                  </>
-                )}
-              </div>
-            </Card>
-
-            {/* Help tip */}
-            <div className="p-3.5 bg-amber-50/80 border border-amber-200/50 rounded-2xl flex gap-2.5">
-              <AlertCircle className="w-4 h-4 shrink-0 text-amber-500 mt-0.5" />
-              <div className="text-[10px] leading-relaxed font-semibold text-amber-800">
-                <strong className="text-amber-900 block mb-0.5">Tip: Enviar PDF por WhatsApp</strong>
-                Presiona &quot;Imprimir PDF&quot;, selecciona &quot;Guardar como PDF&quot; y adjúntalo manualmente al chat.
-              </div>
+            
+            {/* Footer summary */}
+            <div className="px-6 py-3 border-t border-slate-100 bg-slate-50 text-center text-[10px] text-slate-400 font-semibold">
+              Mostrando {processedRequests.length} de {requests.length} solicitudes de insumos
             </div>
           </div>
         </div>
+      )}
 
-      </div>
+      {/* ═══════ MODAL: SELECT COORDINATOR (DESTINATARIO) ═══════ */}
+      {isCoordModalOpen && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-clinical-lg w-full max-w-md overflow-hidden flex flex-col max-h-[75vh] animate-view-enter">
+            {/* Header */}
+            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+              <h3 className="text-sm font-black text-secondary uppercase tracking-wide flex items-center gap-2">
+                <Users className="w-4 h-4 text-secondary" /> Seleccionar Coordinador
+              </h3>
+              <button
+                onClick={() => setIsCoordModalOpen(false)}
+                className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Coordinators List */}
+            <div className="flex-1 overflow-y-auto divide-y divide-slate-100 p-3 space-y-1.5 bg-slate-50/30">
+              {coordinators.map((c) => {
+                const isSelected = String(selectedCoordId) === String(c.id);
+                const initials = c.nombre.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+                return (
+                  <button
+                    key={c.id}
+                    onClick={() => {
+                      setSelectedCoordId(String(c.id));
+                      setIsCoordModalOpen(false);
+                    }}
+                    className={`w-full text-left p-3.5 flex items-center gap-3.5 rounded-2xl transition-all cursor-pointer border ${
+                      isSelected 
+                        ? 'bg-secondary/5 border-secondary/30 shadow-sm' 
+                        : 'bg-white hover:bg-slate-50 border-slate-100 hover:border-slate-200'
+                    }`}
+                  >
+                    {/* Circle Avatar */}
+                    <div className={`w-10 h-10 rounded-full font-bold flex items-center justify-center text-xs shrink-0 shadow-sm transition-colors ${
+                      isSelected ? 'bg-secondary text-white' : 'bg-slate-100 text-slate-500'
+                    }`}>
+                      {initials}
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <span className="font-extrabold text-slate-800 text-sm block leading-tight">{c.nombre}</span>
+                      <span className="text-[11px] text-slate-400 font-semibold mt-0.5 block">{c.telefono}</span>
+                    </div>
+
+                    {isSelected && (
+                      <div className="w-5 h-5 rounded-full bg-secondary text-white flex items-center justify-center shadow-sm">
+                        <Check className="w-3.5 h-3.5 stroke-[3]" />
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+            
+            {/* Footer */}
+            <div className="px-6 py-3 border-t border-slate-100 bg-slate-50 text-center text-[10px] text-slate-400 font-semibold">
+              {coordinators.length} destinatarios disponibles
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
