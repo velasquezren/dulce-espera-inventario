@@ -20,12 +20,8 @@ import {
   Clock,
   ArrowUpDown,
   X,
-  ExternalLink,
-  ShoppingCart,
-  ArrowLeft,
   Copy,
-  Image as ImageIcon,
-  Users
+  ArrowLeft
 } from 'lucide-react';
 
 /* ────────────────────── types ────────────────────── */
@@ -58,186 +54,251 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
       return;
     }
 
-    const width = 500;
+    const width = 600;
     
     // Calculate heights dynamically
-    const headerHeight = 84;
-    const metadataHeight = 60;
-    const paddingMiddle = 30;
-    const tableHeaderHeight = 25;
-    const itemHeight = 22;
-    const summaryHeight = 44;
-    const reasonHeight = req.reason ? 54 : 0;
-    const footerHeight = 50;
+    const headerHeight = 110;
+    const infoHeight = 65;
+    const sectionTitleHeight = 35;
+    const tableHeaderHeight = 30;
+    const rowHeight = 26;
+    const tableFooterHeight = 35;
+    const reasonHeight = req.reason ? 70 : 0;
+    const signatureHeight = 110;
+    const footerHeight = 55;
 
-    const height = headerHeight + metadataHeight + paddingMiddle + tableHeaderHeight + 
-                   (req.items.length * itemHeight) + summaryHeight + reasonHeight + footerHeight;
+    const height = headerHeight + infoHeight + sectionTitleHeight + tableHeaderHeight + 
+                   (req.items.length * rowHeight) + tableFooterHeight + reasonHeight + 
+                   signatureHeight + footerHeight;
 
     canvas.width = width;
     canvas.height = height;
+
+    // Reset styles
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
 
     // Background
     ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, width, height);
 
-    // Border
+    // Document border
     ctx.strokeStyle = '#e2e8f0';
     ctx.lineWidth = 4;
     ctx.strokeRect(2, 2, width - 4, height - 4);
 
-    // Header (Dulce Espera clinical primary teal color)
+    // Header Logo Icon (Circle + Cross)
     ctx.fillStyle = '#006156';
-    ctx.fillRect(4, 4, width - 8, 80);
-
-    // Logo icon (Circle + white cross)
-    ctx.fillStyle = '#ffffff';
     ctx.beginPath();
-    ctx.arc(48, 44, 20, 0, Math.PI * 2);
+    ctx.arc(55, 52, 22, 0, Math.PI * 2);
     ctx.fill();
 
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(52, 40, 6, 24);
+    ctx.fillRect(43, 49, 24, 6);
+
+    // Brand Name Text
     ctx.fillStyle = '#006156';
-    // vertical
-    ctx.fillRect(45, 32, 6, 24);
-    // horizontal
-    ctx.fillRect(36, 41, 24, 6);
+    ctx.font = 'bold 20px system-ui, -apple-system, sans-serif';
+    ctx.fillText('DULCE ESPERA', 92, 47);
 
-    // Brand texts
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 18px system-ui, -apple-system, sans-serif';
-    ctx.fillText('DULCE ESPERA', 80, 40);
+    ctx.fillStyle = '#39ADA3';
+    ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
+    ctx.fillText('COCINA Y NUTRICIÓN CLÍNICA', 92, 63);
 
-    ctx.fillStyle = '#a7f3d0';
-    ctx.font = 'bold 9px system-ui, -apple-system, sans-serif';
-    ctx.fillText('COCINA Y NUTRICIÓN CLÍNICA', 80, 56);
-
-    // Order ID (top right)
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 11px monospace';
+    // Top Right Metadata
+    ctx.fillStyle = '#475569';
+    ctx.font = 'bold 10px monospace';
     ctx.textAlign = 'right';
-    ctx.fillText(`#${req.id.toUpperCase()}`, width - 24, 46);
-    ctx.textAlign = 'left';
+    ctx.fillText(`N° LISTA: ${req.id.toUpperCase()}`, 570, 38);
+    ctx.fillText(`FECHA: ${req.date}`, 570, 54);
+    
+    ctx.fillStyle = '#006156';
+    ctx.fillText(`ESTADO: ${req.status.toUpperCase()}`, 570, 70);
+    ctx.textAlign = 'left'; // reset
 
-    // Metadata section (Gray card)
-    ctx.fillStyle = '#f8fafc';
-    ctx.fillRect(4, 84, width - 8, 60);
+    // Thick teal header divider line
+    ctx.strokeStyle = '#006156';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(30, 92);
+    ctx.lineTo(570, 92);
+    ctx.stroke();
 
-    // Solicitado por
-    ctx.fillStyle = '#64748b';
-    ctx.font = 'bold 9px system-ui, -apple-system, sans-serif';
-    ctx.fillText('SOLICITADO POR', 24, 107);
-
+    // Info section (Solicitado por, Cargo, Destino)
     ctx.fillStyle = '#0f172a';
-    ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
-    const userName = req.user || 'Personal de Cocina';
-    ctx.fillText(userName.toUpperCase(), 24, 127);
+    ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+    ctx.fillText('Solicitado por:', 30, 118);
 
-    // Fecha
-    ctx.fillStyle = '#64748b';
-    ctx.font = 'bold 9px system-ui, -apple-system, sans-serif';
-    ctx.fillText('FECHA REGISTRO', 330, 107);
+    ctx.fillStyle = '#475569';
+    ctx.font = '500 11px system-ui, -apple-system, sans-serif';
+    ctx.fillText(req.user, 115, 118);
 
-    ctx.fillStyle = '#0f172a';
-    ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
-    ctx.fillText(req.date.split(' ')[0], 330, 127);
+    ctx.fillStyle = '#475569';
+    ctx.font = '500 10px system-ui, -apple-system, sans-serif';
+    ctx.fillText('Cargo: Personal de Cocina Clínica', 30, 136);
 
-    // Table Header
-    let currentY = 175;
+    ctx.textAlign = 'right';
+    ctx.fillText('Destino: Cocina Central Dulce Espera', 570, 136);
+    ctx.textAlign = 'left'; // reset
+
+    // Section title
+    ctx.fillStyle = '#39ADA3';
+    ctx.fillRect(30, 155, 3, 14);
+
     ctx.fillStyle = '#006156';
     ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
-    ctx.fillText('DESCRIPCIÓN DEL INSUMO', 24, currentY);
+    ctx.fillText('PRODUCTOS SOLICITADOS', 40, 166);
 
-    ctx.textAlign = 'right';
-    ctx.fillText('CANTIDAD', width - 24, currentY);
+    // Table Header
+    let currentY = 194;
+    ctx.fillStyle = '#006156';
+    ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
+    
+    ctx.textAlign = 'center';
+    ctx.fillText('N°', 42, currentY);
+    
     ctx.textAlign = 'left';
+    ctx.fillText('Descripción del Insumo', 70, currentY);
+    
+    ctx.textAlign = 'center';
+    ctx.fillText('Unidad', 440, currentY);
+    
+    ctx.textAlign = 'right';
+    ctx.fillText('Cant.', 570, currentY);
+    ctx.textAlign = 'left'; // reset
 
-    ctx.strokeStyle = '#e2e8f0';
+    // Table Header divider line
+    ctx.strokeStyle = '#006156';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.moveTo(24, currentY + 8);
-    ctx.lineTo(width - 24, currentY + 8);
+    ctx.moveTo(30, 202);
+    ctx.lineTo(570, 202);
     ctx.stroke();
 
     currentY += 24;
 
     // Items
     req.items.forEach((item: any, idx: number) => {
+      // Row alternating background
       if (idx % 2 === 1) {
-        ctx.fillStyle = '#f8fafc';
-        ctx.fillRect(20, currentY - 14, width - 40, 22);
+        ctx.fillStyle = '#f8fafb';
+        ctx.fillRect(30, currentY - 16, 540, 22);
       }
       
-      ctx.fillStyle = '#334155';
+      // Index
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(String(idx + 1), 42, currentY);
+      
+      // Product Name
+      ctx.fillStyle = '#0f172a';
       ctx.font = '600 11px system-ui, -apple-system, sans-serif';
+      ctx.textAlign = 'left';
       let pName = item.productName || 'Producto';
-      if (pName.length > 42) pName = pName.slice(0, 39) + '...';
-      ctx.fillText(pName, 24, currentY + 1);
+      if (pName.length > 44) pName = pName.slice(0, 41) + '...';
+      ctx.fillText(pName, 70, currentY);
 
-      ctx.textAlign = 'right';
+      // Unit
+      ctx.fillStyle = '#64748b';
+      ctx.font = '500 11px system-ui, -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(item.unit || 'uds', 440, currentY);
+
+      // Quantity
       ctx.fillStyle = '#006156';
       ctx.font = 'bold 12px system-ui, -apple-system, sans-serif';
-      ctx.fillText(`${item.quantity} ${item.unit || 'uds'}`, width - 24, currentY + 1);
-      ctx.textAlign = 'left';
+      ctx.textAlign = 'right';
+      ctx.fillText(String(item.quantity), 570, currentY);
 
-      currentY += 22;
+      ctx.textAlign = 'left'; // reset
+      currentY += rowHeight;
     });
 
-    // Divider
-    ctx.strokeStyle = '#cbd5e1';
+    // Divider line before total
+    ctx.strokeStyle = '#006156';
     ctx.lineWidth = 1.5;
     ctx.beginPath();
-    ctx.moveTo(24, currentY - 6);
-    ctx.lineTo(width - 24, currentY - 6);
+    ctx.moveTo(30, currentY - 12);
+    ctx.lineTo(570, currentY - 12);
     ctx.stroke();
 
-    currentY += 12;
-
-    // Summary box
+    // Summary Box
     ctx.fillStyle = '#f0faf9';
-    ctx.fillRect(20, currentY - 10, width - 40, 32);
-    ctx.strokeStyle = '#39ada3';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(20, currentY - 10, width - 40, 32);
-
+    ctx.fillRect(30, currentY - 8, 540, 28);
+    
     ctx.fillStyle = '#006156';
-    ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
-    ctx.fillText(`PRODUCTOS: ${req.items.length}`, 32, currentY + 10);
+    ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+    ctx.fillText(`TOTAL: ${req.items.length} producto${req.items.length !== 1 ? 's' : ''}`, 40, currentY + 10);
 
     const totalUnits = req.items.reduce((acc: number, item: any) => acc + item.quantity, 0);
     ctx.textAlign = 'right';
-    ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
-    ctx.fillText(`UNIDADES TOTALES: ${totalUnits}`, width - 32, currentY + 10);
-    ctx.textAlign = 'left';
+    ctx.fillText(String(totalUnits), 570, currentY + 10);
+    ctx.textAlign = 'left'; // reset
 
-    currentY += 34;
+    currentY += tableFooterHeight;
 
-    // Reason
+    // Reason Box
     if (req.reason) {
-      ctx.fillStyle = '#fffbeb';
-      ctx.fillRect(20, currentY - 6, width - 40, 44);
+      currentY += 15;
       
-      ctx.strokeStyle = '#fef3c7';
-      ctx.lineWidth = 1;
-      ctx.strokeRect(20, currentY - 6, width - 40, 44);
+      ctx.fillStyle = '#f0faf9';
+      ctx.fillRect(33, currentY - 15, 537, 45);
 
-      ctx.fillStyle = '#b45309';
-      ctx.font = 'bold 8px system-ui, -apple-system, sans-serif';
-      ctx.fillText('MOTIVO / JUSTIFICACIÓN:', 30, currentY + 6);
+      ctx.fillStyle = '#39ADA3';
+      ctx.fillRect(30, currentY - 15, 3, 45);
 
-      ctx.fillStyle = '#78350f';
-      ctx.font = 'italic 10px system-ui, -apple-system, sans-serif';
-      let rsn = req.reason;
-      if (rsn.length > 60) rsn = rsn.slice(0, 57) + '...';
-      ctx.fillText(`"${rsn}"`, 30, currentY + 22);
+      ctx.fillStyle = '#006156';
+      ctx.font = 'bold 9px system-ui, -apple-system, sans-serif';
+      ctx.fillText('Motivo / Justificación', 46, currentY);
 
-      currentY += 54;
+      ctx.fillStyle = '#334155';
+      ctx.font = 'italic 11px system-ui, -apple-system, sans-serif';
+      ctx.fillText(`"${req.reason}"`, 46, currentY + 18);
+
+      currentY += reasonHeight;
     }
 
-    // Footer
+    // Signature Area
+    currentY += 35;
+    
+    // Sign line Solicitante
+    ctx.strokeStyle = '#94a3b8';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(50, currentY);
+    ctx.lineTo(250, currentY);
+    ctx.stroke();
+
+    ctx.fillStyle = '#64748b';
+    ctx.font = 'bold 9px system-ui, -apple-system, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Firma de Solicitante', 150, currentY + 14);
+
+    // Sign line Autorización
+    ctx.beginPath();
+    ctx.moveTo(350, currentY);
+    ctx.lineTo(550, currentY);
+    ctx.stroke();
+    
+    ctx.fillText('Firma de Autorización', 450, currentY + 14);
+    ctx.textAlign = 'left'; // reset
+
+    currentY += signatureHeight - 35;
+
+    // Footer copyright
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(30, currentY);
+    ctx.lineTo(570, currentY);
+    ctx.stroke();
+
     ctx.fillStyle = '#94a3b8';
     ctx.font = '500 8px system-ui, -apple-system, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('Generado desde el sistema de inventario Dulce Espera', width / 2, currentY);
-    ctx.fillText('Válido para fines de control de insumos y despacho cocina', width / 2, currentY + 12);
+    ctx.fillText(`© ${new Date().getFullYear()} Dulce Espera — Documento oficial para control de insumos.`, width / 2, currentY + 18);
 
     canvas.toBlob((blob) => {
       if (blob) {
@@ -251,15 +312,13 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
 
 /* ────────────────────── component ────────────────────── */
 export default function WhatsAppDispatch() {
-  const { requests, coordinators } = useApp();
+  const { requests } = useApp();
 
   /* selection ids */
   const [selectedReqId, setSelectedReqId] = useState('');
-  const [selectedCoordId, setSelectedCoordId] = useState('');
 
-  /* modals states */
+  /* modal state */
   const [isReqModalOpen, setIsReqModalOpen] = useState(false);
-  const [isCoordModalOpen, setIsCoordModalOpen] = useState(false);
 
   /* search / filter / sort (inside Request selection modal) */
   const [searchOrderQuery, setSearchOrderQuery] = useState('');
@@ -271,8 +330,6 @@ export default function WhatsAppDispatch() {
   const [canShare, setCanShare] = useState(false);
   const [expandedPreview, setExpandedPreview] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
-  const [imagePreviewUrl, setImagePreviewUrl] = useState<string>('');
-  const [isGenerating, setIsGenerating] = useState(false);
 
   const previewRef = useRef<HTMLDivElement>(null);
 
@@ -295,38 +352,8 @@ export default function WhatsAppDispatch() {
     }
   }, [latestRequest, selectedReqId]);
 
-  // Pre-select first coordinator on load
-  useEffect(() => {
-    if (coordinators && coordinators.length > 0 && !selectedCoordId) {
-      setSelectedCoordId(String(coordinators[0].id));
-    }
-  }, [coordinators, selectedCoordId]);
-
   /* derived data */
   const selectedReq = requests.find((r) => r.idPublico === selectedReqId || r.id === selectedReqId) as RequestItem | undefined;
-  const selectedCoord = coordinators.find((c) => String(c.id) === String(selectedCoordId));
-
-  // Generate Image Preview Url
-  useEffect(() => {
-    if (selectedReq) {
-      setIsGenerating(true);
-      generateRequestImage(selectedReq)
-        .then((blob) => {
-          const url = URL.createObjectURL(blob);
-          setImagePreviewUrl(url);
-          setIsGenerating(false);
-          return () => {
-            URL.revokeObjectURL(url);
-          };
-        })
-        .catch((err) => {
-          console.error('Error rendering image preview:', err);
-          setIsGenerating(false);
-        });
-    } else {
-      setImagePreviewUrl('');
-    }
-  }, [selectedReq]);
 
   /* unique statuses for filter */
   const uniqueStatuses = useMemo(() => {
@@ -399,10 +426,10 @@ export default function WhatsAppDispatch() {
   };
 
   const handleSendWhatsApp = () => {
-    if (!selectedReq || !selectedCoord) return;
-    const phone = selectedCoord.telefono;
+    if (!selectedReq) return;
     const text = generateMessage();
-    const url = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(text)}`;
+    // Open WhatsApp select chat screen
+    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
   };
 
@@ -470,7 +497,7 @@ export default function WhatsAppDispatch() {
     }
   };
 
-  /* ─── Print PDF ─── */
+  /* ─── Print PDF / Save as PDF ─── */
   const handlePrintLocalPDF = () => {
     if (!selectedReq) return;
     const printWindow = window.open('', '_blank');
@@ -590,7 +617,7 @@ export default function WhatsAppDispatch() {
   const getStatusInfo = (s: string) => statusConfig[s] || { bg: 'bg-slate-50 border-slate-200', text: 'text-slate-600', dot: 'bg-slate-400' };
 
   return (
-    <div className="animate-fade-in w-full max-w-[1280px] mx-auto pb-24 md:pb-8 space-y-6">
+    <div className="animate-fade-in w-full max-w-[1200px] mx-auto pb-24 md:pb-8 space-y-6">
       
       {/* Toast Notification */}
       {toastMessage && (
@@ -613,7 +640,7 @@ export default function WhatsAppDispatch() {
               Despacho de Pedidos
             </h1>
             <p className="text-xs text-slate-400 font-semibold mt-0.5">
-              Comparte reportes de insumos y comprobantes directamente por WhatsApp
+              Comparte reportes oficiales de insumos y comprobantes directamente por WhatsApp
             </p>
           </div>
         </div>
@@ -646,8 +673,8 @@ export default function WhatsAppDispatch() {
         /* ═══════ MAIN 2-COLUMN LAYOUT ═══════ */
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
-          {/* ═══════ COL 1: SELECTED ORDER DETAIL & RECIPIENT ═══════ */}
-          <div className="lg:col-span-7 space-y-6">
+          {/* ═══════ COL 1: SELECTED ORDER DETAIL ═══════ */}
+          <div className="lg:col-span-8 space-y-6">
             
             {/* Request Detail Card */}
             <Card className="border border-slate-200/80 rounded-2xl shadow-clinical-md overflow-hidden bg-white">
@@ -752,54 +779,15 @@ export default function WhatsAppDispatch() {
               </div>
             </Card>
 
-            {/* Coordinator/Recipient Selection Card */}
-            <Card className="border border-slate-200/80 rounded-2xl shadow-clinical-sm bg-white p-5 space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
-                  <Users className="w-4 h-4 text-slate-400" /> Destinatario WhatsApp
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setIsCoordModalOpen(true)}
-                  className="text-xs font-bold text-secondary hover:text-secondary/80 flex items-center gap-1 transition-colors cursor-pointer"
-                >
-                  <span>Cambiar destinatario</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-
-              {selectedCoord ? (
-                /* Contact Card Layout */
-                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-secondary text-white font-bold flex items-center justify-center text-sm shadow-sm">
-                      {selectedCoord.nombre.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
-                    </div>
-                    <div>
-                      <h4 className="font-extrabold text-slate-800 text-sm leading-tight">{selectedCoord.nombre}</h4>
-                      <p className="text-[11px] text-slate-400 font-semibold mt-0.5">{selectedCoord.telefono}</p>
-                    </div>
-                  </div>
-                  <div className="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 text-[10px] font-extrabold uppercase tracking-wide">
-                    WhatsApp Listo
-                  </div>
-                </div>
-              ) : (
-                <div className="text-center py-4 text-xs text-slate-400 font-bold">
-                  Ningún coordinador seleccionado. Haz clic en Cambiar para seleccionar uno.
-                </div>
-              )}
-            </Card>
-
           </div>
 
-          {/* ═══════ COL 2: ACTION BUTTONS & VOUCHER PREVIEW ═══════ */}
-          <div className="lg:col-span-5 space-y-6">
+          {/* ═══════ COL 2: ACTION BUTTONS ═══════ */}
+          <div className="lg:col-span-4 space-y-6">
             
             {/* Actions Card */}
             <Card className="border border-slate-200/80 rounded-2xl shadow-clinical-md overflow-hidden bg-white p-5 space-y-4">
               <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block border-b border-slate-100 pb-3">
-                Acciones de Envío
+                Acciones de Despacho
               </span>
 
               <div className="space-y-3">
@@ -807,27 +795,23 @@ export default function WhatsAppDispatch() {
                 {/* 1. Main Action: Send Text WhatsApp */}
                 <button
                   onClick={handleSendWhatsApp}
-                  disabled={!selectedCoord || !selectedReq}
-                  className={`w-full flex items-center justify-center gap-2.5 h-12 rounded-xl font-bold text-sm text-white transition-all active:scale-[0.98] cursor-pointer ${
-                    selectedCoord && selectedReq
-                      ? 'bg-[#25D366] hover:bg-[#20ba5a] shadow-md shadow-[#25D366]/20'
-                      : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
-                  }`}
+                  disabled={!selectedReq}
+                  className={`w-full flex items-center justify-center gap-2.5 h-12 rounded-xl font-bold text-sm text-white transition-all active:scale-[0.98] cursor-pointer bg-[#25D366] hover:bg-[#20ba5a] shadow-md shadow-[#25D366]/20 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed disabled:shadow-none`}
                 >
                   <svg className="w-5 h-5 fill-current" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
                     <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
                   </svg>
-                  <span>Enviar por WhatsApp</span>
+                  <span>Enviar Texto por WhatsApp</span>
                 </button>
 
                 {/* 2. Share Image (Native API) */}
                 <button
                   onClick={handleShareImage}
                   disabled={!selectedReq}
-                  className="w-full flex items-center justify-center gap-2 h-11 rounded-xl font-bold text-xs bg-primary/10 hover:bg-primary/15 text-primary transition-all active:scale-[0.98] cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 h-11 rounded-xl font-bold text-xs bg-primary hover:bg-primary-hover text-white transition-all active:scale-[0.98] cursor-pointer shadow-clinical-sm"
                 >
                   <Share2 className="w-4 h-4" />
-                  <span>Compartir Comprobante (Imagen)</span>
+                  <span>Compartir Reporte (Imagen)</span>
                 </button>
 
                 {/* Grid of helpers: Copy / Download / Copy Text */}
@@ -838,7 +822,7 @@ export default function WhatsAppDispatch() {
                     onClick={handleCopyImage}
                     disabled={!selectedReq}
                     className="flex items-center justify-center gap-1.5 h-10 border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer"
-                    title="Copia el voucher de imagen para pegarlo directamente en WhatsApp (Cmd+V / Ctrl+V)"
+                    title="Copia la imagen del reporte oficial para pegarlo directamente en WhatsApp (Cmd+V / Ctrl+V)"
                   >
                     <Copy className="w-3.5 h-3.5 text-primary" />
                     <span>Copiar Imagen</span>
@@ -850,7 +834,7 @@ export default function WhatsAppDispatch() {
                     disabled={!selectedReq}
                     className="flex items-center justify-center gap-1.5 h-10 border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer"
                   >
-                    <ImageIcon className="w-3.5 h-3.5 text-primary" />
+                    <Download className="w-3.5 h-3.5 text-primary" />
                     <span>Bajar Imagen</span>
                   </button>
                   
@@ -872,63 +856,28 @@ export default function WhatsAppDispatch() {
                   <div className="flex-1 h-px bg-slate-200" />
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
-                  {/* Print PDF */}
+                <div className="grid grid-cols-1 gap-2">
+                  {/* Download PDF / Save as PDF */}
                   <button
                     onClick={handlePrintLocalPDF}
                     disabled={!selectedReq}
-                    className="flex items-center justify-center gap-1.5 h-10 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer"
+                    className="flex items-center justify-center gap-1.5 h-11 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer"
                   >
-                    <Printer className="w-3.5 h-3.5" />
-                    <span>Imprimir PDF</span>
+                    <Download className="w-4 h-4" />
+                    <span>Descargar PDF</span>
                   </button>
-
-                  {/* Download PDF */}
-                  <a
-                    href={`https://107.172.193.34.nip.io/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-1.5 h-10 border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs rounded-xl transition-all active:scale-[0.98] text-center"
-                  >
-                    <Download className="w-3.5 h-3.5 text-primary" />
-                    <span>Bajar Reporte</span>
-                  </a>
                 </div>
 
               </div>
             </Card>
 
-            {/* Live Voucher Preview Card */}
-            <Card className="border border-slate-200/80 rounded-2xl shadow-clinical-sm overflow-hidden bg-white p-5 space-y-3">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block border-b border-slate-100 pb-2">
-                Vista Previa del Comprobante
-              </span>
-
-              {isGenerating ? (
-                <div className="flex flex-col items-center justify-center py-10 bg-slate-50 rounded-xl gap-2 border border-slate-100">
-                  <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                  <span className="text-[10px] text-slate-400 font-bold">Generando voucher...</span>
-                </div>
-              ) : imagePreviewUrl ? (
-                <div className="bg-slate-100 p-2 rounded-xl border border-slate-200 max-h-[360px] overflow-y-auto flex justify-center shadow-inner">
-                  <img
-                    src={imagePreviewUrl}
-                    alt="Voucher Preview"
-                    className="max-w-full rounded-lg border border-slate-200 shadow-sm object-contain"
-                  />
-                </div>
-              ) : (
-                <div className="text-center py-8 text-xs text-slate-400 font-medium bg-slate-50 rounded-xl border border-slate-100">
-                  No hay comprobante disponible
-                </div>
-              )}
-
-              {/* Informative Tip Box */}
-              <div className="p-3 bg-amber-50/80 border border-amber-100 rounded-xl flex gap-2">
+            {/* Informative Tip Box */}
+            <Card className="p-4 border border-slate-200/80 rounded-2xl bg-white shadow-clinical-sm">
+              <div className="flex gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0 text-amber-500 mt-0.5" />
                 <div className="text-[10px] leading-relaxed font-semibold text-amber-800">
-                  <strong className="text-amber-900 block mb-0.5">Tip: Enviar por WhatsApp Web / PC</strong>
-                  Presiona el botón <strong className="font-bold">Copiar Imagen</strong>, ve a WhatsApp Web, y pégala directamente presionando <kbd className="bg-amber-100 px-1 py-0.5 rounded border border-amber-200">Ctrl + V</kbd> o <kbd className="bg-amber-100 px-1 py-0.5 rounded border border-amber-200">Cmd + V</kbd> en el chat.
+                  <strong className="text-amber-900 block mb-0.5">Tip: Compartir Imagen en WhatsApp Web</strong>
+                  Haz clic en <strong className="font-bold">Copiar Imagen</strong>, abre el chat en WhatsApp Web y presiona <kbd className="bg-amber-100 px-1 py-0.5 rounded border border-amber-200">Ctrl + V</kbd> o <kbd className="bg-amber-100 px-1 py-0.5 rounded border border-amber-200">Cmd + V</kbd> para adjuntar el comprobante inmediatamente.
                 </div>
               </div>
             </Card>
@@ -1081,71 +1030,6 @@ export default function WhatsAppDispatch() {
             {/* Footer summary */}
             <div className="px-6 py-3 border-t border-slate-100 bg-slate-50 text-center text-[10px] text-slate-400 font-semibold">
               Mostrando {processedRequests.length} de {requests.length} solicitudes de insumos
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ═══════ MODAL: SELECT COORDINATOR (DESTINATARIO) ═══════ */}
-      {isCoordModalOpen && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-clinical-lg w-full max-w-md overflow-hidden flex flex-col max-h-[75vh] animate-view-enter">
-            {/* Header */}
-            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-              <h3 className="text-sm font-black text-secondary uppercase tracking-wide flex items-center gap-2">
-                <Users className="w-4 h-4 text-secondary" /> Seleccionar Coordinador
-              </h3>
-              <button
-                onClick={() => setIsCoordModalOpen(false)}
-                className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Coordinators List */}
-            <div className="flex-1 overflow-y-auto divide-y divide-slate-100 p-3 space-y-1.5 bg-slate-50/30">
-              {coordinators.map((c) => {
-                const isSelected = String(selectedCoordId) === String(c.id);
-                const initials = c.nombre.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
-                return (
-                  <button
-                    key={c.id}
-                    onClick={() => {
-                      setSelectedCoordId(String(c.id));
-                      setIsCoordModalOpen(false);
-                    }}
-                    className={`w-full text-left p-3.5 flex items-center gap-3.5 rounded-2xl transition-all cursor-pointer border ${
-                      isSelected 
-                        ? 'bg-secondary/5 border-secondary/30 shadow-sm' 
-                        : 'bg-white hover:bg-slate-50 border-slate-100 hover:border-slate-200'
-                    }`}
-                  >
-                    {/* Circle Avatar */}
-                    <div className={`w-10 h-10 rounded-full font-bold flex items-center justify-center text-xs shrink-0 shadow-sm transition-colors ${
-                      isSelected ? 'bg-secondary text-white' : 'bg-slate-100 text-slate-500'
-                    }`}>
-                      {initials}
-                    </div>
-
-                    <div className="min-w-0 flex-1">
-                      <span className="font-extrabold text-slate-800 text-sm block leading-tight">{c.nombre}</span>
-                      <span className="text-[11px] text-slate-400 font-semibold mt-0.5 block">{c.telefono}</span>
-                    </div>
-
-                    {isSelected && (
-                      <div className="w-5 h-5 rounded-full bg-secondary text-white flex items-center justify-center shadow-sm">
-                        <Check className="w-3.5 h-3.5 stroke-[3]" />
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-            
-            {/* Footer */}
-            <div className="px-6 py-3 border-t border-slate-100 bg-slate-50 text-center text-[10px] text-slate-400 font-semibold">
-              {coordinators.length} destinatarios disponibles
             </div>
           </div>
         </div>
