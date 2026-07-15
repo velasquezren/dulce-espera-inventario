@@ -752,7 +752,7 @@ export default function WhatsAppDispatch() {
                 <button
                   onClick={handleShareImage}
                   disabled={!selectedReq}
-                  className={`w-full flex items-center justify-center gap-2.5 h-12 rounded-xl font-bold text-sm text-white transition-all active:scale-[0.98] cursor-pointer bg-[#25D366] hover:bg-[#20ba5a] shadow-md shadow-[#25D366]/20 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed disabled:shadow-none`}
+                  className={`w-full flex items-center justify-center gap-2.5 h-12 rounded-xl font-bold text-sm text-white transition-all active:scale-[0.98] cursor-pointer bg-primary hover:bg-primary-hover shadow-md shadow-primary/20 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed disabled:shadow-none`}
                 >
                   <Share2 className="w-5 h-5 stroke-[2.5]" />
                   <span>Compartir Imagen</span>
@@ -796,7 +796,7 @@ export default function WhatsAppDispatch() {
                   <button
                     onClick={handlePrintLocalPDF}
                     disabled={!selectedReq}
-                    className="flex items-center justify-center gap-2.5 h-12 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-clinical-sm"
+                    className="flex items-center justify-center gap-2.5 h-12 bg-secondary hover:bg-secondary-hover text-white font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-md shadow-secondary/20 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed disabled:shadow-none"
                   >
                     <Printer className="w-4 h-4 text-white" />
                     <span>Descargar PDF</span>
