@@ -18,8 +18,14 @@ export default function PWAInstallBanner() {
       setIsMobile(isMobileDevice);
 
       // Check dismissed state in local storage
-      const dismissed = localStorage.getItem('montalvo_pwa_banner_dismissed') === 'true';
-      setIsDismissed(dismissed);
+      try {
+        if (typeof localStorage !== 'undefined' && localStorage !== null) {
+          const dismissed = localStorage.getItem('montalvo_pwa_banner_dismissed') === 'true';
+          setIsDismissed(dismissed);
+        }
+      } catch (e) {
+        console.warn("localStorage is not accessible:", e);
+      }
     }
   }, []);
 
@@ -28,7 +34,13 @@ export default function PWAInstallBanner() {
 
   const handleDismiss = (e: React.MouseEvent) => {
     e.stopPropagation(); // prevent triggering the click on the banner
-    localStorage.setItem('montalvo_pwa_banner_dismissed', 'true');
+    try {
+      if (typeof localStorage !== 'undefined' && localStorage !== null) {
+        localStorage.setItem('montalvo_pwa_banner_dismissed', 'true');
+      }
+    } catch (e) {
+      console.warn("localStorage is not accessible:", e);
+    }
     setIsDismissed(true);
   };
 

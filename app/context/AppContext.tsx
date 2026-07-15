@@ -165,8 +165,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
   const [isSidebarCollapsed, setSidebarCollapsedState] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('montalvo_sidebar_collapsed');
-      return stored ? JSON.parse(stored) : false;
+      try {
+        if (typeof localStorage !== 'undefined' && localStorage !== null) {
+          const stored = localStorage.getItem('montalvo_sidebar_collapsed');
+          return stored ? JSON.parse(stored) : false;
+        }
+      } catch (e) {
+        console.warn("localStorage is not accessible during state initialization:", e);
+      }
     }
     return false;
   });
@@ -174,7 +180,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const setSidebarCollapsed = (collapsed: boolean) => {
     setSidebarCollapsedState(collapsed);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('montalvo_sidebar_collapsed', JSON.stringify(collapsed));
+      try {
+        if (typeof localStorage !== 'undefined' && localStorage !== null) {
+          localStorage.setItem('montalvo_sidebar_collapsed', JSON.stringify(collapsed));
+        }
+      } catch (e) {
+        console.warn("localStorage is not accessible:", e);
+      }
     }
   };
 
@@ -214,7 +226,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Load database from localStorage or seed it
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined' && localStorage !== null) {
       try {
         const storedUser = localStorage.getItem('montalvo_user');
         const storedModule = localStorage.getItem('montalvo_module') as AppModule | null;
