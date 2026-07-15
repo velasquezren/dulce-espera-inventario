@@ -10,8 +10,6 @@ import {
   Calendar,
   User,
   Search,
-  ChevronDown,
-  ChevronUp,
   RotateCw,
   Truck,
   ShoppingCart,
@@ -21,6 +19,7 @@ import {
   BoxIcon,
   CheckCircle2,
   AlertCircle,
+  X,
 } from 'lucide-react';
 import { useToast } from '../UI';
 
@@ -35,7 +34,7 @@ export default function Reception() {
   const [showHelp, setShowHelp] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | OriginalStatus>('all');
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
@@ -113,7 +112,7 @@ export default function Reception() {
     try {
       await confirmReception(confirmId);
       showToast('Pedido recibido en cocina con éxito', 'success');
-      if (expandedId === confirmId) setExpandedId(null);
+      if (selectedId === confirmId) setSelectedId(null);
     } catch {
       showToast('Error al confirmar recepción', 'error');
     } finally {
@@ -133,12 +132,6 @@ export default function Reception() {
       setTimeout(() => setIsRefreshing(false), 600);
     }
   };
-
-  const toggleExpand = (id: string) => {
-    setExpandedId((prev) => (prev === id ? null : id));
-  };
-
-  const selectedReception = receptions.find((r) => r.id === confirmId);
 
   const getStatusConfig = (status: OriginalStatus) => {
     switch (status) {
@@ -184,8 +177,18 @@ export default function Reception() {
     { key: 'En revisión', label: 'En revisión' },
   ];
 
+  // Currently viewed reception details
+  const activeDetail = useMemo(() => {
+    return enrichedReceptions.find((r) => r.id === selectedId);
+  }, [enrichedReceptions, selectedId]);
+
+  // Selected reception for confirm modal
+  const selectedReception = useMemo(() => {
+    return receptions.find((r) => r.id === confirmId);
+  }, [receptions, confirmId]);
+
   return (
-    <div className="space-y-5 animate-fade-in w-full max-w-[1200px] mx-auto pb-24 md:pb-8">
+    <div className="space-y-4 animate-fade-in w-full max-w-[1200px] mx-auto pb-24 md:pb-8">
       {/* ─── Header ─── */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div className="flex flex-col gap-1 flex-1">
@@ -214,8 +217,7 @@ export default function Reception() {
               <p className="mt-1 text-primary-hover font-semibold">
                 Aquí puedes confirmar la llegada de pedidos a cocina. Solo aparecen los pedidos con estado
                 <strong> Aceptado</strong>, <strong>Comprado</strong> o <strong>En revisión</strong>.
-                Busca por nombre del solicitante, ID de pedido o nombre de producto.
-                Al confirmar, el pedido se marca como <strong>Entregado</strong> y se registra en la bitácora.
+                Toca cualquier tarjeta de pedido para abrir su detalle y confirmar la entrega.
               </p>
             </div>
           )}
@@ -235,9 +237,9 @@ export default function Reception() {
         </button>
       </div>
 
-      {/* ─── Stats Cards ─── */}
+      {/* ─── Stats Cards (HIDDEN ON MOBILE) ─── */}
       {pendingReceptions.length > 0 && (
-        <div className="grid grid-cols-3 gap-3">
+        <div className="hidden sm:grid grid-cols-3 gap-3">
           <div className="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-clinical-sm flex flex-col items-center gap-1">
             <div className="w-9 h-9 rounded-xl bg-primary-light flex items-center justify-center">
               <Truck className="w-5 h-5 text-primary" />
@@ -288,8 +290,8 @@ export default function Reception() {
           />
         </div>
 
-        {/* Status Filter Tabs */}
-        <div className="flex gap-1.5 overflow-x-auto pb-0.5 -mx-1 px-1 scrollbar-hide">
+        {/* Status Filter Tabs (Horizontal Scroll on Mobile) */}
+        <div className="flex gap-1.5 overflow-x-auto pb-1 flex-nowrap scrollbar-hide">
           {statusTabs.map((tab) => {
             const count = statusCounts[tab.key] || 0;
             const isActive = statusFilter === tab.key;
@@ -340,9 +342,8 @@ export default function Reception() {
           }
         />
       ) : (
-        <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredReceptions.map((item) => {
-            const isExpanded = expandedId === item.id;
             const statusCfg = getStatusConfig(item.originalStatus);
             const totalUnits = item.items.reduce(
               (acc, p) => acc + p.quantity,
@@ -352,146 +353,155 @@ export default function Reception() {
             return (
               <Card
                 key={item.id}
-                className="border border-slate-200/80 hover:border-slate-300 shadow-clinical-sm transition-all duration-200 bg-white rounded-2xl overflow-hidden"
+                onClick={() => setSelectedId(item.id)}
+                className="border border-slate-200/80 hover:border-slate-300 shadow-clinical-sm transition-all duration-200 bg-white rounded-2xl p-4 sm:p-5 flex flex-col justify-between cursor-pointer hover:shadow-clinical-md hover:-translate-y-0.5 active:scale-[0.99]"
               >
-                {/* ─ Clickable Header ─ */}
-                <button
-                  type="button"
-                  onClick={() => toggleExpand(item.id)}
-                  className="w-full p-4 sm:p-5 flex items-start justify-between gap-3 text-left cursor-pointer group"
-                >
-                  <div className="flex-1 min-w-0 space-y-2">
-                    {/* Top row: Status + Date */}
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span
-                        className={`inline-flex items-center gap-1 text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${statusCfg.bg} ${statusCfg.text}`}
-                      >
-                        {statusCfg.icon}
-                        {statusCfg.label}
-                      </span>
-                      <span className="flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                        <Calendar className="w-3 h-3 text-slate-400" />
-                        {item.date.split('-').reverse().join('/')}
-                      </span>
-                    </div>
-
-                    {/* Solicitante */}
-                    <h3 className="text-sm font-black text-slate-800 flex items-center gap-1.5 tracking-tight">
-                      <User className="w-3.5 h-3.5 text-primary shrink-0" />
-                      <span className="truncate">{item.solicitante}</span>
-                    </h3>
-
-                    {/* ID + Counts */}
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-500 text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
-                        <Hash className="w-2.5 h-2.5" />
-                        {item.id.slice(0, 8).toUpperCase()}
-                      </span>
-                      <span className="text-[10px] font-extrabold text-primary bg-primary-light px-2 py-0.5 rounded-full border border-primary/10 flex items-center gap-1">
-                        <Package className="w-3 h-3" />
-                        {item.items.length} insumo
-                        {item.items.length !== 1 ? 's' : ''}
-                      </span>
-                      <span className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full flex items-center gap-1">
-                        {totalUnits} uds
-                      </span>
-                    </div>
+                <div className="space-y-3">
+                  {/* Top row: Status + Date */}
+                  <div className="flex justify-between items-center">
+                    <span
+                      className={`inline-flex items-center gap-1 text-[9px] font-extrabold px-2 py-0.5 rounded-full border ${statusCfg.bg} ${statusCfg.text}`}
+                    >
+                      {statusCfg.icon}
+                      {statusCfg.label}
+                    </span>
+                    <span className="flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                      <Calendar className="w-3 h-3 text-slate-400" />
+                      {item.date.split('-').reverse().join('/')}
+                    </span>
                   </div>
 
-                  {/* Chevron */}
-                  <div className="shrink-0 mt-1">
-                    {isExpanded ? (
-                      <ChevronUp className="w-5 h-5 text-primary transition-transform" />
-                    ) : (
-                      <ChevronDown className="w-5 h-5 text-slate-400 group-hover:text-primary transition-colors" />
-                    )}
+                  {/* Solicitante */}
+                  <h3 className="text-sm font-black text-slate-800 flex items-center gap-1.5 tracking-tight">
+                    <User className="w-3.5 h-3.5 text-primary shrink-0" />
+                    <span className="truncate">{item.solicitante}</span>
+                  </h3>
+
+                  {/* ID + Counts */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-500 text-[9px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+                      <Hash className="w-2.5 h-2.5" />
+                      {item.id.slice(0, 8).toUpperCase()}
+                    </span>
+                    <span className="text-[10px] font-extrabold text-primary bg-primary-light px-2 py-0.5 rounded-full border border-primary/10 flex items-center gap-1">
+                      <Package className="w-3 h-3" />
+                      {item.items.length} insumo
+                      {item.items.length !== 1 ? 's' : ''}
+                    </span>
+                    <span className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+                      {totalUnits} uds
+                    </span>
                   </div>
-                </button>
+                </div>
 
-                {/* ─ Expanded Content ─ */}
-                {isExpanded && (
-                  <div className="animate-view-enter border-t border-slate-100">
-                    {/* Products list */}
-                    <div className="p-4 sm:px-5 space-y-1.5">
-                      {/* Table header (desktop) */}
-                      <div className="hidden sm:grid grid-cols-[auto_1fr_auto_auto] gap-3 px-2 pb-2 text-[10px] font-bold text-primary uppercase tracking-wider border-b border-slate-100">
-                        <span className="w-6 text-center">#</span>
-                        <span>Producto</span>
-                        <span className="text-center w-16">Unidad</span>
-                        <span className="text-right w-14">Cant.</span>
-                      </div>
-
-                      {item.items.map((prod, idx) => (
-                        <div
-                          key={idx}
-                          className={`flex items-center justify-between sm:grid sm:grid-cols-[auto_1fr_auto_auto] gap-2 sm:gap-3 p-2 sm:px-2 rounded-lg text-xs transition-colors ${
-                            idx % 2 === 0
-                              ? 'bg-slate-50/60'
-                              : 'bg-white'
-                          }`}
-                        >
-                          {/* Index */}
-                          <span className="hidden sm:block w-6 text-center text-[10px] font-bold text-slate-400">
-                            {idx + 1}
-                          </span>
-
-                          {/* Product name */}
-                          <span className="font-semibold text-slate-700 truncate flex-1 min-w-0">
-                            {prod.productName}
-                          </span>
-
-                          {/* Unit */}
-                          <span className="hidden sm:block text-center w-16 text-slate-500 font-medium">
-                            {prod.unit}
-                          </span>
-
-                          {/* Quantity badge */}
-                          <span className="font-black text-primary shrink-0 whitespace-nowrap bg-primary-light/60 px-2.5 py-1 rounded-lg text-[11px] min-w-[60px] text-right">
-                            {prod.quantity} {prod.unit}
-                          </span>
-                        </div>
-                      ))}
-
-                      {/* Total row */}
-                      <div className="flex items-center justify-between pt-2 mt-1 border-t border-primary/10">
-                        <span className="text-[11px] font-extrabold text-primary uppercase tracking-wider">
-                          Total: {item.items.length} producto
-                          {item.items.length !== 1 ? 's' : ''}
-                        </span>
-                        <span className="text-sm font-black text-primary bg-primary-light px-3 py-1 rounded-lg">
-                          {totalUnits} uds
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Reason (if available) */}
-                    {item.reason && (
-                      <div className="mx-4 sm:mx-5 mb-3 p-3 bg-slate-50 border border-slate-100 rounded-xl">
-                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-                          Motivo / Justificación
-                        </p>
-                        <p className="text-xs text-slate-600 font-medium italic leading-relaxed">
-                          &ldquo;{item.reason}&rdquo;
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Confirm Button */}
-                    <div className="p-4 sm:px-5 border-t border-slate-100 bg-slate-50/40">
-                      <Button
-                        variant="primary"
-                        onClick={() => handleOpenConfirm(item.id)}
-                        className="w-full font-bold h-11 text-xs tracking-wide bg-primary hover:bg-primary-hover text-white rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm active:scale-[0.98]"
-                      >
-                        <ClipboardCheck className="w-4 h-4 stroke-[2.5]" />
-                        Confirmar Entrega Completa
-                      </Button>
-                    </div>
-                  </div>
-                )}
+                <div className="border-t border-slate-100 pt-3 mt-4 flex items-center justify-between text-[11px] font-extrabold text-primary">
+                  <span>Ver insumos y recibir</span>
+                  <Truck className="w-4 h-4 text-primary animate-pulse" />
+                </div>
               </Card>
             );
           })}
+        </div>
+      )}
+
+      {/* ─── MODAL: DETALLES DE RECEPCIÓN ─── */}
+      {selectedId && activeDetail && (
+        <div className="fixed inset-0 z-[9998] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-clinical-lg w-full max-w-md overflow-hidden flex flex-col max-h-[85vh] animate-view-enter">
+            {/* Header */}
+            <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+              <h3 className="text-sm font-black text-[#006156] uppercase tracking-wide flex items-center gap-2">
+                <Truck className="w-4 h-4 text-primary" /> Recepción de Pedido
+              </h3>
+              <button
+                onClick={() => setSelectedId(null)}
+                className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Info Summary */}
+            <div className="p-4 bg-white border-b border-slate-100 space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-black bg-slate-100 text-slate-500 px-2.5 py-0.5 rounded-md tracking-wide">
+                  ID: #{activeDetail.id.slice(0, 8).toUpperCase()}
+                </span>
+                <span className="text-[10px] font-extrabold text-slate-400 flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                  {activeDetail.date.split('-').reverse().join('/')}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-primary-light flex items-center justify-center text-primary font-bold text-xs shrink-0">
+                  {activeDetail.solicitante.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <h4 className="text-xs font-black text-slate-800 leading-tight">
+                    {activeDetail.solicitante}
+                  </h4>
+                  <span className="text-[9px] text-slate-400 font-bold uppercase">Solicitante</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Insumos List */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-2">
+              <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block mb-2">
+                Lista de Insumos ({activeDetail.items.length})
+              </span>
+              <div className="space-y-1.5">
+                {activeDetail.items.map((prod, idx) => (
+                  <div
+                    key={idx}
+                    className={`flex items-center justify-between p-2.5 rounded-xl border border-slate-100 text-xs ${
+                      idx % 2 === 0 ? 'bg-slate-50/50' : 'bg-white'
+                    }`}
+                  >
+                    <div className="min-w-0 flex-1 pr-2">
+                      <p className="font-extrabold text-slate-700 truncate">
+                        {prod.productName}
+                      </p>
+                      <span className="text-[9px] text-slate-400 font-semibold">
+                        Insumo #{idx + 1} • Unidad: {prod.unit}
+                      </span>
+                    </div>
+                    <span className="font-black text-primary bg-primary-light/60 px-2.5 py-1 rounded-lg text-[11px] shrink-0">
+                      {prod.quantity} {prod.unit}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Reason */}
+              {activeDetail.reason && (
+                <div className="mt-4 p-3 bg-slate-50 border border-slate-100 rounded-xl">
+                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider mb-1">
+                    Motivo / Justificación
+                  </p>
+                  <p className="text-xs text-slate-600 font-medium italic leading-relaxed">
+                    &ldquo;{activeDetail.reason}&rdquo;
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Bottom Confirm Action */}
+            <div className="p-4 border-t border-slate-100 bg-slate-50 flex flex-col gap-2">
+              <div className="flex justify-between items-center text-[10px] font-bold text-slate-500 mb-1">
+                <span>Total insumos: {activeDetail.items.length}</span>
+                <span>Unidades: {activeDetail.items.reduce((acc, p) => acc + p.quantity, 0)} uds</span>
+              </div>
+              <Button
+                variant="primary"
+                onClick={() => handleOpenConfirm(activeDetail.id)}
+                className="w-full font-bold h-11 text-xs tracking-wide bg-primary hover:bg-primary-hover text-white rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm active:scale-[0.98]"
+              >
+                <ClipboardCheck className="w-4.5 h-4.5 stroke-[2]" />
+                Confirmar Recepción Completa
+              </Button>
+            </div>
+          </div>
         </div>
       )}
 

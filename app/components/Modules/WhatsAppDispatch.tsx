@@ -860,10 +860,10 @@ export default function WhatsAppDispatch() {
 
       {/* ═══════ MODAL: SELECT REQUEST (PEDIDO) ═══════ */}
       {isReqModalOpen && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-clinical-lg w-full max-w-lg overflow-hidden flex flex-col max-h-[85vh] animate-view-enter">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-clinical-lg w-full max-w-md overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[85vh] animate-view-enter">
             {/* Header */}
-            <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
               <h3 className="text-sm font-black text-[#006156] uppercase tracking-wide flex items-center gap-2">
                 <Package className="w-4 h-4 text-primary" /> Seleccionar Solicitud
               </h3>
@@ -876,16 +876,16 @@ export default function WhatsAppDispatch() {
             </div>
             
             {/* Search, Filter & Sort */}
-            <div className="p-5 border-b border-slate-100 space-y-4 bg-white">
+            <div className="p-3 sm:p-4 border-b border-slate-100 space-y-3 bg-white">
               {/* Search input */}
               <div className="relative">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 <input
                   type="text"
                   placeholder="Buscar por solicitante, ID, producto..."
                   value={searchOrderQuery}
                   onChange={(e) => setSearchOrderQuery(e.target.value)}
-                  className="w-full h-11 pl-10 pr-9 rounded-xl border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none bg-slate-50/50"
+                  className="w-full h-10 pl-9 pr-8 rounded-xl border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none bg-slate-50/50"
                 />
                 {searchOrderQuery && (
                   <button
@@ -897,13 +897,14 @@ export default function WhatsAppDispatch() {
                 )}
               </div>
 
-              {/* Status Filters */}
-              <div className="flex gap-1.5 flex-wrap">
+              {/* Status Filters (Horizontal Scroll on Mobile) */}
+              <div className="flex gap-1.5 overflow-x-auto pb-1 flex-nowrap scrollbar-hide">
                 <button
+                  type="button"
                   onClick={() => setStatusFilter('all')}
-                  className={`px-3 py-1 rounded-full text-[10px] font-extrabold transition-all border cursor-pointer ${
+                  className={`shrink-0 px-2.5 py-1 rounded-full text-[10px] font-extrabold transition-all border cursor-pointer ${
                     statusFilter === 'all'
-                      ? 'bg-primary text-white border-primary'
+                      ? 'bg-primary text-white border-primary shadow-sm'
                       : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
                   }`}
                 >
@@ -914,11 +915,12 @@ export default function WhatsAppDispatch() {
                   const count = requests.filter(r => r.status === s).length;
                   return (
                     <button
+                      type="button"
                       key={s}
                       onClick={() => setStatusFilter(statusFilter === s ? 'all' : s)}
-                      className={`px-3 py-1 rounded-full text-[10px] font-extrabold transition-all border cursor-pointer ${
+                      className={`shrink-0 px-2.5 py-1 rounded-full text-[10px] font-extrabold transition-all border cursor-pointer ${
                         statusFilter === s
-                          ? `${si.bg} ${si.text} border-current`
+                          ? `${si.bg} ${si.text} border-current shadow-sm`
                           : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
                       }`}
                     >
@@ -929,15 +931,16 @@ export default function WhatsAppDispatch() {
               </div>
 
               {/* Sorting toolbar */}
-              <div className="flex items-center gap-1.5 border-t border-slate-100 pt-3 text-[10px]">
-                <span className="text-slate-400 font-bold mr-1 flex items-center gap-1">
-                  <ArrowUpDown className="w-3 h-3" /> Ordenar por:
+              <div className="flex items-center gap-1.5 border-t border-slate-100 pt-2.5 text-[10px] overflow-x-auto scrollbar-hide py-0.5">
+                <span className="text-slate-400 font-bold mr-1 flex items-center gap-1 shrink-0">
+                  <ArrowUpDown className="w-3 h-3" /> Orden:
                 </span>
                 {([['date', 'Fecha'], ['user', 'Solicitante'], ['items', 'Items'], ['status', 'Estado']] as [SortKey, string][]).map(([k, label]) => (
                   <button
+                    type="button"
                     key={k}
                     onClick={() => toggleSort(k)}
-                    className={`px-2.5 py-1 rounded-lg text-[10px] font-bold cursor-pointer transition-colors ${
+                    className={`shrink-0 px-2.5 py-0.5 rounded-lg text-[10px] font-bold cursor-pointer transition-colors ${
                       sortKey === k
                         ? 'bg-primary/10 text-primary'
                         : 'text-slate-400 hover:text-slate-600'
@@ -967,15 +970,15 @@ export default function WhatsAppDispatch() {
                         setSelectedReqId(req.idPublico || req.id);
                         setIsReqModalOpen(false);
                       }}
-                      className={`w-full text-left px-6 py-4 flex items-center gap-3 transition-colors cursor-pointer border-l-4 ${
+                      className={`w-full text-left px-4 py-3 sm:px-5 sm:py-3.5 flex items-center gap-3 transition-colors cursor-pointer border-l-4 ${
                         isSelected 
                           ? 'bg-primary-light/30 border-l-primary' 
                           : 'bg-white hover:bg-slate-50 border-l-transparent'
                       }`}
                     >
-                      <div className="min-w-0 flex-1 space-y-1.5">
+                      <div className="min-w-0 flex-1 space-y-1">
                         <div className="flex items-center justify-between">
-                          <h4 className="text-xs font-extrabold text-slate-800 group-hover:text-primary transition-colors">
+                          <h4 className="text-xs font-extrabold text-slate-800">
                             {req.user}
                           </h4>
                           <span className={`inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full border ${si.bg} ${si.text}`}>
@@ -983,15 +986,15 @@ export default function WhatsAppDispatch() {
                             {req.status}
                           </span>
                         </div>
-                        <div className="flex items-center gap-2 text-[10px] text-slate-400 font-semibold">
-                          <span>Pedido N° #{req.id.toUpperCase()}</span>
+                        <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-semibold">
+                          <span>N° #{req.id.slice(0, 8).toUpperCase()}</span>
                           <span>•</span>
                           <span>{req.date.split(' ')[0]}</span>
                           <span>•</span>
-                          <span className="text-slate-500 font-bold">{req.items.length} productos</span>
+                          <span className="text-slate-500 font-bold">{req.items.length} prod.</span>
                         </div>
                       </div>
-                      <ChevronRight className="w-5 h-5 text-slate-400" />
+                      <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
                     </button>
                   );
                 })
@@ -999,7 +1002,7 @@ export default function WhatsAppDispatch() {
             </div>
             
             {/* Footer summary */}
-            <div className="px-6 py-3 border-t border-slate-100 bg-slate-50 text-center text-[10px] text-slate-400 font-semibold">
+            <div className="px-5 py-2.5 border-t border-slate-100 bg-slate-50 text-center text-[10px] text-slate-400 font-semibold shrink-0">
               Mostrando {processedRequests.length} de {requests.length} solicitudes de insumos
             </div>
           </div>
