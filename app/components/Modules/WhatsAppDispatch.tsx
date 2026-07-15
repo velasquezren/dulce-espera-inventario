@@ -114,11 +114,7 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
       // Brand Name Text
       ctx.fillStyle = '#006156';
       ctx.font = 'bold 20px system-ui, -apple-system, sans-serif';
-      ctx.fillText('DULCE ESPERA', 84, 47);
-
-      ctx.fillStyle = '#39ADA3';
-      ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
-      ctx.fillText('Cocina y Nutrición Clínica', 84, 63);
+      ctx.fillText('DULCE ESPERA', 84, 55);
 
       // Top Right Metadata
       ctx.fillStyle = '#475569';
@@ -148,13 +144,7 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
       ctx.font = '500 11px system-ui, -apple-system, sans-serif';
       ctx.fillText(req.user, 115, 118);
 
-      ctx.fillStyle = '#475569';
-      ctx.font = '500 10px system-ui, -apple-system, sans-serif';
-      ctx.fillText('Cargo: Personal de Cocina Clínica', 30, 136);
 
-      ctx.textAlign = 'right';
-      ctx.fillText('Destino: Cocina Central Dulce Espera', 570, 136);
-      ctx.textAlign = 'left'; // reset
 
       // Section title
       ctx.fillStyle = '#39ADA3';
@@ -513,8 +503,7 @@ export default function WhatsAppDispatch() {
         <div style="display:flex;align-items:center;gap:14px">
           <img src="/logo.svg" alt="Logo" style="width:40px;height:40px;object-fit:contain"/>
           <div>
-            <div style="font-size:20px;font-weight:800;color:#006156;letter-spacing:-.5px">DULCE ESPERA</div>
-            <div style="font-size:10px;color:#39ADA3;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-top:2px">Cocina y Nutrición Clínica</div>
+            <div style="font-size:20px;font-weight:800;color:#006156;letter-spacing:-.5px;line-height:1">DULCE ESPERA</div>
           </div>
         </div>
         <div style="text-align:right;font-size:11px;color:#475569;line-height:1.8">
@@ -528,10 +517,6 @@ export default function WhatsAppDispatch() {
       <div style="display:flex;justify-content:space-between;font-size:11px;color:#475569;margin-bottom:22px;line-height:1.7">
         <div>
           <div><strong style="color:#0f172a">Solicitado por:</strong> ${selectedReq.user}</div>
-          <div><strong style="color:#0f172a">Cargo:</strong> Personal de Cocina Clínica</div>
-        </div>
-        <div style="text-align:right">
-          <div><strong style="color:#0f172a">Destino:</strong> Cocina Central Dulce Espera</div>
         </div>
       </div>
 

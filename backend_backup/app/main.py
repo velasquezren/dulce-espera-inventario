@@ -632,8 +632,7 @@ def ver_reporte_pedido(id_publico: str, db: Session = Depends(get_db)):
             <div class="brand">
                 <img src="https://dulce-espera-inventario.vercel.app/logo.svg" alt="Logo" style="width: 50px; height: 50px; object-fit: contain;" onerror="this.style.display='none'">
                 <div>
-                    <h1 class="brand-title">DULCE ESPERA</h1>
-                    <div class="brand-subtitle">Cocina y Nutrición</div>
+                    <h1 class="brand-title" style="margin: 0; line-height: 1;">DULCE ESPERA</h1>
                 </div>
             </div>
             <div class="meta">
@@ -817,8 +816,7 @@ def ver_reporte_pedido_pdf(id_publico: str, db: Session = Depends(get_db)):
                 <img src="https://dulce-espera-inventario.vercel.app/icon-192.png" style="width: 45px; height: 45px;" />
             </td>
             <td style="vertical-align: middle;">
-                <div class="brand-title">DULCE ESPERA</div>
-                <div class="brand-subtitle">Cocina y Nutrición Clínica</div>
+                <div class="brand-title" style="line-height: 1;">DULCE ESPERA</div>
             </td>
             <td class="meta-text" style="vertical-align: middle;">
                 <strong>N° LISTA:</strong> {pedido.id_publico[:8].upper()}<br>
@@ -831,11 +829,10 @@ def ver_reporte_pedido_pdf(id_publico: str, db: Session = Depends(get_db)):
     <table class="info-table">
         <tr>
             <td style="font-size: 10px; color: #475569; line-height: 1.4;">
-                <strong>Solicitado por:</strong> {pedido.solicitante}<br>
-                <strong>Cargo:</strong> Personal de Cocina Clínica
+                <strong>Solicitado por:</strong> {pedido.solicitante}
             </td>
             <td style="font-size: 10px; color: #475569; text-align: right; line-height: 1.4; vertical-align: top;">
-                <strong>Destino:</strong> Cocina Central Dulce Espera
+                &nbsp;
             </td>
         </tr>
     </table>
