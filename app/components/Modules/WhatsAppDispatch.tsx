@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Card } from '../UI';
+import { Card, Portal } from '../UI';
 import { 
   Printer, 
   Download, 
@@ -383,6 +383,16 @@ export default function WhatsAppDispatch() {
   const [toastMessage, setToastMessage] = useState('');
 
   const previewRef = useRef<HTMLDivElement>(null);
+
+  // Lock body scroll when request selection modal is open
+  useEffect(() => {
+    if (!isReqModalOpen) return;
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, [isReqModalOpen]);
 
   // Check share capabilities
   useEffect(() => {
@@ -860,8 +870,9 @@ export default function WhatsAppDispatch() {
 
       {/* ═══════ MODAL: SELECT REQUEST (PEDIDO) ═══════ */}
       {isReqModalOpen && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-clinical-lg w-full max-w-md overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[85vh] animate-view-enter">
+        <Portal>
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4 bg-slate-900/50 backdrop-blur-md animate-fade-in">
+            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-clinical-lg w-full max-w-md overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[85vh] animate-view-enter">
             {/* Header */}
             <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
               <h3 className="text-sm font-black text-[#006156] uppercase tracking-wide flex items-center gap-2">
@@ -1005,8 +1016,9 @@ export default function WhatsAppDispatch() {
             <div className="px-5 py-2.5 border-t border-slate-100 bg-slate-50 text-center text-[10px] text-slate-400 font-semibold shrink-0">
               Mostrando {processedRequests.length} de {requests.length} solicitudes de insumos
             </div>
+            </div>
           </div>
-        </div>
+        </Portal>
       )}
 
     </div>

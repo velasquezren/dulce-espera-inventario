@@ -216,11 +216,20 @@ export function ConfirmModal({
   cancelText = 'Cancelar',
   isConfirming = false,
 }: ModalProps) {
+  useEffect(() => {
+    if (!isOpen) return;
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
     <Portal>
-      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-fade-in">
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md animate-fade-in">
         <div className="bg-white rounded-card border border-[#e2e8f0]/80 shadow-clinical-lg w-full max-w-md overflow-hidden animate-view-enter">
           <div className="p-6">
             <div className="flex items-center gap-3 text-[#006156]">

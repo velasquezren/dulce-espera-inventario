@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Card, Button, ConfirmModal, EmptyState } from '../UI';
+import { Card, Button, ConfirmModal, EmptyState, Portal } from '../UI';
 import {
   Check,
   HelpCircle,
@@ -40,6 +40,15 @@ export default function Reception() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    if (!selectedId) return;
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, [selectedId]);
 
   const pendingReceptions = receptions.filter((r) => r.status === 'Pendiente');
 
@@ -406,8 +415,9 @@ export default function Reception() {
 
       {/* ─── MODAL: DETALLES DE RECEPCIÓN ─── */}
       {selectedId && activeDetail && (
-        <div className="fixed inset-0 z-[9998] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-clinical-lg w-full max-w-md overflow-hidden flex flex-col max-h-[85vh] animate-view-enter">
+        <Portal>
+          <div className="fixed inset-0 z-[9998] flex items-center justify-center p-2 sm:p-4 bg-slate-900/50 backdrop-blur-md animate-fade-in">
+            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-clinical-lg w-full max-w-md overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[85vh] animate-view-enter">
             {/* Header */}
             <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
               <h3 className="text-sm font-black text-[#006156] uppercase tracking-wide flex items-center gap-2">
@@ -503,6 +513,7 @@ export default function Reception() {
             </div>
           </div>
         </div>
+        </Portal>
       )}
 
       {/* ─── Confirmation Modal ─── */}

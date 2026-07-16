@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { X, Share, Plus, Download, Smartphone, Info, Monitor } from 'lucide-react';
+import { Portal } from './UI';
 
 export default function PWAInstallModal() {
   const { showInstallModal, setShowInstallModal, deferredPrompt, installApp } = useApp();
@@ -20,6 +21,15 @@ export default function PWAInstallModal() {
     }
   }, []);
 
+  useEffect(() => {
+    if (!showInstallModal) return;
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, [showInstallModal]);
+
   if (!showInstallModal) return null;
 
   const handleClose = () => {
@@ -32,7 +42,8 @@ export default function PWAInstallModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+    <Portal>
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md animate-fade-in">
       <div className="bg-white w-full max-w-md rounded-[28px] border border-slate-200/80 shadow-clinical-xl overflow-hidden animate-scale-up">
         {/* Header */}
         <div className="relative p-6 pb-4 border-b border-slate-100 flex items-center justify-between">
@@ -194,5 +205,6 @@ export default function PWAInstallModal() {
         </div>
       </div>
     </div>
+    </Portal>
   );
 }
