@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Card, Button, ConfirmModal } from '../UI';
-import { Search, Trash2, Send, ShoppingBag, Check, HelpCircle } from 'lucide-react';
+import { Search, Trash2, Send, ShoppingBag, Check, HelpCircle, X } from 'lucide-react';
 import { useToast } from '../UI';
 
 export default function Inventory() {
@@ -45,8 +45,15 @@ export default function Inventory() {
 
   // Filter products by search query and category selection
   const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      (product.category || '').toLowerCase().includes(searchQuery.toLowerCase());
+    const query = searchQuery.trim().toLowerCase();
+    let matchesSearch = true;
+    if (query) {
+      const keywords = query.split(/\s+/).filter(Boolean);
+      matchesSearch = keywords.every(keyword => 
+        product.name.toLowerCase().includes(keyword) || 
+        (product.category || '').toLowerCase().includes(keyword)
+      );
+    }
     const matchesCategory = selectedCategoryFilters.length === 0 || selectedCategoryFilters.includes(product.category || 'Otros');
     return matchesSearch && matchesCategory;
   });
@@ -179,16 +186,25 @@ export default function Inventory() {
       {/* TAB 1: CATALOGO */}
       {activeTab === 'catalog' && (
         <div className="space-y-4">
-          {/* Search bar */}
-          <div className="relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+          {/* Search bar with clear button & interactive focus ring */}
+          <div className="relative group">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400 group-focus-within:text-primary transition-colors duration-200" />
             <input
               type="text"
-              placeholder="Buscar producto por nombre (ej. Huevo, Café, Azúcar)..."
+              placeholder="Buscar producto por nombre o categoría (ej. huevo, lácteos)..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full h-12 pl-10 pr-4 rounded-xl border border-[#cbd5e1] text-sm text-[#0f172a] outline-none focus:border-primary"
+              className="w-full h-12 pl-10 pr-10 rounded-xl border border-slate-200 bg-white text-sm text-[#0f172a] placeholder-slate-400 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none"
             />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all cursor-pointer flex items-center justify-center"
+                aria-label="Limpiar búsqueda"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
           </div>
           
           {/* Category Horizontal Filter Bar */}
@@ -243,13 +259,55 @@ export default function Inventory() {
             </div>
           </div>
 
+          {/* Search Result Counter */}
+          <div className="flex items-center justify-between text-xs text-slate-400 font-bold px-1 py-0.5">
+            <span>Resultados: {sortedProducts.length} de {products.length} insumos</span>
+            {(searchQuery || selectedCategoryFilters.length > 0) && (
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setSelectedCategoryFilters([]);
+                }}
+                className="text-primary hover:underline cursor-pointer"
+              >
+                Restablecer búsqueda
+              </button>
+            )}
+          </div>
+
           {/* Flat Catalog Products List */}
-          <div className="bg-white border border-[#e2e8f0] rounded-[16px] overflow-hidden shadow-clinical-sm">
-            {sortedProducts.length === 0 ? (
-              <div className="text-center py-12 text-slate-400 font-semibold text-sm bg-white rounded-xl">
-                No se encontraron productos en el catálogo.
+          {sortedProducts.length === 0 ? (
+            <div className="flex flex-col items-center justify-center text-center p-8 sm:p-12 bg-white rounded-2xl border border-dashed border-slate-200 shadow-clinical-sm animate-view-enter">
+              <div className="p-4 rounded-full bg-slate-50 text-slate-400 mb-3">
+                <Search className="w-8 h-8" />
               </div>
-            ) : (
+              <h3 className="text-base font-extrabold text-slate-800 tracking-tight">Sin resultados coincidentes</h3>
+              <p className="text-xs text-slate-500 max-w-xs mt-1.5 leading-relaxed font-semibold">
+                No encontramos ningún insumo que coincida con tu búsqueda. Intenta con otros términos o limpia los filtros de categoría.
+              </p>
+              <div className="flex items-center gap-2 mt-5">
+                {searchQuery && (
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setSearchQuery('')}
+                    className="h-9 px-4 text-xs font-bold cursor-pointer"
+                  >
+                    Limpiar Búsqueda
+                  </Button>
+                )}
+                {selectedCategoryFilters.length > 0 && (
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => setSelectedCategoryFilters([])}
+                    className="h-9 px-4 text-xs text-slate-500 font-bold hover:bg-slate-100 cursor-pointer"
+                  >
+                    Quitar Filtros
+                  </Button>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="bg-white border border-[#e2e8f0] rounded-[16px] overflow-hidden shadow-clinical-sm">
               <div className="p-1 sm:p-2">
                 {sortedProducts.map((product, index) => {
                   const draftItem = draftItems.find((d) => d.productId === product.id);
@@ -374,8 +432,8 @@ export default function Inventory() {
                   );
                 })}
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
 

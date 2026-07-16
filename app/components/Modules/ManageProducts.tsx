@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Card, Button, ConfirmModal } from '../UI';
-import { Plus, Trash2, FolderPlus, Layers, Search, HelpCircle } from 'lucide-react';
+import { Plus, Trash2, FolderPlus, Layers, Search, HelpCircle, X } from 'lucide-react';
 import { useToast } from '../UI';
 
 export default function ManageProducts() {
@@ -56,7 +56,14 @@ export default function ManageProducts() {
 
   // Filter products by search and category filter
   const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const query = searchQuery.trim().toLowerCase();
+    let matchesSearch = true;
+    if (query) {
+      const keywords = query.split(/\s+/).filter(Boolean);
+      matchesSearch = keywords.every(keyword => 
+        product.name.toLowerCase().includes(keyword)
+      );
+    }
     const matchesCategory = categoryFilter === 'All' || (product.category || 'Otros') === categoryFilter;
     return matchesSearch && matchesCategory;
   });
@@ -117,15 +124,24 @@ export default function ManageProducts() {
         <div className="space-y-4">
           {/* Search & Category Filter bar */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="sm:col-span-2 relative">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <div className="sm:col-span-2 relative group">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400 group-focus-within:text-primary transition-colors duration-200" />
               <input
                 type="text"
-                placeholder="Buscar insumo para clasificar..."
+                placeholder="Buscar insumo por nombre..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-12 pl-10 pr-4 rounded-xl border border-[#cbd5e1] text-sm text-[#0f172a] outline-none focus:border-primary"
+                className="w-full h-12 pl-10 pr-10 rounded-xl border border-slate-200 bg-white text-sm text-[#0f172a] placeholder-slate-400 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none"
               />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all cursor-pointer flex items-center justify-center"
+                  aria-label="Limpiar búsqueda"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
             </div>
             
             <div className="sm:col-span-1">
@@ -144,15 +160,57 @@ export default function ManageProducts() {
             </div>
           </div>
 
+          {/* Search Result Counter */}
+          <div className="flex items-center justify-between text-xs text-slate-400 font-bold px-1 py-0.5">
+            <span>Resultados: {filteredProducts.length} de {products.length} insumos</span>
+            {(searchQuery || categoryFilter !== 'All') && (
+              <button
+                onClick={() => {
+                  setSearchQuery('');
+                  setCategoryFilter('All');
+                }}
+                className="text-primary hover:underline cursor-pointer"
+              >
+                Restablecer filtros
+              </button>
+            )}
+          </div>
+
           {/* Products List & Classifier Grid */}
-          <div className="bg-white border border-[#e2e8f0] rounded-[16px] overflow-hidden shadow-clinical-sm">
-            <div className="divide-y divide-[#f1f5f9]">
-              {filteredProducts.length === 0 ? (
-                <div className="p-12 text-center text-sm text-slate-400 font-semibold">
-                  No se encontraron productos coincidentes.
-                </div>
-              ) : (
-                filteredProducts.map((product) => (
+          {filteredProducts.length === 0 ? (
+            <div className="flex flex-col items-center justify-center text-center p-8 sm:p-12 bg-white rounded-2xl border border-dashed border-slate-200 shadow-clinical-sm animate-view-enter">
+              <div className="p-4 rounded-full bg-slate-50 text-slate-400 mb-3">
+                <Search className="w-8 h-8" />
+              </div>
+              <h3 className="text-base font-extrabold text-slate-800 tracking-tight">Sin resultados coincidentes</h3>
+              <p className="text-xs text-slate-500 max-w-xs mt-1.5 leading-relaxed font-semibold">
+                No encontramos ningún insumo que coincida con tu búsqueda. Intenta con otros términos o cambia la categoría filtrada.
+              </p>
+              <div className="flex items-center gap-2 mt-5">
+                {searchQuery && (
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setSearchQuery('')}
+                    className="h-9 px-4 text-xs font-bold cursor-pointer"
+                  >
+                    Limpiar Búsqueda
+                  </Button>
+                )}
+                {categoryFilter !== 'All' && (
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => setCategoryFilter('All')}
+                    className="h-9 px-4 text-xs text-slate-500 font-bold hover:bg-slate-100 cursor-pointer"
+                  >
+                    Mostrar Todas
+                  </Button>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="bg-white border border-[#e2e8f0] rounded-[16px] overflow-hidden shadow-clinical-sm">
+              <div className="divide-y divide-[#f1f5f9]">
+                {filteredProducts.map((product) => (
                   <div 
                     key={product.id} 
                     className="p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
@@ -194,10 +252,10 @@ export default function ManageProducts() {
                       </select>
                     </div>
                   </div>
-                ))
-              )}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
 
