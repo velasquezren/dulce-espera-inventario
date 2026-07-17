@@ -416,10 +416,10 @@ export default function Reception() {
       {/* ─── MODAL: DETALLES DE RECEPCIÓN ─── */}
       {selectedId && activeDetail && (
         <Portal>
-          <div className="fixed inset-0 z-[9998] flex items-center justify-center p-2 sm:p-4 bg-slate-900/50 backdrop-blur-md animate-fade-in">
-            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-clinical-lg w-full max-w-md overflow-hidden flex flex-col max-h-[90vh] sm:max-h-[85vh] animate-view-enter">
+          <div className="fixed inset-0 z-[9998] flex items-center justify-center p-2 sm:p-4 bg-slate-900/50 backdrop-blur-md animate-fade-in overflow-y-auto">
+            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-clinical-lg w-full max-w-md overflow-hidden flex flex-col max-h-[calc(100dvh-16px)] sm:max-h-[85dvh] animate-view-enter">
             {/* Header */}
-            <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 shrink-0">
               <h3 className="text-sm font-black text-[#006156] uppercase tracking-wide flex items-center gap-2">
                 <Truck className="w-4 h-4 text-primary" /> Recepción de Pedido
               </h3>
@@ -432,7 +432,7 @@ export default function Reception() {
             </div>
 
             {/* Info Summary */}
-            <div className="p-4 bg-white border-b border-slate-100 space-y-2">
+            <div className="p-4 bg-white border-b border-slate-100 space-y-2 shrink-0">
               <div className="flex justify-between items-center">
                 <span className="text-[10px] font-black bg-slate-100 text-slate-500 px-2.5 py-0.5 rounded-md tracking-wide">
                   ID: #{activeDetail.id.slice(0, 8).toUpperCase()}
@@ -497,7 +497,7 @@ export default function Reception() {
             </div>
 
             {/* Bottom Confirm Action */}
-            <div className="p-4 border-t border-slate-100 bg-slate-50 flex flex-col gap-2">
+            <div className="p-4 border-t border-slate-100 bg-slate-50 flex flex-col gap-2 shrink-0">
               <div className="flex justify-between items-center text-[10px] font-bold text-slate-500 mb-1">
                 <span>Total insumos: {activeDetail.items.length}</span>
                 <span>Unidades: {activeDetail.items.reduce((acc, p) => acc + p.quantity, 0)} uds</span>

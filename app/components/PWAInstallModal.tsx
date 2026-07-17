@@ -43,10 +43,10 @@ export default function PWAInstallModal() {
 
   return (
     <Portal>
-      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md animate-fade-in">
-      <div className="bg-white w-full max-w-md rounded-[28px] border border-slate-200/80 shadow-clinical-xl overflow-hidden animate-scale-up">
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4 bg-slate-900/50 backdrop-blur-md animate-fade-in overflow-y-auto">
+      <div className="bg-white w-full max-w-md rounded-[28px] border border-slate-200/80 shadow-clinical-xl overflow-hidden flex flex-col max-h-[calc(100dvh-16px)] sm:max-h-[85dvh] animate-scale-up">
         {/* Header */}
-        <div className="relative p-6 pb-4 border-b border-slate-100 flex items-center justify-between">
+        <div className="relative p-6 pb-4 border-b border-slate-100 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-xl bg-primary/10 text-primary">
               <Download className="w-5.5 h-5.5 stroke-[2]" />
@@ -58,14 +58,14 @@ export default function PWAInstallModal() {
           </div>
           <button
             onClick={handleClose}
-            className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
+            className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-6 space-y-5 max-h-[70vh] overflow-y-auto">
+        <div className="p-6 space-y-5 flex-1 overflow-y-auto">
           {/* Logo & Mini Intro */}
           <div className="flex items-center gap-4 p-4 bg-slate-50 border border-slate-100 rounded-2xl">
             <img src="/logo.svg" alt="Logo Dulce Espera" className="w-12 h-12 shrink-0" />
@@ -191,14 +191,14 @@ export default function PWAInstallModal() {
         </div>
 
         {/* Footer */}
-        <div className="bg-slate-50 p-4 px-6 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-semibold">
+        <div className="bg-slate-50 p-4 px-6 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-semibold shrink-0">
           <div className="flex items-center gap-1.5">
             {isMobile ? <Smartphone className="w-4 h-4 text-slate-400" /> : <Monitor className="w-4 h-4 text-slate-400" />}
             <span>{isIOS ? 'Detectado: iOS (Apple)' : 'Detectado: Dispositivo'}</span>
           </div>
           <button
             onClick={handleClose}
-            className="text-primary hover:underline font-bold"
+            className="text-primary hover:underline font-bold cursor-pointer"
           >
             Cerrar
           </button>

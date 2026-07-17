@@ -229,16 +229,16 @@ export function ConfirmModal({
 
   return (
     <Portal>
-      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-md animate-fade-in">
-        <div className="bg-white rounded-card border border-[#e2e8f0]/80 shadow-clinical-lg w-full max-w-md overflow-hidden animate-view-enter">
-          <div className="p-6">
+      <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4 bg-slate-900/50 backdrop-blur-md animate-fade-in overflow-y-auto">
+        <div className="bg-white rounded-card border border-[#e2e8f0]/80 shadow-clinical-lg w-full max-w-md overflow-hidden flex flex-col max-h-[calc(100dvh-16px)] sm:max-h-[85dvh] animate-view-enter">
+          <div className="p-6 flex-1 overflow-y-auto">
             <div className="flex items-center gap-3 text-[#006156]">
               <AlertCircle className="w-6 h-6 stroke-[#006156]" />
               <h3 className="text-lg font-bold tracking-tight">{title}</h3>
             </div>
             <p className="mt-3 text-slate-600 text-sm leading-relaxed">{message}</p>
           </div>
-          <div className="flex items-center justify-end gap-2 px-6 py-4 bg-[#f8fafc] border-t border-[#e2e8f0]">
+          <div className="flex items-center justify-end gap-2 px-6 py-4 bg-[#f8fafc] border-t border-[#e2e8f0] shrink-0">
             <Button variant="ghost" onClick={onClose} disabled={isConfirming} className="h-10 text-slate-600 hover:bg-slate-100">
               {cancelText}
             </Button>
