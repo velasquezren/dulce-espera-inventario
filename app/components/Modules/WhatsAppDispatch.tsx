@@ -113,14 +113,14 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
       const reasonLinesCount = req.reason ? getWrappedLinesCount(tempCtx, reasonText, 500) : 0;
       const reasonHeight = req.reason ? 30 + (reasonLinesCount * 16) : 0;
 
-      const signatureHeight = 110;
+      const spaceBeforeFooter = 25;
       const footerHeight = 55;
 
       const height = headerHeight + infoHeight + sectionTitleHeight + tableHeaderHeight + 
                      (req.items.length * rowHeight) + tableFooterHeight + reasonHeight + 
-                     signatureHeight + footerHeight;
+                     spaceBeforeFooter + footerHeight;
 
-      const scale = 3;
+      const scale = 4;
       canvas.width = width * scale;
       canvas.height = height * scale;
 
@@ -310,32 +310,8 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
         currentY += reasonHeight;
       }
 
-      // Signature Area
-      currentY += 35;
-      
-      // Sign line Solicitante
-      ctx.strokeStyle = '#94a3b8';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(50, currentY);
-      ctx.lineTo(250, currentY);
-      ctx.stroke();
-
-      ctx.fillStyle = '#64748b';
-      ctx.font = 'bold 9px Inter, system-ui, -apple-system, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('Firma de Solicitante', 150, currentY + 14);
-
-      // Sign line Autorización
-      ctx.beginPath();
-      ctx.moveTo(350, currentY);
-      ctx.lineTo(550, currentY);
-      ctx.stroke();
-      
-      ctx.fillText('Firma de Autorización', 450, currentY + 14);
-      ctx.textAlign = 'left'; // reset
-
-      currentY += signatureHeight - 35;
+      // Space before footer
+      currentY += spaceBeforeFooter;
 
       // Footer copyright
       ctx.strokeStyle = '#e2e8f0';
@@ -348,7 +324,7 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
       ctx.fillStyle = '#94a3b8';
       ctx.font = '500 8px Inter, system-ui, -apple-system, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(`© ${new Date().getFullYear()} Dulce Espera — Documento oficial para control de insumos.`, width / 2, currentY + 18);
+      ctx.fillText(`© ${new Date().getFullYear()} Dulce Espera — Lista de control de insumos.`, width / 2, currentY + 18);
 
       canvas.toBlob((blob) => {
         if (blob) {
