@@ -866,37 +866,112 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const exportToExcel = (data: any[], title: string) => {
-    // Elegant CSV formatted download mimicking Excel with brand header and metadata
-    const metadataRows = [
-      ['DULCE ESPERA', 'Inventario e Insumos de Cocina'],
-      ['Reporte', title],
-      ['Fecha', new Date().toLocaleDateString()],
-      ['Usuario', user?.name || 'Administrador'],
-      [] // separator empty row
-    ];
-
-    const headers = ['Fecha/Entrega', 'Producto', 'Tipo/Categoria', 'Cantidad', 'Unidad', 'Responsable/Detalle'];
-    const rows = data.map((item) => [
-      item.date || item.lastDelivery || '',
-      item.productName || item.name || '',
-      item.type || item.category || '',
-      item.quantity || item.stock || '',
-      item.unit || '',
-      item.user || item.supplier || 'N/A'
-    ]);
-
-    const allRows = [...metadataRows, headers, ...rows];
+    // Create Excel table headers and rows dynamically based on the available fields
+    const isHistoryReport = data.length > 0 && ('type' in data[0] || 'date' in data[0]);
     
-    const csvContent = "data:text/csv;charset=utf-8,\uFEFF" 
-      + allRows.map(e => e.map(val => `"${String(val).replace(/"/g, '""')}"`).join(',')).join('\n');
-    
-    const encodedUri = encodeURI(csvContent);
+    const headers = isHistoryReport 
+      ? ['N°', 'Fecha', 'Producto', 'Tipo Movimiento', 'Cantidad', 'Unidad', 'Responsable', 'Detalle/Estado']
+      : ['N°', 'Insumo', 'Categoría', 'Stock actual', 'Medida', 'Última Recepción', 'Proveedor'];
+
+    const rows = data.map((item, idx) => {
+      if (isHistoryReport) {
+        return `
+          <tr>
+            <td style="text-align: center; border: 1px solid #cbd5e1; font-family: sans-serif; font-size: 11px; color: #64748b;">${idx + 1}</td>
+            <td style="border: 1px solid #cbd5e1; font-family: sans-serif; font-size: 11px;">${item.date || ''}</td>
+            <td style="font-weight: bold; border: 1px solid #cbd5e1; font-family: sans-serif; font-size: 11px; color: #0f172a;">${item.productName || ''}</td>
+            <td style="border: 1px solid #cbd5e1; font-family: sans-serif; font-size: 11px;">${item.type || ''}</td>
+            <td style="text-align: right; font-weight: bold; color: #006156; border: 1px solid #cbd5e1; font-family: sans-serif; font-size: 12px;">${item.quantity || 0}</td>
+            <td style="text-align: center; border: 1px solid #cbd5e1; font-family: sans-serif; font-size: 11px; color: #64748b;">${item.unit || ''}</td>
+            <td style="border: 1px solid #cbd5e1; font-family: sans-serif; font-size: 11px;">${item.user || 'N/A'}</td>
+            <td style="border: 1px solid #cbd5e1; font-family: sans-serif; font-size: 10px; font-style: italic; color: #475569;">${item.status || ''}</td>
+          </tr>
+        `;
+      } else {
+        return `
+          <tr>
+            <td style="text-align: center; border: 1px solid #cbd5e1; font-family: sans-serif; font-size: 11px; color: #64748b;">${idx + 1}</td>
+            <td style="font-weight: bold; border: 1px solid #cbd5e1; font-family: sans-serif; font-size: 11px; color: #0f172a;">${item.name || ''}</td>
+            <td style="border: 1px solid #cbd5e1; font-family: sans-serif; font-size: 11px;">${item.category || 'Otros'}</td>
+            <td style="text-align: right; font-weight: bold; color: #006156; border: 1px solid #cbd5e1; font-family: sans-serif; font-size: 12px;">${item.stock || 0}</td>
+            <td style="text-align: center; border: 1px solid #cbd5e1; font-family: sans-serif; font-size: 11px; color: #64748b;">${item.unit || ''}</td>
+            <td style="border: 1px solid #cbd5e1; font-family: sans-serif; font-size: 11px;">${item.lastDelivery || 'N/A'}</td>
+            <td style="border: 1px solid #cbd5e1; font-family: sans-serif; font-size: 11px;">${item.supplier || 'N/A'}</td>
+          </tr>
+        `;
+      }
+    }).join('');
+
+    const colsCount = headers.length;
+
+    const excelHtml = `
+      <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+      <head>
+        <meta charset="utf-8">
+        <!--[if gte mso 9]>
+        <xml>
+          <x:ExcelWorkbook>
+            <x:ExcelWorksheets>
+              <x:ExcelWorksheet>
+                <x:Name>${isHistoryReport ? 'Historial' : 'Cuaderno'}</x:Name>
+                <x:WorksheetOptions>
+                  <x:DisplayGridlines/>
+                </x:WorksheetOptions>
+              </x:ExcelWorksheet>
+            </x:ExcelWorksheets>
+          </x:ExcelWorkbook>
+        </xml>
+        <![endif]-->
+        <style>
+          table { border-collapse: collapse; }
+          th { background-color: #006156; color: #ffffff; font-weight: bold; text-align: left; border: 1px solid #cbd5e1; font-family: sans-serif; font-size: 12px; height: 30px; }
+          td { height: 26px; }
+          .title { font-family: sans-serif; font-size: 18px; font-weight: bold; color: #006156; }
+          .meta { font-family: sans-serif; font-size: 11px; color: #475569; }
+        </style>
+      </head>
+      <body>
+        <table>
+          <tr>
+            <td colspan="${colsCount}" class="title">DULCE ESPERA - CONTROL DE INSUMOS</td>
+          </tr>
+          <tr>
+            <td colspan="${colsCount}" class="meta"><strong>Reporte:</strong> ${title}</td>
+          </tr>
+          <tr>
+            <td colspan="${colsCount}" class="meta"><strong>Fecha de Exportación:</strong> ${new Date().toLocaleDateString()} a las ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</td>
+          </tr>
+          <tr>
+            <td colspan="${colsCount}" class="meta"><strong>Responsable:</strong> ${user?.name || 'Administrador'}</td>
+          </tr>
+          <tr style="height: 15px;"><td colspan="${colsCount}" style="border:none;"></td></tr>
+          <thead>
+            <tr>
+              ${headers.map(h => {
+                let align = 'left';
+                if (h === 'N°' || h === 'Unidad' || h === 'Medida') align = 'center';
+                if (h === 'Cantidad' || h === 'Stock actual') align = 'right';
+                return `<th style="text-align: ${align}; padding: 6px 12px;">${h}</th>`;
+              }).join('')}
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      </body>
+      </html>
+    `;
+
+    const blob = new Blob([excelHtml], { type: 'application/vnd.ms-excel;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `${title.toLowerCase().replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.href = url;
+    link.download = `${title.toLowerCase().replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.xls`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   return (
