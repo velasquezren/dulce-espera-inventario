@@ -539,7 +539,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setActiveModule('requests');
       saveState('montalvo_module', 'requests');
     } catch (e: any) {
-      alert(`Error al enviar pedido: ${e.message || e}`);
+      console.error('Error al enviar la lista del cuaderno:', e);
+      throw e;
     } finally {
       setIsLoading(false);
     }
@@ -635,7 +636,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setActiveModule('requests');
       saveState('montalvo_module', 'requests');
     } catch (e: any) {
-      alert(`Error al enviar pedido: ${e.message || e}`);
+      console.error('Error al enviar solicitud urgente:', e);
+      throw e;
     } finally {
       setIsLoading(false);
     }
@@ -716,7 +718,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setActiveModule('requests');
       saveState('montalvo_module', 'requests');
     } catch (e: any) {
-      alert(`Error al enviar pedido: ${e.message || e}`);
+      console.error('Error al crear solicitud:', e);
+      throw e;
     } finally {
       setIsLoading(false);
     }

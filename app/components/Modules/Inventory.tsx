@@ -100,8 +100,8 @@ export default function Inventory() {
       if (draftItem) {
         removeDraftItem(draftItem.id);
       }
-    } catch {
-      showToast('Error al enviar la solicitud', 'error');
+    } catch (err: any) {
+      showToast(err.message || 'Error al enviar la solicitud', 'error');
     } finally {
       setIsSendingInstant(false);
       setConfirmingProductId(null);
@@ -116,8 +116,8 @@ export default function Inventory() {
       await sendDraftList(listReason);
       showToast('Lista del cuaderno enviada con éxito', 'success');
       setListReason(''); // Reset reason
-    } catch {
-      showToast('Error al enviar la lista', 'error');
+    } catch (err: any) {
+      showToast(err.message || 'Error al enviar la lista', 'error');
     } finally {
       setIsSending(false);
     }

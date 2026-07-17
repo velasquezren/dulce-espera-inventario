@@ -46,11 +46,11 @@ export default function RequestForm() {
     await new Promise((resolve) => setTimeout(resolve, 800));
 
     try {
-      createRequest(productId, quantity, notes);
+      await createRequest(productId, quantity, notes);
       setIsCompleted(true);
       showToast('Solicitud enviada correctamente', 'success');
-    } catch (err) {
-      showToast('Error al enviar la solicitud', 'error');
+    } catch (err: any) {
+      showToast(err.message || 'Error al enviar la solicitud', 'error');
     } finally {
       setIsSubmitting(false);
     }
