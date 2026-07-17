@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Button, EmptyState } from '../UI';
 import { 
@@ -21,17 +21,36 @@ export default function History() {
   const [showHelp, setShowHelp] = useState(false);
   const [dateFilter, setDateFilter] = useState('');
 
-  // Filter logs
-  const filteredLogs = history.filter((log) => {
-    const matchesSearch = log.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      log.user.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesType = typeFilter === 'All' || log.type === typeFilter;
-    
-    const matchesDate = !dateFilter || log.date.startsWith(dateFilter);
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(15);
 
-    return matchesSearch && matchesType && matchesDate;
-  });
+  // Reset pagination to page 1 when any filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, typeFilter, dateFilter, itemsPerPage]);
+
+  // Filter logs using useMemo for optimization
+  const filteredLogs = useMemo(() => {
+    return history.filter((log) => {
+      const matchesSearch = log.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        log.user.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      const matchesType = typeFilter === 'All' || log.type === typeFilter;
+      
+      const matchesDate = !dateFilter || log.date.startsWith(dateFilter);
+
+      return matchesSearch && matchesType && matchesDate;
+    });
+  }, [history, searchQuery, typeFilter, dateFilter]);
+
+  // Pagination variables
+  const totalPages = Math.ceil(filteredLogs.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedLogs = useMemo(() => {
+    return filteredLogs.slice(startIndex, endIndex);
+  }, [filteredLogs, startIndex, endIndex]);
 
   const handleExportPDF = () => {
     exportToPDF(filteredLogs, 'Bitacora de Movimientos - Cocina');
@@ -41,20 +60,70 @@ export default function History() {
     exportToExcel(filteredLogs, 'Bitacora de Movimientos - Cocina');
   };
 
-  const getTypeIcon = (type: string) => {
+  // Helper to get formatted date
+  const formatDate = (dateStr: string) => {
+    const [datePart, timePart] = dateStr.split(' ');
+    if (!datePart) return dateStr;
+    const parts = datePart.split('-');
+    if (parts.length === 3) {
+      const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+      const formattedTime = timePart ? timePart.slice(0, 5) : ''; // HH:MM
+      return formattedTime ? `${formattedDate} ${formattedTime}` : formattedDate;
+    }
+    return dateStr;
+  };
+
+  // Helper to render type badge (with color and icon)
+  const getTypeBadge = (type: string) => {
     switch (type) {
       case 'Recepción':
-        return <ArrowDownCircle className="w-5 h-5 text-emerald-600" />;
       case 'Entrada':
-        return <ArrowDownCircle className="w-5 h-5 text-emerald-600" />;
+        return (
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border bg-emerald-50 text-emerald-700 border-emerald-100/80">
+            <ArrowDownCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+            <span>{type}</span>
+          </span>
+        );
       case 'Salida':
-        return <ArrowUpCircle className="w-5 h-5 text-rose-500" />;
+        return (
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border bg-rose-50 text-rose-700 border-rose-100/80">
+            <ArrowUpCircle className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+            <span>{type}</span>
+          </span>
+        );
       case 'Solicitud':
-        return <ClipboardList className="w-5 h-5 text-[#39ADA3]" />;
+        return (
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border bg-cyan-50 text-cyan-700 border-cyan-100/80">
+            <ClipboardList className="w-3.5 h-3.5 text-cyan-600 shrink-0" />
+            <span>{type}</span>
+          </span>
+        );
       default:
-        return <HistoryIcon className="w-5 h-5 text-slate-500" />;
+        return (
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border bg-slate-50 text-slate-700 border-slate-200">
+            <HistoryIcon className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+            <span>{type}</span>
+          </span>
+        );
     }
   };
+
+  // Page navigation logic
+  const pageNumbers = useMemo(() => {
+    const pages = [];
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i);
+    } else {
+      let startPage = Math.max(1, currentPage - 2);
+      let endPage = startPage + 4;
+      if (endPage > totalPages) {
+        endPage = totalPages;
+        startPage = endPage - 4;
+      }
+      for (let i = startPage; i <= endPage; i++) pages.push(i);
+    }
+    return pages;
+  }, [currentPage, totalPages]);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -165,40 +234,116 @@ export default function History() {
           </div>
 
           <div className="divide-y divide-[#f1f5f9]">
-            {filteredLogs.map((log, idx) => (
+            {paginatedLogs.map((log, idx) => (
               <div 
                 key={`${log.id}-${idx}`} 
                 className="p-4 md:px-6 md:py-4 hover:bg-slate-50/50 flex flex-col md:grid md:grid-cols-5 gap-2 md:gap-4 md:items-center text-sm"
               >
-                {/* Date */}
-                <div className="text-xs text-slate-400 font-semibold md:text-slate-500">
-                  {log.date.split(' ').reverse().join(' ')}
+                {/* Mobile Layout */}
+                <div className="md:hidden flex items-start justify-between gap-2 w-full">
+                  <div className="space-y-1.5 flex-1 min-w-0">
+                    <div className="font-extrabold text-slate-800 text-sm leading-snug break-words pr-2">
+                      {log.productName}
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {getTypeBadge(log.type)}
+                      <span className="text-[11px] text-slate-400 font-bold">{formatDate(log.date)}</span>
+                    </div>
+                    <div className="text-[11px] text-slate-500 font-semibold">
+                      Por: <span className="text-slate-700 font-bold">{log.user}</span>
+                      <span className="block text-[10px] text-slate-400 italic font-medium mt-0.5">{log.status}</span>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="font-extrabold text-xs text-primary bg-primary-light px-2.5 py-1.5 rounded-xl border border-primary/5 shadow-sm">
+                      {log.quantity} {log.unit}
+                    </div>
+                  </div>
                 </div>
 
-                {/* Product */}
-                <div className="font-extrabold text-slate-800 tracking-tight">
+                {/* Desktop Layout */}
+                <div className="hidden md:block text-xs text-slate-500 font-semibold">
+                  {formatDate(log.date)}
+                </div>
+
+                <div className="hidden md:block font-extrabold text-slate-800 tracking-tight truncate pr-2" title={log.productName}>
                   {log.productName}
                 </div>
 
-                {/* Type */}
-                <div className="flex items-center gap-1.5 text-xs font-bold text-slate-600">
-                  {getTypeIcon(log.type)}
-                  <span>{log.type}</span>
+                <div className="hidden md:block">
+                  {getTypeBadge(log.type)}
                 </div>
 
-                {/* Quantity */}
-                <div className="font-bold text-slate-700">
+                <div className="hidden md:block font-extrabold text-slate-700">
                   {log.quantity} {log.unit}
                 </div>
 
-                {/* User / Remarks */}
-                <div className="text-xs font-semibold text-slate-400 md:text-slate-500">
-                  Por: {log.user}
-                  <span className="block text-[10px] text-slate-400 italic font-medium">{log.status}</span>
+                <div className="hidden md:block text-xs font-semibold text-slate-500">
+                  <span className="font-bold text-slate-700 block truncate" title={log.user}>{log.user}</span>
+                  <span className="text-[10px] text-slate-400 italic font-medium block truncate" title={log.status}>{log.status}</span>
                 </div>
               </div>
             ))}
           </div>
+
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 bg-[#f8fafc] border-t border-[#cbd5e1]/40 text-xs text-slate-500 font-semibold">
+              <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6 text-center sm:text-left">
+                <div>
+                  Mostrando <span className="font-bold text-slate-700">{startIndex + 1}</span> a{' '}
+                  <span className="font-bold text-slate-700">{Math.min(endIndex, filteredLogs.length)}</span> de{' '}
+                  <span className="font-bold text-slate-700">{filteredLogs.length}</span> registros
+                </div>
+                
+                <div className="flex items-center gap-1.5 justify-center">
+                  <span>Mostrar:</span>
+                  <select
+                    value={itemsPerPage}
+                    onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                    className="h-7 px-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 font-bold focus:border-[#006156] outline-none cursor-pointer text-[11px] hover:border-slate-300 transition-colors"
+                  >
+                    <option value={10}>10</option>
+                    <option value={15}>15</option>
+                    <option value={25}>25</option>
+                    <option value={50}>50</option>
+                  </select>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 select-none">
+                <button
+                  type="button"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:hover:bg-white cursor-pointer transition-colors font-bold disabled:cursor-not-allowed text-[11px]"
+                >
+                  Anterior
+                </button>
+                {pageNumbers.map(pageNum => (
+                  <button
+                    key={pageNum}
+                    type="button"
+                    onClick={() => setCurrentPage(pageNum)}
+                    className={`w-8 h-8 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
+                      currentPage === pageNum
+                        ? 'bg-primary text-white border-primary shadow-sm'
+                        : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                ))}
+                <button
+                  type="button"
+                  disabled={currentPage === totalPages}
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:hover:bg-white cursor-pointer transition-colors font-bold disabled:cursor-not-allowed text-[11px]"
+                >
+                  Siguiente
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
