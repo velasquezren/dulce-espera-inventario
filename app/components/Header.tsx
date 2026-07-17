@@ -43,7 +43,7 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-40 w-full h-16 bg-white/90 backdrop-blur-md border-b border-[#e2e8f0]/85 px-4 md:px-8 flex items-center justify-between no-select">
+    <header className="sticky top-0 z-40 w-full h-[calc(4rem+env(safe-area-inset-top,0px))] pt-[env(safe-area-inset-top,0px)] bg-white/90 backdrop-blur-md border-b border-[#e2e8f0]/85 px-4 md:px-8 flex items-center justify-between no-select">
       {/* Title / Section Name */}
       <div className="flex items-center gap-3">
         {/* Mobile View: Clinic Logo + Brand Title (Static, no click action) */}
@@ -97,7 +97,7 @@ export default function Header() {
             </button>
 
             {showNotifications && (
-              <div className="fixed inset-x-4 max-w-[340px] mx-auto md:absolute md:inset-x-auto md:right-0 md:max-w-none md:w-80 top-18 md:top-auto mt-2.5 bg-white rounded-card border border-[#e2e8f0]/80 shadow-clinical-lg py-2 z-50 animate-view-enter max-h-[70vh] md:max-h-96 overflow-y-auto">
+              <div className="fixed inset-x-4 max-w-[340px] mx-auto md:absolute md:inset-x-auto md:right-0 md:max-w-none md:w-80 top-[calc(4.5rem+env(safe-area-inset-top,0px))] md:top-auto mt-2.5 bg-white rounded-card border border-[#e2e8f0]/80 shadow-clinical-lg py-2 z-50 animate-view-enter max-h-[70dvh] md:max-h-96 overflow-y-auto">
                 <div className="px-4 py-2 border-b border-[#e2e8f0] flex items-center justify-between">
                   <h3 className="font-bold text-sm text-primary">Notificaciones</h3>
                   {unreadCount > 0 && (

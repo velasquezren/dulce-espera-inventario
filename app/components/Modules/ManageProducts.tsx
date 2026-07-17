@@ -69,7 +69,7 @@ export default function ManageProducts() {
   });
 
   return (
-    <div className="space-y-6 animate-view-enter pb-24 md:pb-8">
+    <div className="space-y-6 animate-view-enter">
       {/* Header */}
       <div className="flex flex-col gap-2.5">
         <h1 className="text-2xl font-bold tracking-tight text-primary flex items-center gap-2">

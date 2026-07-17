@@ -91,7 +91,7 @@ export default function Home() {
         <PWAInstallBanner />
 
         {/* Scrollable Container */}
-        <main key={activeModule} className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto pb-24 md:pb-8 animate-view-enter min-w-0">
+        <main key={activeModule} className="flex-1 p-4 md:p-8 max-w-7xl w-full mx-auto pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] md:pb-8 animate-view-enter min-w-0">
           {renderModule()}
         </main>
 

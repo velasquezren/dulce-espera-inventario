@@ -197,7 +197,7 @@ export default function Reception() {
   }, [receptions, confirmId]);
 
   return (
-    <div className="space-y-4 animate-fade-in w-full max-w-[1200px] mx-auto pb-24 md:pb-8">
+    <div className="space-y-4 animate-fade-in w-full max-w-[1200px] mx-auto">
       {/* ─── Header ─── */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
         <div className="flex flex-col gap-1 flex-1">

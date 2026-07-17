@@ -126,7 +126,7 @@ export default function Inventory() {
 
 
   return (
-    <div className="space-y-6 animate-view-enter pb-24 md:pb-8 w-full max-w-full overflow-x-hidden">
+    <div className="space-y-6 animate-view-enter w-full max-w-full overflow-x-hidden">
       {/* Title */}
       <div className="flex flex-col gap-2.5">
         <h1 className="text-2xl font-bold tracking-tight text-primary flex items-center gap-2">

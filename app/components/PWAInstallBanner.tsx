@@ -51,7 +51,7 @@ export default function PWAInstallBanner() {
   return (
     <div 
       onClick={handleInstallClick}
-      className="bg-primary/95 text-white py-3 px-4 flex items-center justify-between gap-3 text-xs cursor-pointer shadow-clinical-md select-none border-b border-[#004e45] animate-view-enter sticky top-16 z-30"
+      className="bg-primary/95 text-white py-3 px-4 flex items-center justify-between gap-3 text-xs cursor-pointer shadow-clinical-md select-none border-b border-[#004e45] animate-view-enter sticky top-[calc(4rem+env(safe-area-inset-top,0px))] z-30"
     >
       <div className="flex items-center gap-2.5 flex-1 min-w-0">
         <div className="p-1 rounded-lg bg-white/10 shrink-0">

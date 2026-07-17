@@ -612,7 +612,7 @@ export default function WhatsAppDispatch() {
   const getStatusInfo = (s: string) => statusConfig[s] || { bg: 'bg-slate-50 border-slate-200', text: 'text-slate-600', dot: 'bg-slate-400' };
 
   return (
-    <div className="animate-fade-in w-full max-w-[1200px] mx-auto pb-24 md:pb-8 space-y-6">
+    <div className="animate-fade-in w-full max-w-[1200px] mx-auto space-y-6">
       
       {/* Toast Notification */}
       {toastMessage && (

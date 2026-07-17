@@ -57,7 +57,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="space-y-8 animate-view-enter py-4 max-w-4xl mx-auto pb-24 md:pb-8">
+    <div className="space-y-8 animate-view-enter py-4 max-w-4xl mx-auto">
       {/* Title */}
       <div className="text-center sm:text-left">
         <h1 className="text-2xl font-bold tracking-tight text-primary">Acciones Rápidas</h1>
