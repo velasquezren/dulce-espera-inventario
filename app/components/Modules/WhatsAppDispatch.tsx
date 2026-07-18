@@ -847,23 +847,42 @@ export default function WhatsAppDispatch() {
       {/* ═══════ MODAL: SELECT REQUEST (PEDIDO) ═══════ */}
       {isReqModalOpen && (
         <Portal>
-          <div className="fixed inset-0 z-[9999] flex items-center justify-center p-2 sm:p-4 bg-slate-900/50 backdrop-blur-md animate-fade-in overflow-y-auto">
-            <div className="bg-white rounded-3xl border border-slate-200/80 shadow-clinical-lg w-full max-w-md overflow-hidden flex flex-col max-h-[calc(100dvh-16px)] sm:max-h-[85dvh] animate-view-enter">
-            {/* Header */}
-            <div className="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 shrink-0">
-              <h3 className="text-sm font-black text-[#006156] uppercase tracking-wide flex items-center gap-2">
-                <Package className="w-4 h-4 text-primary" /> Seleccionar Solicitud
+          {/* Backdrop - click to close */}
+          <div
+            className="fixed inset-0 z-[9999] bg-slate-900/60 backdrop-blur-sm animate-fade-in"
+            onClick={() => setIsReqModalOpen(false)}
+          />
+
+          {/* Modal Panel — full-screen sheet on mobile, centered card on sm+ */}
+          <div
+            className="
+              fixed z-[10000] inset-0 flex flex-col
+              bg-white
+              sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2
+              sm:w-full sm:max-w-md sm:max-h-[85dvh] sm:rounded-2xl sm:shadow-clinical-lg sm:border sm:border-slate-200/80
+              animate-sheet-up sm:animate-view-enter
+            "
+            style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+          >
+            {/* ── Sticky Header ── */}
+            <div className="flex items-center justify-between gap-2 px-4 py-3 sm:px-5 sm:py-4 border-b border-slate-100 bg-white/95 backdrop-blur-md shrink-0 sticky top-0 z-10"
+              style={{ paddingTop: 'max(env(safe-area-inset-top, 0px), 12px)' }}
+            >
+              <h3 className="text-sm font-black text-[#006156] uppercase tracking-wide flex items-center gap-2 truncate">
+                <Package className="w-4 h-4 text-primary shrink-0" /> Seleccionar Solicitud
               </h3>
               <button
+                type="button"
                 onClick={() => setIsReqModalOpen(false)}
-                className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                className="w-9 h-9 min-w-[36px] rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 flex items-center justify-center text-slate-500 transition-colors cursor-pointer"
+                aria-label="Cerrar"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5 stroke-[2.5]" />
               </button>
             </div>
             
-            {/* Search, Filter & Sort */}
-            <div className="p-3 sm:p-4 border-b border-slate-100 space-y-3 bg-white shrink-0">
+            {/* ── Search, Filter & Sort (sticky below header) ── */}
+            <div className="px-3 pt-3 pb-2 sm:px-4 sm:pt-4 sm:pb-3 border-b border-slate-100 space-y-2.5 bg-white shrink-0">
               {/* Search input */}
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -872,7 +891,7 @@ export default function WhatsAppDispatch() {
                   placeholder="Buscar por solicitante, ID, producto..."
                   value={searchOrderQuery}
                   onChange={(e) => setSearchOrderQuery(e.target.value)}
-                  className="w-full h-10 pl-9 pr-8 rounded-xl border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none bg-slate-50/50"
+                  className="w-full h-10 pl-9 pr-8 rounded-xl border border-slate-200 text-sm text-slate-800 placeholder-slate-400 focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none bg-slate-50/50"
                 />
                 {searchOrderQuery && (
                   <button
@@ -885,11 +904,11 @@ export default function WhatsAppDispatch() {
               </div>
 
               {/* Status Filters (Horizontal Scroll on Mobile) */}
-              <div className="flex gap-1.5 overflow-x-auto pb-1 flex-nowrap scrollbar-hide">
+              <div className="flex gap-1.5 overflow-x-auto pb-0.5 flex-nowrap scrollbar-hide -mx-1 px-1">
                 <button
                   type="button"
                   onClick={() => setStatusFilter('all')}
-                  className={`shrink-0 px-2.5 py-1 rounded-full text-[10px] font-extrabold transition-all border cursor-pointer ${
+                  className={`shrink-0 px-2.5 py-1.5 rounded-full text-[11px] font-extrabold transition-all border cursor-pointer ${
                     statusFilter === 'all'
                       ? 'bg-primary text-white border-primary shadow-sm'
                       : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
@@ -905,7 +924,7 @@ export default function WhatsAppDispatch() {
                       type="button"
                       key={s}
                       onClick={() => setStatusFilter(statusFilter === s ? 'all' : s)}
-                      className={`shrink-0 px-2.5 py-1 rounded-full text-[10px] font-extrabold transition-all border cursor-pointer ${
+                      className={`shrink-0 px-2.5 py-1.5 rounded-full text-[11px] font-extrabold transition-all border cursor-pointer ${
                         statusFilter === s
                           ? `${si.bg} ${si.text} border-current shadow-sm`
                           : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
@@ -918,7 +937,7 @@ export default function WhatsAppDispatch() {
               </div>
 
               {/* Sorting toolbar */}
-              <div className="flex items-center gap-1.5 border-t border-slate-100 pt-2.5 text-[10px] overflow-x-auto scrollbar-hide py-0.5">
+              <div className="flex items-center gap-1.5 border-t border-slate-100 pt-2 text-[10px] overflow-x-auto scrollbar-hide -mx-1 px-1">
                 <span className="text-slate-400 font-bold mr-1 flex items-center gap-1 shrink-0">
                   <ArrowUpDown className="w-3 h-3" /> Orden:
                 </span>
@@ -927,7 +946,7 @@ export default function WhatsAppDispatch() {
                     type="button"
                     key={k}
                     onClick={() => toggleSort(k)}
-                    className={`shrink-0 px-2.5 py-0.5 rounded-lg text-[10px] font-bold cursor-pointer transition-colors ${
+                    className={`shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-bold cursor-pointer transition-colors ${
                       sortKey === k
                         ? 'bg-primary/10 text-primary'
                         : 'text-slate-400 hover:text-slate-600'
@@ -939,10 +958,10 @@ export default function WhatsAppDispatch() {
               </div>
             </div>
 
-            {/* Request list */}
-            <div className="flex-1 overflow-y-auto divide-y divide-slate-100/80 bg-slate-50/20">
+            {/* ── Scrollable Request list ── */}
+            <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain divide-y divide-slate-100/80 bg-white">
               {processedRequests.length === 0 ? (
-                <div className="text-center py-12 px-5">
+                <div className="text-center py-16 px-5">
                   <Package className="w-10 h-10 text-slate-300 mx-auto mb-2" />
                   <p className="text-xs text-slate-400 font-bold">No se encontraron solicitudes</p>
                 </div>
@@ -957,18 +976,18 @@ export default function WhatsAppDispatch() {
                         setSelectedReqId(req.idPublico || req.id);
                         setIsReqModalOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-3 sm:px-5 sm:py-3.5 flex items-center gap-3 transition-colors cursor-pointer border-l-4 ${
+                      className={`w-full text-left px-4 py-3.5 sm:px-5 sm:py-3.5 flex items-center gap-3 transition-colors cursor-pointer border-l-4 active:bg-slate-100 ${
                         isSelected 
                           ? 'bg-primary-light/30 border-l-primary' 
                           : 'bg-white hover:bg-slate-50 border-l-transparent'
                       }`}
                     >
-                      <div className="min-w-0 flex-1 space-y-1">
-                        <div className="flex items-center justify-between">
-                          <h4 className="text-xs font-extrabold text-slate-800">
+                      <div className="min-w-0 flex-1 space-y-1.5">
+                        <div className="flex items-center justify-between gap-2">
+                          <h4 className="text-xs font-extrabold text-slate-800 truncate">
                             {req.user}
                           </h4>
-                          <span className={`inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full border ${si.bg} ${si.text}`}>
+                          <span className={`inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full border shrink-0 ${si.bg} ${si.text}`}>
                             <span className={`w-1.5 h-1.5 rounded-full ${si.dot}`} />
                             {req.status}
                           </span>
@@ -988,10 +1007,9 @@ export default function WhatsAppDispatch() {
               )}
             </div>
             
-            {/* Footer summary */}
-            <div className="px-5 py-2.5 border-t border-slate-100 bg-slate-50 text-center text-[10px] text-slate-400 font-semibold shrink-0">
-              Mostrando {processedRequests.length} de {requests.length} solicitudes de insumos
-            </div>
+            {/* ── Footer summary ── */}
+            <div className="px-5 py-3 border-t border-slate-100 bg-slate-50 text-center text-[10px] text-slate-400 font-semibold shrink-0">
+              Mostrando {processedRequests.length} de {requests.length} solicitudes
             </div>
           </div>
         </Portal>
