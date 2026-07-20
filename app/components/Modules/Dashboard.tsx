@@ -1,9 +1,9 @@
 'use client';
 
 import React from 'react';
-import { useApp } from '../../context/AppContext';
-import { 
-  ClipboardList, 
+import { useApp, AppModule } from '../../context/AppContext';
+import {
+  ClipboardList,
   Truck,
   PlusCircle,
   History,
@@ -13,7 +13,14 @@ import {
 export default function Dashboard() {
   const { user, setModule } = useApp();
 
-  const actions = [
+  const actions: Array<{
+    id: AppModule;
+    title: string;
+    description: string;
+    icon: React.ComponentType<{ className?: string }>;
+    colorClass: string;
+    hoverBorder: string;
+  }> = [
     {
       id: 'inventory',
       title: 'Anotar en Cuaderno',
@@ -73,7 +80,7 @@ export default function Dashboard() {
           return (
             <button
               key={act.id}
-              onClick={() => setModule(act.id as any)}
+              onClick={() => setModule(act.id)}
               className={`w-full text-left bg-white border border-slate-200/80 rounded-[20px] p-6 shadow-clinical-sm hover:shadow-clinical-md transition-all duration-200 hover:-translate-y-0.5 cursor-pointer flex items-start gap-4 ${act.hoverBorder}`}
             >
               <div className={`p-3.5 rounded-xl ${act.colorClass} shrink-0`}>

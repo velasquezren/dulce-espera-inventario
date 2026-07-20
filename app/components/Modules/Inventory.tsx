@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Card, Button, ConfirmModal } from '../UI';
+import { Card, Button, ConfirmModal, Skeleton } from '../UI';
 import { Search, Trash2, Send, ShoppingBag, Check, HelpCircle, X } from 'lucide-react';
 import { useToast } from '../UI';
 
 export default function Inventory() {
-  const { 
-    products, 
+  const {
+    products,
+    productsLoading,
     categories,
     draftItems, 
     addDraftItem, 
@@ -276,7 +277,19 @@ export default function Inventory() {
           </div>
 
           {/* Flat Catalog Products List */}
-          {sortedProducts.length === 0 ? (
+          {productsLoading && products.length === 0 ? (
+            <div className="bg-white border border-[#e2e8f0] rounded-[16px] overflow-hidden shadow-clinical-sm p-3 sm:p-4 space-y-3">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex items-center justify-between gap-4">
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-3 w-20" />
+                    <Skeleton className="h-4 w-40" />
+                  </div>
+                  <Skeleton className="h-9 w-24" />
+                </div>
+              ))}
+            </div>
+          ) : sortedProducts.length === 0 ? (
             <div className="flex flex-col items-center justify-center text-center p-8 sm:p-12 bg-white rounded-2xl border border-dashed border-slate-200 shadow-clinical-sm animate-view-enter">
               <div className="p-4 rounded-full bg-slate-50 text-slate-400 mb-3">
                 <Search className="w-8 h-8" />

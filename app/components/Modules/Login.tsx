@@ -24,7 +24,7 @@ export default function Login() {
     setError('');
 
     try {
-      const success = await login(username, password);
+      const success = await login(username, password, rememberMe);
       if (!success) {
         setError('Credenciales inválidas. Intente de nuevo.');
       }

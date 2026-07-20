@@ -24,6 +24,9 @@
 .DS_Store
 *.pem
 
+# docs with credentials — nunca deben subirse al repo
+DOCUMENTACION_COMPLETA.md
+
 # debug
 npm-debug.log*
 yarn-debug.log*

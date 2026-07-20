@@ -13,6 +13,7 @@ import {
   INITIAL_HISTORY,
   INITIAL_NOTIFICATIONS
 } from '../lib/mockData';
+import { getQueuedPedidos, enqueuePedido, removeQueuedPedido, isNetworkError } from '../lib/offlineQueue';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://107.172.193.34.nip.io';
 
@@ -66,6 +67,7 @@ interface AppContextType {
   isSidebarCollapsed: boolean;
   setSidebarCollapsed: (collapsed: boolean) => void;
   products: Product[];
+  productsLoading: boolean;
   requests: RequestItem[];
   receptions: ReceptionItem[];
   history: MovementLog[];
@@ -92,7 +94,7 @@ interface AppContextType {
   deleteProduct: (productId: string) => void;
   updateProductCategory: (productId: string, category: string) => void;
 
-  login: (username: string, password: string) => Promise<boolean>;
+  login: (username: string, password: string, rememberMe?: boolean) => Promise<boolean>;
   logout: () => void;
   setModule: (module: AppModule) => void;
   viewProductDetails: (productId: string) => void;
@@ -191,6 +193,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const [products, setProducts] = useState<Product[]>([]);
+  const [productsLoading, setProductsLoading] = useState<boolean>(true);
   const [requests, setRequests] = useState<RequestItem[]>([]);
   const [coordinators, setCoordinators] = useState<Coordinador[]>([]);
   const [receptions, setReceptions] = useState<ReceptionItem[]>([]);
@@ -234,7 +237,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         if (storedUser && storedUser !== 'undefined') {
           try {
             setUser(JSON.parse(storedUser));
-            setActiveModule(storedModule && storedModule !== 'login' ? storedModule : 'dashboard');
+            // Atajo del manifest.json (icono largo/menú del PWA instalado)
+            const shortcut = new URLSearchParams(window.location.search).get('shortcut');
+            const shortcutModule: AppModule | null =
+              shortcut === 'request-form' ? 'request-form' :
+              shortcut === 'requests' ? 'requests' :
+              null;
+            setActiveModule(shortcutModule || (storedModule && storedModule !== 'login' ? storedModule : 'dashboard'));
           } catch (e) {
             localStorage.removeItem('montalvo_user');
             setActiveModule('login');
@@ -295,6 +304,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const fetchProducts = async () => {
+    setProductsLoading(true);
     try {
       const res = await fetch(`${API_URL}/insumos?t=${Date.now()}`, {
         cache: 'no-store'
@@ -322,6 +332,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (error) {
       console.error("Error fetching products from API:", error);
+    } finally {
+      setProductsLoading(false);
     }
   };
 
@@ -373,6 +385,93 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
     return await res.json();
   };
+
+  // Registra localmente un pedido en cola mientras no hay confirmación del servidor,
+  // para que "Mis Solicitudes" lo muestre de inmediato aunque no haya conexión.
+  const addOptimisticRequest = (
+    queuedId: string,
+    solicitante: string,
+    lineas: Array<{ insumo_id_publico: string; cantidad: number }>,
+    motivo?: string
+  ) => {
+    const productMap = new Map(products.map((p) => [p.id, p]));
+    const now = new Date();
+    const optimisticItem: RequestItem = {
+      id: queuedId.slice(0, 8),
+      idPublico: queuedId,
+      date: now.toISOString().slice(0, 16).replace('T', ' '),
+      status: 'Pendiente',
+      user: solicitante,
+      reason: motivo,
+      pendingSync: true,
+      items: lineas.map((l) => {
+        const product = productMap.get(l.insumo_id_publico);
+        return {
+          productId: l.insumo_id_publico,
+          productName: product?.name || 'Insumo',
+          quantity: l.cantidad,
+          unit: product?.unit || 'Unidades'
+        };
+      })
+    };
+    setRequests((prev) => {
+      const updated = [optimisticItem, ...prev];
+      saveState('montalvo_requests', updated);
+      return updated;
+    });
+  };
+
+  // Envía un pedido a la API. Si no hay conexión (u ocurre un error de red),
+  // lo guarda en la cola local y lo muestra de forma optimista en vez de fallar.
+  const submitPedido = async (
+    solicitante: string,
+    lineas: Array<{ insumo_id_publico: string; cantidad: number }>,
+    motivo?: string
+  ): Promise<{ offline: boolean }> => {
+    if (!isOnline) {
+      const queued = enqueuePedido({ solicitante, lineas, motivo });
+      addOptimisticRequest(queued.id, solicitante, lineas, motivo);
+      return { offline: true };
+    }
+    try {
+      await postRequestToAPI(solicitante, lineas, motivo);
+      return { offline: false };
+    } catch (e) {
+      if (isNetworkError(e)) {
+        const queued = enqueuePedido({ solicitante, lineas, motivo });
+        addOptimisticRequest(queued.id, solicitante, lineas, motivo);
+        return { offline: true };
+      }
+      throw e;
+    }
+  };
+
+  // Reintenta los pedidos guardados en cola en cuanto vuelve la conexión.
+  const flushPedidoQueue = async () => {
+    const queue = getQueuedPedidos();
+    if (queue.length === 0) return;
+    let sentAny = false;
+    for (const item of queue) {
+      try {
+        await postRequestToAPI(item.solicitante, item.lineas, item.motivo);
+        removeQueuedPedido(item.id);
+        sentAny = true;
+      } catch (e) {
+        console.error('No se pudo reenviar un pedido en cola, se reintentará más tarde:', e);
+        break; // conserva el orden y evita insistir contra una API caída
+      }
+    }
+    if (sentAny) {
+      await fetchRequests();
+    }
+  };
+
+  useEffect(() => {
+    if (isOnline) {
+      flushPedidoQueue();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOnline]);
 
   const fetchCoordinators = async () => {
     try {
@@ -531,11 +630,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         cantidad: item.quantity
       }));
 
-      await postRequestToAPI(user.name, apiLines, reason);
+      const outcome = await submitPedido(user.name, apiLines, reason);
 
       saveDrafts([]);
-      await fetchRequests();
-      
+      if (!outcome.offline) {
+        await fetchRequests();
+      }
+
       setActiveModule('requests');
       saveState('montalvo_module', 'requests');
     } catch (e: any) {
@@ -624,15 +725,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (!user) return;
     setIsLoading(true);
     try {
-      await postRequestToAPI(user.name, [
+      const outcome = await submitPedido(user.name, [
         {
           insumo_id_publico: productId,
           cantidad: quantity
         }
       ], notes);
-      
-      await fetchRequests();
-      
+
+      if (!outcome.offline) {
+        await fetchRequests();
+      }
+
       setActiveModule('requests');
       saveState('montalvo_module', 'requests');
     } catch (e: any) {
@@ -644,7 +747,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   // Autenticación contra la API FastAPI
-  const login = async (username: string, password: string): Promise<boolean> => {
+  const login = async (username: string, password: string, rememberMe: boolean = true): Promise<boolean> => {
     try {
       const res = await fetch(`${API_URL}/login`, {
         method: 'POST',
@@ -669,8 +772,14 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       };
 
       setUser(newUser);
-      saveState('montalvo_user', newUser);
-      saveState('montalvo_module', 'dashboard');
+      if (rememberMe) {
+        saveState('montalvo_user', newUser);
+        saveState('montalvo_module', 'dashboard');
+      } else if (typeof window !== 'undefined') {
+        // Sesión solo en memoria: se pierde al cerrar o recargar el navegador
+        localStorage.removeItem('montalvo_user');
+        localStorage.removeItem('montalvo_module');
+      }
       setActiveModule('dashboard');
       return true;
     } catch (error) {
@@ -706,15 +815,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (!user) return;
     setIsLoading(true);
     try {
-      await postRequestToAPI(user.name, [
+      const outcome = await submitPedido(user.name, [
         {
           insumo_id_publico: productId,
           cantidad: quantity
         }
       ], notes);
-      
-      await fetchRequests();
-      
+
+      if (!outcome.offline) {
+        await fetchRequests();
+      }
+
       setActiveModule('requests');
       saveState('montalvo_module', 'requests');
     } catch (e: any) {
@@ -727,9 +838,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   // Confirm Supplier Order Reception
   const confirmReception = async (pedidoIdPublico: string) => {
-    // Simulate delay for modern clinical software feel (skeletons/toasts)
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
     if (!user) return;
 
     try {
@@ -990,6 +1098,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         isSidebarCollapsed,
         setSidebarCollapsed,
         products,
+        productsLoading,
         requests,
         receptions,
         history,

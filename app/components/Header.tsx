@@ -85,6 +85,8 @@ export default function Header() {
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setShowNotifications(!showNotifications)}
+              aria-label={unreadCount > 0 ? `Notificaciones, ${unreadCount} sin leer` : 'Notificaciones'}
+              aria-expanded={showNotifications}
               className="relative p-2.5 rounded-full hover:bg-slate-100/80 active:scale-95 text-slate-600 hover:text-primary transition-all duration-150 focus:outline-none tap-bounce flex items-center justify-center"
             >
               <Bell className="w-5.5 h-5.5 stroke-[2]" />
@@ -117,14 +119,15 @@ export default function Header() {
                     </div>
                   ) : (
                     notifications.map((notif) => (
-                      <div
+                      <button
                         key={notif.id}
+                        type="button"
                         onClick={() => {
                           markNotificationRead(notif.id);
                           setModule('requests');
                           setShowNotifications(false);
                         }}
-                        className="p-3.5 hover:bg-slate-50 transition-colors cursor-pointer text-left"
+                        className="w-full p-3.5 hover:bg-slate-50 transition-colors cursor-pointer text-left focus:outline-none focus-visible:bg-slate-50"
                       >
                         <div className="flex items-start gap-2.5">
                           <Check className="w-4 h-4 text-secondary shrink-0 mt-0.5" />
@@ -139,7 +142,7 @@ export default function Header() {
                             <span className="text-[10px] text-slate-400 block mt-1 font-bold">{notif.date}</span>
                           </div>
                         </div>
-                      </div>
+                      </button>
                     ))
                   )}
                 </div>

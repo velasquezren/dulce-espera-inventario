@@ -42,9 +42,6 @@ export default function RequestForm() {
     setShowConfirm(false);
     setIsSubmitting(true);
 
-    // Simulate clinical network latency
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
     try {
       await createRequest(productId, quantity, notes);
       setIsCompleted(true);

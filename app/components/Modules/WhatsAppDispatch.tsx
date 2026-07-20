@@ -2,42 +2,25 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Card, Portal } from '../UI';
-import { 
-  Printer, 
-  Download, 
-  Share2, 
-  FileText, 
-  Check, 
+import { Card, Portal, useToast } from '../UI';
+import { RequestItem } from '../../lib/mockData';
+import {
+  Printer,
+  Download,
+  Share2,
+  FileText,
   Search,
   ChevronRight,
   ChevronDown,
   Package,
   Clock,
   ArrowUpDown,
-  X,
-  Copy
+  X
 } from 'lucide-react';
 
 /* ────────────────────── types ────────────────────── */
 type SortKey = 'date' | 'user' | 'items' | 'status';
 type SortDir = 'asc' | 'desc';
-
-interface RequestItem {
-  id: string;
-  idPublico?: string;
-  date: string;
-  status: 'Pendiente' | 'En revisión' | 'Aprobado' | 'Aceptado' | 'Rechazado' | 'Comprado' | 'Entregado' | 'Cancelado';
-  user: string;
-  reason?: string;
-  items: Array<{
-    productId: string;
-    productName: string;
-    quantity: number;
-    unit: string;
-    notes?: string;
-  }>;
-}
 
 /* ────────────────────── helpers: text wrapping for canvas ────────────────────── */
 const getWrappedLinesCount = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number): number => {
@@ -223,7 +206,7 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
       currentY = 214;
 
       // Items
-      req.items.forEach((item: any, idx: number) => {
+      req.items.forEach((item: RequestItem['items'][number], idx: number) => {
         // Continuous Alternating background rows (no gaps!)
         if (idx % 2 === 1) {
           ctx.fillStyle = '#f8fafb';
@@ -340,6 +323,7 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
 /* ────────────────────── component ────────────────────── */
 export default function WhatsAppDispatch() {
   const { requests } = useApp();
+  const { showToast } = useToast();
 
   /* selection ids */
   const [selectedReqId, setSelectedReqId] = useState('');
@@ -356,7 +340,6 @@ export default function WhatsAppDispatch() {
   /* ui states */
   const [canShare, setCanShare] = useState(false);
   const [expandedPreview, setExpandedPreview] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
 
   const previewRef = useRef<HTMLDivElement>(null);
 
@@ -390,7 +373,7 @@ export default function WhatsAppDispatch() {
   }, [latestRequest, selectedReqId]);
 
   /* derived data */
-  const selectedReq = requests.find((r) => r.idPublico === selectedReqId || r.id === selectedReqId) as RequestItem | undefined;
+  const selectedReq = requests.find((r) => r.idPublico === selectedReqId || r.id === selectedReqId);
 
   /* unique statuses for filter */
   const uniqueStatuses = useMemo(() => {
@@ -435,11 +418,6 @@ export default function WhatsAppDispatch() {
     else { setSortKey(key); setSortDir('desc'); }
   };
 
-  const showToast = (msg: string) => {
-    setToastMessage(msg);
-    setTimeout(() => setToastMessage(''), 3000);
-  };
-
   const handleCopyImage = async () => {
     if (!selectedReq) return;
     try {
@@ -449,10 +427,10 @@ export default function WhatsAppDispatch() {
           [blob.type]: blob
         })
       ]);
-      showToast('¡Imagen copiada! Pégala en WhatsApp.');
+      showToast('¡Imagen copiada! Pégala en WhatsApp.', 'success');
     } catch (err) {
       console.error(err);
-      showToast('Error al copiar imagen. Prueba a descargar.');
+      showToast('Error al copiar imagen. Prueba a descargar.', 'error');
     }
   };
 
@@ -471,8 +449,10 @@ export default function WhatsAppDispatch() {
         handleDownloadImage();
       }
     } catch (err) {
+      // El usuario canceló el cuadro nativo de compartir: no es un error real
+      if (err instanceof Error && err.name === 'AbortError') return;
       console.error(err);
-      showToast('No se pudo compartir la imagen');
+      showToast('No se pudo compartir la imagen', 'error');
     }
   };
 
@@ -488,10 +468,10 @@ export default function WhatsAppDispatch() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast('¡Imagen descargada!');
+      showToast('¡Imagen descargada!', 'success');
     } catch (err) {
       console.error(err);
-      showToast('Error al descargar la imagen');
+      showToast('Error al descargar la imagen', 'error');
     }
   };
 
@@ -613,14 +593,6 @@ export default function WhatsAppDispatch() {
 
   return (
     <div className="animate-fade-in w-full max-w-[1200px] mx-auto space-y-6">
-      
-      {/* Toast Notification */}
-      {toastMessage && (
-        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-clinical-lg flex items-center gap-2 animate-fade-in border border-slate-800">
-          <Check className="w-4 h-4 text-emerald-400 stroke-[3]" />
-          <span>{toastMessage}</span>
-        </div>
-      )}
 
       {/* ═══════ HEADER ═══════ */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">

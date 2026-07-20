@@ -14,7 +14,8 @@ import {
   ChevronRight,
   HelpCircle,
   RotateCw,
-  Printer
+  Printer,
+  WifiOff
 } from 'lucide-react';
 import { RequestItem } from '../../lib/mockData';
 
@@ -261,6 +262,12 @@ export default function MyRequests() {
           <div className="flex items-center sm:justify-end gap-3.5 border-t border-[#f1f5f9] sm:border-t-0 pt-3 sm:pt-0">
             <div className="flex flex-col items-start sm:items-end gap-1">
               <Badge type="request" value={req.status} />
+              {req.pendingSync && (
+                <span className="flex items-center gap-1 text-[9px] font-black text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full uppercase tracking-wide">
+                  <WifiOff className="w-3 h-3" />
+                  Sin conexión · se enviará solo
+                </span>
+              )}
               <span className="text-[10px] text-slate-400 font-bold tracking-wide">
                 Por: {req.user}
               </span>
