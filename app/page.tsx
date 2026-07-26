@@ -19,6 +19,7 @@ import History from './components/Modules/History';
 import Profile from './components/Modules/Profile';
 import ManageProducts from './components/Modules/ManageProducts';
 import WhatsAppDispatch from './components/Modules/WhatsAppDispatch';
+import ComprasView from './components/Modules/ComprasView';
 
 export default function Home() {
   const { user, activeModule, isLoading, isSidebarCollapsed } = useApp();
@@ -40,6 +41,11 @@ export default function Home() {
         </div>
       </div>
     );
+  }
+
+  // Dedicated custom full-screen view for Compras role
+  if (user && (activeModule === 'compras' || user.role === 'compras')) {
+    return <ComprasView />;
   }
 
   // If user is not authenticated or at login page

@@ -40,7 +40,8 @@ export type AppModule =
   | 'detail' 
   | 'request-form'
   | 'manage-products'
-  | 'whatsapp-dispatch';
+  | 'whatsapp-dispatch'
+  | 'compras';
 
 export interface Coordinador {
   id: number;
@@ -94,6 +95,7 @@ interface AppContextType {
     audioUrl?: string | null,
     audioDuration?: number
   ) => Promise<void>;
+  updateRequestStatus: (requestId: string, newStatus: string) => Promise<void>;
   categories: string[];
   addCategory: (category: string) => void;
   removeCategory: (category: string) => void;
@@ -1102,8 +1104,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
     setUser(comprasUser);
     saveState('montalvo_user', comprasUser);
-    saveState('montalvo_module', 'requests');
-    setActiveModule('requests');
+    saveState('montalvo_module', 'compras');
+    setActiveModule('compras');
   };
 
   const updatePendingRequest = async (
@@ -1131,6 +1133,33 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
+  const updateRequestStatus = async (requestId: string, newStatus: string) => {
+    const normalizedStatus = mapStatusToFrontend(newStatus);
+    setRequests((prev) => {
+      const updated = prev.map((req) => {
+        if (req.id === requestId || req.idPublico === requestId) {
+          return { ...req, status: normalizedStatus as any };
+        }
+        return req;
+      });
+      saveState('montalvo_requests', updated);
+      return updated;
+    });
+
+    try {
+      await fetch(`${API_URL}/pedidos/actualizar-estado`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id_publico: requestId,
+          estado: newStatus.toLowerCase()
+        })
+      });
+    } catch (e) {
+      console.warn('Error al sincronizar estado con API:', e);
+    }
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -1156,6 +1185,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         sendDraftList,
         sendSingleItem,
         updatePendingRequest,
+        updateRequestStatus,
         categories,
         addCategory,
         removeCategory,

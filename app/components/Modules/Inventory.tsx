@@ -5,6 +5,7 @@ import { useApp } from '../../context/AppContext';
 import { Card, Button, ConfirmModal, Skeleton } from '../UI';
 import { Search, Trash2, Send, ShoppingBag, Check, HelpCircle, X } from 'lucide-react';
 import { useToast } from '../UI';
+import AudioRecorder from '../AudioRecorder';
 
 export default function Inventory() {
   const {
@@ -23,6 +24,9 @@ export default function Inventory() {
   const [activeTab, setActiveTab] = useState<'catalog' | 'notebook'>('catalog');
   const [searchQuery, setSearchQuery] = useState('');
   const [showHelp, setShowHelp] = useState(false);
+
+  const [draftAudioUrl, setDraftAudioUrl] = useState<string | null>(null);
+  const [draftAudioDuration, setDraftAudioDuration] = useState<number>(0);
   const [showSendConfirm, setShowSendConfirm] = useState(false);
   const [instantNote, setInstantNote] = useState('');
   const [isSending, setIsSending] = useState(false);
@@ -114,9 +118,11 @@ export default function Inventory() {
     setShowSendConfirm(false);
     setIsSending(true);
     try {
-      await sendDraftList(listReason);
+      await sendDraftList(listReason, draftAudioUrl, draftAudioDuration);
       showToast('Lista del cuaderno enviada con éxito', 'success');
-      setListReason(''); // Reset reason
+      setListReason('');
+      setDraftAudioUrl(null);
+      setDraftAudioDuration(0);
     } catch (err: any) {
       showToast(err.message || 'Error al enviar la lista', 'error');
     } finally {
@@ -582,6 +588,16 @@ export default function Inventory() {
                   placeholder="Ej. Reabastecimiento regular para la cocina de la semana, ingredientes para dieta líquida..."
                   className="w-full h-20 p-3 rounded-lg border border-[#cbd5e1] text-xs text-[#0f172a] placeholder-[#94a3b8] bg-white outline-none focus:border-primary"
                 />
+
+                <div className="pt-2">
+                  <AudioRecorder
+                    initialAudioUrl={draftAudioUrl}
+                    onAudioSaved={(url, dur) => {
+                      setDraftAudioUrl(url);
+                      setDraftAudioDuration(dur || 0);
+                    }}
+                  />
+                </div>
               </Card>
 
               {/* Action Buttons */}
