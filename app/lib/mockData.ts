@@ -17,6 +17,8 @@ export interface RequestItem {
   status: 'Pendiente' | 'En revisión' | 'Aprobado' | 'Aceptado' | 'Rechazado' | 'Comprado' | 'Entregado' | 'Cancelado';
   user: string;
   reason?: string;
+  audioUrl?: string | null;
+  audioDuration?: number;
   /** true mientras el pedido solo existe en la cola local y aún no se confirmó con el servidor */
   pendingSync?: boolean;
   items: Array<{

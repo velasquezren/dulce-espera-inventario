@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Card, Badge, EmptyState } from '../UI';
+import { Card, Badge, EmptyState, Portal, Button, useToast } from '../UI';
 import { 
   ClipboardList, 
   Search, 
@@ -15,17 +15,59 @@ import {
   HelpCircle,
   RotateCw,
   Printer,
-  WifiOff
+  WifiOff,
+  Pencil,
+  Trash2,
+  X,
+  Save,
+  Plus,
+  Minus
 } from 'lucide-react';
 import { RequestItem } from '../../lib/mockData';
+import AudioPlayer from '../AudioPlayer';
+import AudioRecorder from '../AudioRecorder';
 
 export default function MyRequests() {
-  const { requests, refreshRequests } = useApp();
+  const { requests, refreshRequests, updatePendingRequest } = useApp();
+  const { showToast } = useToast();
   const [activeView, setActiveView] = useState<'list' | 'calendar'>('calendar');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [expandedRequestId, setExpandedRequestId] = useState<string | null>(null);
   const [showHelp, setShowHelp] = useState(false);
+
+  // Edit Request State
+  const [editingRequest, setEditingRequest] = useState<RequestItem | null>(null);
+  const [editingItems, setEditingItems] = useState<Array<{ productId: string; productName: string; quantity: number; unit: string; notes?: string }>>([]);
+  const [editingReason, setEditingReason] = useState<string>('');
+  const [editingAudioUrl, setEditingAudioUrl] = useState<string | null>(null);
+  const [editingAudioDuration, setEditingAudioDuration] = useState<number>(0);
+
+  useEffect(() => {
+    if (editingRequest) {
+      setEditingItems(editingRequest.items ? [...editingRequest.items] : []);
+      setEditingReason(editingRequest.reason || '');
+      setEditingAudioUrl(editingRequest.audioUrl || null);
+      setEditingAudioDuration(editingRequest.audioDuration || 0);
+    }
+  }, [editingRequest]);
+
+  const handleSaveEdit = async () => {
+    if (!editingRequest) return;
+    try {
+      await updatePendingRequest(
+        editingRequest.id,
+        editingItems,
+        editingReason,
+        editingAudioUrl,
+        editingAudioDuration
+      );
+      setEditingRequest(null);
+      showToast('Solicitud actualizada correctamente', 'success');
+    } catch (e: any) {
+      showToast('Error al actualizar la solicitud', 'error');
+    }
+  };
 
   // Calendar state
   const [viewDate, setViewDate] = useState(new Date());
@@ -295,6 +337,12 @@ export default function MyRequests() {
                 &ldquo;{req.reason}&rdquo;
               </div>
             )}
+
+            {req.audioUrl && (
+              <div className="pt-1">
+                <AudioPlayer audioUrl={req.audioUrl} duration={req.audioDuration} />
+              </div>
+            )}
             
             <div className="divide-y divide-[#f1f5f9] bg-white border border-[#e2e8f0]/60 rounded-lg overflow-hidden">
               {req.items.map((item, idx: number) => (
@@ -330,6 +378,22 @@ export default function MyRequests() {
                 </div>
               ))}
             </div>
+
+            {(req.status === 'Pendiente' || req.status === 'En revisión') && (
+              <div className="pt-2 flex justify-end">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setEditingRequest(req);
+                  }}
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer"
+                >
+                  <Pencil className="w-3.5 h-3.5 text-amber-700" />
+                  <span>Editar Pedido</span>
+                </button>
+              </div>
+            )}
           </div>
         )}
       </Card>
@@ -621,6 +685,139 @@ export default function MyRequests() {
           </div>
 
         </div>
+      )}
+
+      {/* Edit Request Modal */}
+      {editingRequest && (
+        <Portal>
+          <div className="fixed inset-0 z-[9998] flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-md animate-fade-in overflow-y-auto">
+            <div className="bg-white rounded-3xl border border-slate-200 shadow-clinical-lg w-full max-w-lg overflow-hidden flex flex-col max-h-[calc(100dvh-16px)] sm:max-h-[90dvh] animate-view-enter">
+              {/* Modal Header */}
+              <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-amber-50/80 shrink-0">
+                <div className="flex items-center gap-2.5">
+                  <div className="p-2 rounded-xl bg-amber-100 text-amber-800 font-bold">
+                    <Pencil className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide">
+                      Editar Solicitud Pendiente
+                    </h3>
+                    <p className="text-[11px] text-slate-500 font-semibold">
+                      Modifica insumos, cantidades o nota de voz
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setEditingRequest(null)}
+                  className="w-8 h-8 rounded-full hover:bg-slate-200/60 flex items-center justify-center text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Modal Body */}
+              <div className="p-4 sm:p-5 space-y-4 overflow-y-auto flex-1">
+                {/* Items List */}
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                    Insumos Solicitados
+                  </label>
+                  {editingItems.length === 0 ? (
+                    <p className="text-xs text-rose-500 font-bold bg-rose-50 p-3 rounded-xl">
+                      Debes tener al menos un insumo en el pedido.
+                    </p>
+                  ) : (
+                    editingItems.map((item, idx) => (
+                      <div key={idx} className="flex items-center justify-between gap-2 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs">
+                        <div className="flex-1 font-bold text-slate-800 leading-tight">
+                          {item.productName}
+                          <span className="block text-[10px] text-slate-400 font-semibold">{item.unit}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = [...editingItems];
+                              if (updated[idx].quantity > 1) {
+                                updated[idx].quantity -= 1;
+                                setEditingItems(updated);
+                              }
+                            }}
+                            className="w-7 h-7 rounded-lg border border-slate-300 flex items-center justify-center font-bold text-slate-600 hover:bg-slate-200 cursor-pointer"
+                          >
+                            <Minus className="w-3.5 h-3.5" />
+                          </button>
+                          <span className="font-extrabold w-7 text-center text-slate-800">{item.quantity}</span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = [...editingItems];
+                              updated[idx].quantity += 1;
+                              setEditingItems(updated);
+                            }}
+                            className="w-7 h-7 rounded-lg border border-slate-300 flex items-center justify-center font-bold text-slate-600 hover:bg-slate-200 cursor-pointer"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingItems(editingItems.filter((_, i) => i !== idx));
+                            }}
+                            className="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg ml-1 cursor-pointer"
+                            title="Eliminar insumo de la lista"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {/* Motivo / Observaciones */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                    Motivo u Observaciones
+                  </label>
+                  <textarea
+                    value={editingReason}
+                    onChange={(e) => setEditingReason(e.target.value)}
+                    placeholder="Escribe algún motivo u observación adicional..."
+                    className="w-full p-3 rounded-xl border border-slate-200 text-xs font-semibold text-slate-800 outline-none focus:border-[#006156]"
+                    rows={2}
+                  />
+                </div>
+
+                {/* Audio Recorder */}
+                <AudioRecorder
+                  initialAudioUrl={editingAudioUrl}
+                  onAudioSaved={(url, dur) => {
+                    setEditingAudioUrl(url);
+                    setEditingAudioDuration(dur || 0);
+                  }}
+                />
+              </div>
+
+              {/* Modal Footer */}
+              <div className="p-4 border-t border-slate-100 bg-slate-50/80 flex items-center justify-end gap-2 shrink-0">
+                <Button variant="ghost" onClick={() => setEditingRequest(null)}>
+                  Cancelar
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={handleSaveEdit}
+                  disabled={editingItems.length === 0}
+                  className="font-bold flex items-center gap-1.5"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>Guardar Cambios</span>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Portal>
       )}
     </div>
   );

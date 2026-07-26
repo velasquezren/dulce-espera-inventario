@@ -22,6 +22,7 @@ import {
   X,
 } from 'lucide-react';
 import { useToast } from '../UI';
+import AudioPlayer from '../AudioPlayer';
 
 type OriginalStatus = 'Aceptado' | 'Comprado' | 'En revisión';
 
@@ -62,6 +63,8 @@ export default function Reception() {
         ...rec,
         originalStatus: (originalReq?.status || 'Aceptado') as OriginalStatus,
         reason: originalReq?.reason || '',
+        audioUrl: originalReq?.audioUrl,
+        audioDuration: originalReq?.audioDuration
       };
     });
   }, [pendingReceptions, requests]);
@@ -492,6 +495,13 @@ export default function Reception() {
                   <p className="text-xs text-slate-600 font-medium italic leading-relaxed">
                     &ldquo;{activeDetail.reason}&rdquo;
                   </p>
+                </div>
+              )}
+
+              {/* Audio Note */}
+              {activeDetail.audioUrl && (
+                <div className="mt-3">
+                  <AudioPlayer audioUrl={activeDetail.audioUrl} duration={activeDetail.audioDuration} />
                 </div>
               )}
             </div>

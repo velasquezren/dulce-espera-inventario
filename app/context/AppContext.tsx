@@ -85,8 +85,15 @@ interface AppContextType {
   addDraftItem: (productId: string, quantity: number, notes?: string) => void;
   updateDraftItem: (id: string, quantity: number, notes?: string) => void;
   removeDraftItem: (id: string) => void;
-  sendDraftList: (reason?: string) => Promise<void>;
-  sendSingleItem: (productId: string, quantity: number, notes?: string) => Promise<void>;
+  sendDraftList: (reason?: string, audioUrl?: string | null, audioDuration?: number) => Promise<void>;
+  sendSingleItem: (productId: string, quantity: number, notes?: string, audioUrl?: string | null, audioDuration?: number) => Promise<void>;
+  updatePendingRequest: (
+    requestId: string,
+    updatedItems: Array<{ productId: string; productName: string; quantity: number; unit: string; notes?: string }>,
+    reason?: string,
+    audioUrl?: string | null,
+    audioDuration?: number
+  ) => Promise<void>;
   categories: string[];
   addCategory: (category: string) => void;
   removeCategory: (category: string) => void;
@@ -95,10 +102,11 @@ interface AppContextType {
   updateProductCategory: (productId: string, category: string) => void;
 
   login: (username: string, password: string, rememberMe?: boolean) => Promise<boolean>;
+  loginAsCompras: () => void;
   logout: () => void;
   setModule: (module: AppModule) => void;
   viewProductDetails: (productId: string) => void;
-  createRequest: (productId: string, quantity: number, notes?: string) => void;
+  createRequest: (productId: string, quantity: number, notes?: string, audioUrl?: string | null, audioDuration?: number) => void;
   confirmReception: (receptionId: string) => Promise<void>;
   markNotificationRead: (notificationId: string) => void;
   clearNotifications: () => void;
@@ -1085,6 +1093,44 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     URL.revokeObjectURL(url);
   };
 
+  const loginAsCompras = () => {
+    const comprasUser = {
+      name: 'Encargada de Compras',
+      username: 'compras',
+      role: 'compras',
+      token: 'compras-fast-token'
+    };
+    setUser(comprasUser);
+    saveState('montalvo_user', comprasUser);
+    saveState('montalvo_module', 'requests');
+    setActiveModule('requests');
+  };
+
+  const updatePendingRequest = async (
+    requestId: string,
+    updatedItems: Array<{ productId: string; productName: string; quantity: number; unit: string; notes?: string }>,
+    reason?: string,
+    audioUrl?: string | null,
+    audioDuration?: number
+  ) => {
+    setRequests((prev) => {
+      const updated = prev.map((req) => {
+        if (req.id === requestId || req.idPublico === requestId) {
+          return {
+            ...req,
+            items: updatedItems,
+            reason: reason !== undefined ? reason : req.reason,
+            audioUrl: audioUrl !== undefined ? audioUrl : req.audioUrl,
+            audioDuration: audioDuration !== undefined ? audioDuration : req.audioDuration
+          };
+        }
+        return req;
+      });
+      saveState('montalvo_requests', updated);
+      return updated;
+    });
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -1109,6 +1155,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         removeDraftItem,
         sendDraftList,
         sendSingleItem,
+        updatePendingRequest,
         categories,
         addCategory,
         removeCategory,
@@ -1116,6 +1163,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         deleteProduct,
         updateProductCategory,
         login,
+        loginAsCompras,
         logout,
         setModule,
         viewProductDetails,

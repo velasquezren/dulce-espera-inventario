@@ -5,6 +5,7 @@ import { useApp } from '../../context/AppContext';
 import { Button, Card, Input, Textarea, ConfirmModal } from '../UI';
 import { ArrowLeft, Check, ClipboardCheck, Minus, Plus } from 'lucide-react';
 import { useToast } from '../UI';
+import AudioRecorder from '../AudioRecorder';
 
 export default function RequestForm() {
   const { products, selectedProductId, createRequest, setModule } = useApp();
@@ -13,6 +14,8 @@ export default function RequestForm() {
   const [productId, setProductId] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [notes, setNotes] = useState('');
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [audioDuration, setAudioDuration] = useState<number>(0);
   
   const [showConfirm, setShowConfirm] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,7 +46,7 @@ export default function RequestForm() {
     setIsSubmitting(true);
 
     try {
-      await createRequest(productId, quantity, notes);
+      await createRequest(productId, quantity, notes, audioUrl, audioDuration);
       setIsCompleted(true);
       showToast('Solicitud enviada correctamente', 'success');
     } catch (err: any) {
@@ -176,6 +179,14 @@ export default function RequestForm() {
             placeholder="Ej: Para dietas post-operatorio del fin de semana..."
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
+          />
+
+          {/* Optional Audio Note */}
+          <AudioRecorder
+            onAudioSaved={(url, dur) => {
+              setAudioUrl(url);
+              setAudioDuration(dur || 0);
+            }}
           />
 
           <Button

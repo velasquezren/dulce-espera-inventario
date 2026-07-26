@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Card, Portal, useToast } from '../UI';
 import { RequestItem } from '../../lib/mockData';
+import AudioPlayer from '../AudioPlayer';
 import {
   Printer,
   Download,
@@ -734,6 +735,12 @@ export default function WhatsAppDispatch() {
                   <p className="text-xs text-slate-600 font-semibold italic leading-relaxed">
                     &ldquo;{selectedReq.reason}&rdquo;
                   </p>
+                </div>
+              )}
+
+              {selectedReq.audioUrl && (
+                <div className="mx-6 mb-4">
+                  <AudioPlayer audioUrl={selectedReq.audioUrl} duration={selectedReq.audioDuration} />
                 </div>
               )}
 

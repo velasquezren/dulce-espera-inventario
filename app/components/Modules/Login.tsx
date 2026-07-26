@@ -3,10 +3,10 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Button, Input } from '../UI';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, ShoppingBag, ArrowRight } from 'lucide-react';
 
 export default function Login() {
-  const { login } = useApp();
+  const { login, loginAsCompras } = useApp();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
@@ -114,6 +114,29 @@ export default function Login() {
             Ingresar al Sistema
           </Button>
         </form>
+
+        {/* Quick Access for Purchases / Encargada de Compras */}
+        <div className="pt-5 border-t border-slate-100 mt-6 space-y-2">
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider text-left">
+            Acceso Rápido de Gestión
+          </p>
+          <button
+            type="button"
+            onClick={loginAsCompras}
+            className="w-full flex items-center justify-between p-3.5 rounded-xl bg-[#e6f0ef] hover:bg-[#d5e7e5] border border-[#39ADA3]/30 text-[#006156] font-bold text-sm shadow-sm transition-all active:scale-[0.98] cursor-pointer group"
+          >
+            <div className="flex items-center gap-2.5">
+              <div className="p-1.5 rounded-lg bg-white text-[#006156] shadow-xs">
+                <ShoppingBag className="w-4 h-4" />
+              </div>
+              <div className="text-left">
+                <div className="font-bold text-xs">Ingresar a Compras</div>
+                <div className="text-[10px] text-[#39ADA3] font-semibold">Ver pedidos aceptados y pendientes</div>
+              </div>
+            </div>
+            <ArrowRight className="w-4 h-4 text-[#006156] group-hover:translate-x-1 transition-transform" />
+          </button>
+        </div>
 
         {/* Clinical Note Footer */}
         <div className="flex items-center justify-center gap-1.5 mt-8 text-[11px] font-semibold text-slate-400">
