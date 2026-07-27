@@ -4,7 +4,6 @@ import React, { useState, useMemo } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Badge, useToast } from '../UI';
 import { 
-  ShoppingBag, 
   Search, 
   CheckCircle2, 
   Printer, 
@@ -13,10 +12,30 @@ import {
   LogOut, 
   Truck,
   Volume2,
-  Check
+  Check,
+  Folder
 } from 'lucide-react';
 import AudioPlayer from '../AudioPlayer';
 import { RequestItem } from '../../lib/mockData';
+
+// Category Helper for Kitchen Items Grouping
+function getItemCategory(productName: string): string {
+  const name = productName.toLowerCase();
+
+  if (name.includes('tomate') || name.includes('cebolla') || name.includes('papa') || name.includes('zanahoria') || name.includes('lechuga') || name.includes('limon') || name.includes('manzana') || name.includes('fruta') || name.includes('verdura')) {
+    return '🥦 Verduras y Frutas';
+  }
+  if (name.includes('leche') || name.includes('queso') || name.includes('mantequilla') || name.includes('crema') || name.includes('yogur')) {
+    return '🥛 Lácteos y Quesos';
+  }
+  if (name.includes('carne') || name.includes('pollo') || name.includes('pescado') || name.includes('huevo') || name.includes('jamon')) {
+    return '🥩 Carnes y Proteínas';
+  }
+  if (name.includes('detergente') || name.includes('jabón') || name.includes('limpiador') || name.includes('esponja') || name.includes('papel')) {
+    return '🧼 Limpieza y Aseo';
+  }
+  return '📦 Abarrotes e Insumos';
+}
 
 export default function ComprasView() {
   const { requests, refreshRequests, updateRequestStatus, logout } = useApp();
@@ -86,9 +105,9 @@ export default function ComprasView() {
       <!DOCTYPE html>
       <html>
       <head>
-        <title>HOJA DE COMPRAS N° ${orderNum} - CLÍNICA MONTALVO</title>
+        <title>HOJA DE COMPRAS N° ${orderNum} - DULCE ESPERA</title>
         <style>
-          body { font-family: system-ui, -apple-system, sans-serif; padding: 20px; color: #0f172a; background: #ffffff; }
+          body { font-family: system-ui, -apple-system, sans-serif; padding: 25px; color: #0f172a; background: #ffffff; }
           .header { border-bottom: 3px solid #006156; padding-bottom: 10px; margin-bottom: 15px; }
           .title { color: #006156; font-size: 20px; font-weight: 900; margin: 0; }
           .meta { font-size: 12px; color: #64748b; margin-top: 4px; }
@@ -98,7 +117,7 @@ export default function ComprasView() {
       </head>
       <body>
         <div class="header">
-          <h1 class="title">CLÍNICA MONTALVO — PEDIDO N° ${orderNum}</h1>
+          <h1 class="title">DULCE ESPERA — PEDIDO N° ${orderNum}</h1>
           <div class="meta">Solicitado por: <strong>${req.user}</strong> | Fecha: ${req.date}</div>
         </div>
         ${req.reason ? `<div style="background: #f1f5f9; padding: 8px; border-radius: 6px; margin-bottom: 12px; font-size: 12px;"><strong>Motivo:</strong> "${req.reason}"</div>` : ''}
@@ -129,7 +148,7 @@ export default function ComprasView() {
   };
 
   const handleShareWhatsApp = (req: RequestItem, orderNum: number) => {
-    let text = `🛒 *CLÍNICA MONTALVO - PEDIDO N° ${orderNum}*\n`;
+    let text = `🛒 *DULCE ESPERA - PEDIDO N° ${orderNum}*\n`;
     text += `*Solicitante:* ${req.user}\n`;
     text += `*Fecha:* ${req.date}\n`;
     text += `\n*INSUMOS REQUERIDOS:*\n`;
@@ -146,18 +165,16 @@ export default function ComprasView() {
   return (
     <div className="min-h-screen w-full bg-[#f8fafc] text-slate-800 font-sans pb-28 overflow-y-auto">
       
-      {/* ─── Encabezado Plano Limpio ─── */}
+      {/* ─── Header Oficial Dulce Espera (Con Logo Original) ─── */}
       <header className="sticky top-0 z-30 bg-[#006156] text-white px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center border border-white/20">
-            <ShoppingBag className="w-4.5 h-4.5 text-[#39ADA3]" />
-          </div>
+          <img src="/logo.svg" alt="Dulce Espera Logo" className="w-8 h-8 sm:w-9 sm:h-9 object-contain" />
           <div>
-            <h1 className="text-sm sm:text-base font-black tracking-tight text-white uppercase">
-              CLÍNICA MONTALVO
+            <h1 className="text-base sm:text-lg font-black tracking-tight text-white uppercase">
+              DULCE ESPERA
             </h1>
             <p className="text-[10px] text-emerald-100/90 font-bold uppercase tracking-wider">
-              Pedidos de Compras
+              Inventario de Cocina • Pedidos de Compras
             </p>
           </div>
         </div>
@@ -238,7 +255,7 @@ export default function ComprasView() {
         </div>
       </div>
 
-      {/* ─── FLUTO TOTALMENTE PLANO (SIN NINGUNA CAJA ANIDADA) ─── */}
+      {/* ─── FLUTO PLANO DE PEDIDOS CON AGRUPACIÓN POR GRUPO DE INSUMO ─── */}
       <main className="max-w-3xl mx-auto p-4 sm:p-6 space-y-8 animate-view-enter">
         {filteredRequests.length === 0 ? (
           <div className="py-12 text-center text-slate-400 text-xs font-bold border-b border-slate-200">
@@ -249,12 +266,20 @@ export default function ComprasView() {
             const orderNum = filteredRequests.length - idx;
             const isPending = req.status === 'Pendiente' || req.status === 'En revisión';
 
+            // Group items by category for this specific order
+            const itemsByCategory = req.items.reduce((acc, item) => {
+              const cat = getItemCategory(item.productName);
+              if (!acc[cat]) acc[cat] = [];
+              acc[cat].push(item);
+              return acc;
+            }, {} as Record<string, typeof req.items>);
+
             return (
               <div 
                 key={req.id}
                 className="border-b-2 border-slate-200 pb-8 space-y-4"
               >
-                {/* 1. Título e Info del Pedido (Plano en página) */}
+                {/* 1. Encabezado del Pedido */}
                 <div className="flex items-center justify-between gap-2">
                   <div>
                     <div className="flex items-center gap-2">
@@ -285,7 +310,7 @@ export default function ComprasView() {
                   )}
                 </div>
 
-                {/* 2. Reproductor de Audio Plano (Si existe) */}
+                {/* 2. Reproductor de Audio (Si existe) */}
                 {req.audioUrl && (
                   <div className="space-y-1">
                     <div className="text-[11px] font-extrabold text-[#006156] flex items-center gap-1.5">
@@ -308,27 +333,37 @@ export default function ComprasView() {
                   </div>
                 )}
 
-                {/* 4. Lista Plana de Insumos (SIN CAJA NI TABLA ENCAJONADA) */}
-                <div className="space-y-2">
+                {/* 4. LISTA DE INSUMOS AGRUPADA POR GRUPO DE INSUMO (SIN SEPARAR EL PEDIDO) */}
+                <div className="space-y-3">
                   <div className="text-xs font-black text-slate-600 uppercase tracking-wider">
-                    Insumos a Comprar ({req.items.length}):
+                    Insumos del Pedido ({req.items.length}):
                   </div>
 
-                  <div className="divide-y divide-slate-100 bg-white border-t border-b border-slate-200">
-                    {req.items.map((item, itemIdx) => (
-                      <div key={itemIdx} className="py-2.5 px-2 flex items-center justify-between gap-3">
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-slate-400 text-xs">{itemIdx + 1}.</span>
-                          <div>
-                            <span className="font-extrabold text-slate-900 text-sm">{item.productName}</span>
-                            {item.notes && (
-                              <span className="block text-xs text-slate-400 italic">Obs: {item.notes}</span>
-                            )}
-                          </div>
+                  <div className="space-y-3">
+                    {Object.entries(itemsByCategory).map(([categoryName, groupItems]) => (
+                      <div key={categoryName} className="space-y-1">
+                        {/* Categoría / Grupo Header */}
+                        <div className="text-[11px] font-extrabold text-[#006156] bg-emerald-50/70 px-2.5 py-1 rounded flex items-center gap-1.5 w-fit border border-emerald-100">
+                          <Folder className="w-3.5 h-3.5 text-[#006156]" />
+                          <span>{categoryName}</span>
                         </div>
 
-                        <div className="font-black text-sm text-[#006156] shrink-0">
-                          {item.quantity} {item.unit}
+                        {/* Insumos pertenecientes a este grupo */}
+                        <div className="divide-y divide-slate-100 bg-white border-t border-b border-slate-200 pl-2">
+                          {groupItems.map((item, itemIdx) => (
+                            <div key={itemIdx} className="py-2 px-2 flex items-center justify-between gap-3">
+                              <div>
+                                <span className="font-extrabold text-slate-900 text-sm">{item.productName}</span>
+                                {item.notes && (
+                                  <span className="block text-xs text-slate-400 italic">Obs: {item.notes}</span>
+                                )}
+                              </div>
+
+                              <div className="font-black text-sm text-[#006156] shrink-0">
+                                {item.quantity} {item.unit}
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     ))}
