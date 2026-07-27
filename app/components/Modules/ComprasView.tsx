@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Badge, EmptyState, useToast } from '../UI';
+import { Badge, useToast } from '../UI';
 import { 
   ShoppingBag, 
   Search, 
@@ -11,7 +11,6 @@ import {
   Share2, 
   RotateCw, 
   LogOut, 
-  User, 
   Truck,
   Volume2,
   Check
@@ -147,11 +146,11 @@ export default function ComprasView() {
   return (
     <div className="min-h-screen w-full bg-[#f8fafc] text-slate-800 font-sans pb-28 overflow-y-auto">
       
-      {/* ─── Header PWA Fijo en Teléfono ─── */}
-      <header className="sticky top-0 z-30 bg-[#006156] text-white px-3 sm:px-6 py-3 flex items-center justify-between shadow-clinical-sm">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center border border-white/20 shrink-0">
-            <ShoppingBag className="w-4 h-4 text-[#39ADA3]" />
+      {/* ─── Encabezado Plano Limpio ─── */}
+      <header className="sticky top-0 z-30 bg-[#006156] text-white px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center border border-white/20">
+            <ShoppingBag className="w-4.5 h-4.5 text-[#39ADA3]" />
           </div>
           <div>
             <h1 className="text-sm sm:text-base font-black tracking-tight text-white uppercase">
@@ -168,7 +167,7 @@ export default function ComprasView() {
             type="button"
             onClick={handleRefresh}
             disabled={isRefreshing}
-            className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer border border-white/20 active:scale-95 disabled:opacity-50 min-h-[40px] min-w-[40px] flex items-center justify-center"
+            className="p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer border border-white/20 active:scale-95 disabled:opacity-50 min-h-[40px]"
             title="Actualizar"
           >
             <RotateCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
@@ -177,7 +176,7 @@ export default function ComprasView() {
           <button
             type="button"
             onClick={logout}
-            className="px-3 py-2 rounded-xl bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 border border-rose-400/30 font-bold text-xs flex items-center gap-1 transition-all cursor-pointer min-h-[40px]"
+            className="px-3 py-2 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 border border-rose-400/30 font-bold text-xs flex items-center gap-1 transition-all cursor-pointer min-h-[40px]"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Salir</span>
@@ -185,18 +184,17 @@ export default function ComprasView() {
         </div>
       </header>
 
-      {/* ─── Pestañas y Buscador Táctiles para Teléfono ─── */}
-      <div className="sticky top-[57px] z-20 bg-white border-b border-slate-200 px-3 sm:px-6 py-2.5 shadow-xs">
-        <div className="max-w-3xl mx-auto space-y-2">
+      {/* ─── Filtros Planos (Sin Cajas Envolventes) ─── */}
+      <div className="sticky top-[57px] z-20 bg-white border-b border-slate-200 px-4 sm:px-8 py-2.5">
+        <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2.5">
           
-          {/* Pestañas de estado scrollables */}
-          <div className="flex items-center gap-1.5 overflow-x-auto whitespace-nowrap pb-1 no-scrollbar">
+          <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 no-scrollbar">
             <button
               onClick={() => setStatusFilter('All')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer min-h-[38px] ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-black transition-all shrink-0 cursor-pointer min-h-[38px] ${
                 statusFilter === 'All' 
-                  ? 'bg-[#006156] text-white shadow-xs' 
-                  : 'bg-slate-100 text-slate-600 active:bg-slate-200'
+                  ? 'bg-[#006156] text-white' 
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
               Todos ({requests.length})
@@ -204,10 +202,10 @@ export default function ComprasView() {
             
             <button
               onClick={() => setStatusFilter('Pendiente')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 min-h-[38px] ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 min-h-[38px] ${
                 statusFilter === 'Pendiente' 
-                  ? 'bg-rose-600 text-white shadow-xs' 
-                  : 'bg-rose-50 text-rose-800 active:bg-rose-100'
+                  ? 'bg-rose-600 text-white' 
+                  : 'bg-rose-50 text-rose-800 hover:bg-rose-100'
               }`}
             >
               <span className="w-2 h-2 rounded-full bg-rose-400 animate-pulse" />
@@ -216,10 +214,10 @@ export default function ComprasView() {
 
             <button
               onClick={() => setStatusFilter('Comprado')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 min-h-[38px] ${
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-black transition-all shrink-0 cursor-pointer flex items-center gap-1.5 min-h-[38px] ${
                 statusFilter === 'Comprado' 
-                  ? 'bg-[#39ADA3] text-white shadow-xs' 
-                  : 'bg-emerald-50 text-emerald-900 active:bg-emerald-100'
+                  ? 'bg-[#39ADA3] text-white' 
+                  : 'bg-emerald-50 text-emerald-900 hover:bg-emerald-100'
               }`}
             >
               <Check className="w-3.5 h-3.5 text-emerald-600" />
@@ -227,25 +225,24 @@ export default function ComprasView() {
             </button>
           </div>
 
-          {/* Buscador táctil */}
-          <div className="relative w-full">
+          <div className="relative w-full sm:w-60">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               placeholder="Buscar insumo o cocinera..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 outline-none focus:border-[#006156] min-h-[42px]"
+              className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-semibold text-slate-800 outline-none focus:border-[#006156] min-h-[38px]"
             />
           </div>
         </div>
       </div>
 
-      {/* ─── LISTADO OPTIMIZADO PARA PANTALLA DE TELÉFONO ─── */}
-      <main className="max-w-3xl mx-auto p-3 sm:p-6 space-y-4 animate-view-enter">
+      {/* ─── FLUTO TOTALMENTE PLANO (SIN NINGUNA CAJA ANIDADA) ─── */}
+      <main className="max-w-3xl mx-auto p-4 sm:p-6 space-y-8 animate-view-enter">
         {filteredRequests.length === 0 ? (
-          <div className="py-12 text-center text-slate-400 text-xs font-bold bg-white border border-slate-200 rounded-2xl">
-            No se encontraron pedidos.
+          <div className="py-12 text-center text-slate-400 text-xs font-bold border-b border-slate-200">
+            No hay pedidos disponibles.
           </div>
         ) : (
           filteredRequests.map((req, idx) => {
@@ -255,125 +252,96 @@ export default function ComprasView() {
             return (
               <div 
                 key={req.id}
-                className="bg-white border border-slate-200 rounded-2xl shadow-clinical-sm p-4 sm:p-5 space-y-3.5"
+                className="border-b-2 border-slate-200 pb-8 space-y-4"
               >
-                {/* Cabecera del Pedido */}
-                <div className="flex items-start justify-between gap-2 border-b border-slate-100 pb-3">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-xl bg-emerald-50 text-[#006156] flex items-center justify-center font-black text-xs shrink-0 border border-emerald-100">
-                      #{orderNum}
+                {/* 1. Título e Info del Pedido (Plano en página) */}
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-black uppercase text-[#006156]">
+                        Pedido N° {orderNum}
+                      </span>
+                      <span className="text-slate-300">•</span>
+                      <span className="text-xs font-bold text-slate-700">
+                        {req.user}
+                      </span>
                     </div>
-                    <div>
-                      <h2 className="text-sm sm:text-base font-black text-slate-900 leading-tight">
-                        Pedido de {req.user}
-                      </h2>
-                      <p className="text-[11px] font-semibold text-slate-400 mt-0.5">
-                        {req.date}
-                      </p>
-                    </div>
+                    <p className="text-[11px] font-semibold text-slate-400 mt-0.5">
+                      Fecha: {req.date}
+                    </p>
                   </div>
 
-                  {/* Insignia de Estado */}
-                  <div className="shrink-0">
-                    {isPending ? (
-                      <span className="text-[10px] font-extrabold text-rose-700 bg-rose-50 px-2.5 py-1 rounded-full border border-rose-200 flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-                        Por Comprar
-                      </span>
-                    ) : (
-                      <span className="text-[10px] font-extrabold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 flex items-center gap-1">
-                        <Truck className="w-3 h-3 text-[#006156]" />
-                        Comprado
-                      </span>
-                    )}
-                  </div>
+                  {/* Estado Plano */}
+                  {isPending ? (
+                    <span className="text-[10px] font-black uppercase text-rose-700 bg-rose-50 px-2.5 py-1 rounded border border-rose-200 flex items-center gap-1.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+                      Por Comprar
+                    </span>
+                  ) : (
+                    <span className="text-[10px] font-black uppercase text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded border border-emerald-200 flex items-center gap-1.5">
+                      <Truck className="w-3.5 h-3.5 text-[#006156]" />
+                      Comprado
+                    </span>
+                  )}
                 </div>
 
-                {/* Reproductor de Nota de Voz Táctil */}
+                {/* 2. Reproductor de Audio Plano (Si existe) */}
                 {req.audioUrl && (
-                  <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 space-y-1.5">
-                    <div className="flex items-center justify-between text-[11px] font-extrabold text-[#006156]">
-                      <span className="flex items-center gap-1">
-                        <Volume2 className="w-3.5 h-3.5 text-[#006156] animate-pulse" />
-                        Nota de Voz de Cocina
-                      </span>
+                  <div className="space-y-1">
+                    <div className="text-[11px] font-extrabold text-[#006156] flex items-center gap-1.5">
+                      <Volume2 className="w-4 h-4 text-[#006156] animate-pulse" />
+                      <span>Nota de Voz de Cocina</span>
                     </div>
-
                     <AudioPlayer 
                       audioUrl={req.audioUrl} 
                       duration={req.audioDuration}
-                      label="Escuchar mensaje de voz"
-                      className="w-full bg-white border-emerald-200"
+                      label="Escuchar nota de voz"
+                      className="w-full bg-white border-slate-200"
                     />
                   </div>
                 )}
 
-                {/* Motivo de la Cocina */}
+                {/* 3. Motivo / Observación */}
                 {req.reason && (
-                  <div className="p-2.5 bg-slate-50 border border-slate-100 rounded-xl text-xs text-slate-700">
-                    <span className="font-extrabold text-[#006156] text-[10px] uppercase block">
-                      Nota de Cocina:
-                    </span>
-                    <p className="font-semibold italic text-slate-800 mt-0.5 text-[11px]">
-                      &ldquo;{req.reason}&rdquo;
-                    </p>
+                  <div className="text-xs text-slate-700 bg-slate-100/70 p-3 rounded-lg">
+                    <strong className="text-[#006156]">Observación:</strong> &ldquo;{req.reason}&rdquo;
                   </div>
                 )}
 
-                {/* Insumos a Comprar */}
-                <div className="space-y-1">
-                  <div className="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider px-0.5 flex justify-between">
-                    <span>Insumos ({req.items.length})</span>
-                    <span className="text-[#006156]">
-                      Total: {req.items.reduce((acc, i) => acc + i.quantity, 0)} u
-                    </span>
+                {/* 4. Lista Plana de Insumos (SIN CAJA NI TABLA ENCAJONADA) */}
+                <div className="space-y-2">
+                  <div className="text-xs font-black text-slate-600 uppercase tracking-wider">
+                    Insumos a Comprar ({req.items.length}):
                   </div>
 
-                  <div className="border border-slate-200 rounded-xl overflow-hidden bg-white">
-                    <div className="divide-y divide-slate-100 text-xs">
-                      {req.items.map((item, itemIdx) => (
-                        <div key={itemIdx} className="p-2.5 flex items-center justify-between gap-2 hover:bg-slate-50">
-                          <div className="min-w-0 flex-1">
-                            <div className="font-extrabold text-slate-900 text-xs truncate">
-                              {item.productName}
-                            </div>
+                  <div className="divide-y divide-slate-100 bg-white border-t border-b border-slate-200">
+                    {req.items.map((item, itemIdx) => (
+                      <div key={itemIdx} className="py-2.5 px-2 flex items-center justify-between gap-3">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-slate-400 text-xs">{itemIdx + 1}.</span>
+                          <div>
+                            <span className="font-extrabold text-slate-900 text-sm">{item.productName}</span>
                             {item.notes && (
-                              <div className="text-[10px] text-slate-400 italic truncate">
-                                {item.notes}
-                              </div>
+                              <span className="block text-xs text-slate-400 italic">Obs: {item.notes}</span>
                             )}
                           </div>
-
-                          <div className="shrink-0 text-right">
-                            <span className="inline-block px-2.5 py-1 bg-emerald-50 text-[#006156] font-black text-xs rounded-lg border border-emerald-200">
-                              {item.quantity} {item.unit}
-                            </span>
-                          </div>
                         </div>
-                      ))}
-                    </div>
+
+                        <div className="font-black text-sm text-[#006156] shrink-0">
+                          {item.quantity} {item.unit}
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
-                {/* Botón Principal Táctil Grande en Teléfono */}
-                <div className="pt-2 space-y-2">
-                  {isPending && (
-                    <button
-                      type="button"
-                      onClick={() => handleStatusChange(req.id, 'comprado')}
-                      className="w-full min-h-[48px] px-4 py-3 rounded-xl bg-[#006156] active:bg-[#004d44] text-white font-black text-xs shadow-clinical-md flex items-center justify-center gap-2 transition-all active:scale-[0.98] cursor-pointer"
-                    >
-                      <CheckCircle2 className="w-5 h-5 text-[#39ADA3]" />
-                      <span>MARCAR COMO COMPRADO</span>
-                    </button>
-                  )}
-
-                  {/* Acciones Secundarias Táctiles */}
-                  <div className="grid grid-cols-2 gap-2 pt-1">
+                {/* 5. Acciones Planas Directas */}
+                <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-2.5">
+                  <div className="flex items-center gap-2 w-full sm:w-auto">
                     <button
                       type="button"
                       onClick={() => handlePrintRequest(req, orderNum)}
-                      className="w-full min-h-[40px] px-3 py-2 rounded-xl bg-slate-50 active:bg-slate-100 border border-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                      className="flex-1 sm:flex-initial px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer min-h-[40px]"
                     >
                       <Printer className="w-3.5 h-3.5 text-slate-500" />
                       <span>Imprimir</span>
@@ -382,12 +350,23 @@ export default function ComprasView() {
                     <button
                       type="button"
                       onClick={() => handleShareWhatsApp(req, orderNum)}
-                      className="w-full min-h-[40px] px-3 py-2 rounded-xl bg-emerald-50 active:bg-emerald-100 border border-emerald-200 text-[#006156] font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                      className="flex-1 sm:flex-initial px-3 py-2 rounded-lg bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-[#006156] font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer min-h-[40px]"
                     >
                       <Share2 className="w-3.5 h-3.5 text-[#006156]" />
                       <span>WhatsApp</span>
                     </button>
                   </div>
+
+                  {isPending && (
+                    <button
+                      type="button"
+                      onClick={() => handleStatusChange(req.id, 'comprado')}
+                      className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-[#006156] hover:bg-[#004d44] text-white font-black text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95 cursor-pointer min-h-[44px]"
+                    >
+                      <CheckCircle2 className="w-4 h-4 text-[#39ADA3]" />
+                      <span>MARCAR COMO COMPRADO</span>
+                    </button>
+                  )}
                 </div>
 
               </div>
