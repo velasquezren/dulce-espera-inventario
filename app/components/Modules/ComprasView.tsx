@@ -15,7 +15,7 @@ import {
   Calendar, 
   Truck,
   Volume2,
-  FileText
+  Check
 } from 'lucide-react';
 import AudioPlayer from '../AudioPlayer';
 import { RequestItem } from '../../lib/mockData';
@@ -25,7 +25,7 @@ export default function ComprasView() {
   const { showToast } = useToast();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'All' | 'Pendiente' | 'En revisión' | 'Aceptado' | 'Comprado' | 'Entregado'>('All');
+  const [statusFilter, setStatusFilter] = useState<'All' | 'Pendiente' | 'Comprado'>('All');
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const handleRefresh = async () => {
@@ -57,16 +57,16 @@ export default function ComprasView() {
         req.date.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (req.items && req.items.some((i) => i.productName.toLowerCase().includes(searchQuery.toLowerCase())));
       
-      const matchesStatus = statusFilter === 'All' || req.status === statusFilter;
-      return matchesSearch && matchesStatus;
+      if (statusFilter === 'All') return matchesSearch;
+      if (statusFilter === 'Pendiente') return matchesSearch && (req.status === 'Pendiente' || req.status === 'En revisión');
+      if (statusFilter === 'Comprado') return matchesSearch && (req.status === 'Comprado' || req.status === 'Entregado');
+      return matchesSearch;
     });
   }, [requests, searchQuery, statusFilter]);
 
   // Counts
-  const pendingCount = requests.filter(r => r.status === 'Pendiente').length;
-  const revisionCount = requests.filter(r => r.status === 'En revisión' || r.status === 'Aceptado').length;
-  const purchasedCount = requests.filter(r => r.status === 'Comprado').length;
-  const deliveredCount = requests.filter(r => r.status === 'Entregado').length;
+  const pendingCount = requests.filter(r => r.status === 'Pendiente' || r.status === 'En revisión').length;
+  const purchasedCount = requests.filter(r => r.status === 'Comprado' || r.status === 'Entregado').length;
 
   const handlePrintRequest = (req: RequestItem, orderNum: number) => {
     const printWindow = window.open('', '_blank');
@@ -148,7 +148,7 @@ export default function ComprasView() {
   return (
     <div className="min-h-screen w-full bg-[#f8fafc] text-slate-800 font-sans pb-24 overflow-y-auto">
       
-      {/* ─── Header Principal Fijo en Top (Verde Institucional) ─── */}
+      {/* ─── Top Header (Limpio & Elegante) ─── */}
       <header className="sticky top-0 z-30 bg-[#006156] text-white px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-clinical-md">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/20">
@@ -159,7 +159,7 @@ export default function ComprasView() {
               CLÍNICA MONTALVO
             </h1>
             <p className="text-[11px] text-emerald-100/80 font-semibold">
-              Panel Directo de Pedidos de Cocina
+              Gestión de Compras y Pedidos de Cocina
             </p>
           </div>
         </div>
@@ -169,10 +169,10 @@ export default function ComprasView() {
             type="button"
             onClick={handleRefresh}
             disabled={isRefreshing}
-            className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer border border-white/20 disabled:opacity-50"
+            className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer border border-white/20 disabled:opacity-50"
+            title="Actualizar pedidos"
           >
-            <RotateCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin' : ''}`} />
-            <span className="hidden sm:inline">Actualizar</span>
+            <RotateCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
           </button>
 
           <button
@@ -186,56 +186,50 @@ export default function ComprasView() {
         </div>
       </header>
 
-      {/* ─── Filtros por Estado y Buscador (Directo & Sin Cajas) ─── */}
+      {/* ─── Control de Filtros Limpio (3 Pestañas Simples + Buscador) ─── */}
       <div className="sticky top-[61px] z-20 bg-white border-b border-slate-200 px-4 sm:px-8 py-3 shadow-xs">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           
-          {/* Pestañas de Estado */}
-          <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
+          {/* Pestañas Ultra-Simples */}
+          <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto">
             <button
               onClick={() => setStatusFilter('All')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
-                statusFilter === 'All' ? 'bg-[#006156] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                statusFilter === 'All' 
+                  ? 'bg-[#006156] text-white shadow-xs' 
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
               Todos ({requests.length})
             </button>
+            
             <button
               onClick={() => setStatusFilter('Pendiente')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
-                statusFilter === 'Pendiente' ? 'bg-rose-600 text-white shadow-xs' : 'bg-rose-50 text-rose-800 hover:bg-rose-100'
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                statusFilter === 'Pendiente' 
+                  ? 'bg-rose-600 text-white shadow-xs' 
+                  : 'bg-rose-50 text-rose-800 hover:bg-rose-100'
               }`}
             >
-              🔴 Pendientes ({pendingCount})
+              <span className="w-2 h-2 rounded-full bg-rose-400 animate-pulse" />
+              <span>Por Comprar ({pendingCount})</span>
             </button>
-            <button
-              onClick={() => setStatusFilter('En revisión')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
-                statusFilter === 'En revisión' ? 'bg-amber-500 text-white shadow-xs' : 'bg-amber-50 text-amber-900 hover:bg-amber-100'
-              }`}
-            >
-              🟡 En revisión ({revisionCount})
-            </button>
+
             <button
               onClick={() => setStatusFilter('Comprado')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
-                statusFilter === 'Comprado' ? 'bg-indigo-600 text-white shadow-xs' : 'bg-indigo-50 text-indigo-900 hover:bg-indigo-100'
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                statusFilter === 'Comprado' 
+                  ? 'bg-[#39ADA3] text-white shadow-xs' 
+                  : 'bg-emerald-50 text-emerald-900 hover:bg-emerald-100'
               }`}
             >
-              🔵 Comprados ({purchasedCount})
-            </button>
-            <button
-              onClick={() => setStatusFilter('Entregado')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all shrink-0 cursor-pointer ${
-                statusFilter === 'Entregado' ? 'bg-[#006156] text-white shadow-xs' : 'bg-emerald-50 text-emerald-900 hover:bg-emerald-100'
-              }`}
-            >
-              🟢 Entregados ({deliveredCount})
+              <Check className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Comprados ({purchasedCount})</span>
             </button>
           </div>
 
-          {/* Buscador */}
-          <div className="relative w-full sm:w-72">
+          {/* Buscador Rápido */}
+          <div className="relative w-full sm:w-64">
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
@@ -248,67 +242,64 @@ export default function ComprasView() {
         </div>
       </div>
 
-      {/* ─── LISTA DIRECTA DE PEDIDOS (NATIVO, SIN CARDS, SCROLL TOTAL) ─── */}
-      <main className="max-w-5xl mx-auto p-4 sm:p-8 space-y-8 animate-view-enter">
+      {/* ─── LISTADO DE PEDIDOS LIMPIO Y ESPACIOSO ─── */}
+      <main className="max-w-4xl mx-auto p-4 sm:p-6 space-y-6 animate-view-enter">
         {filteredRequests.length === 0 ? (
-          <div className="py-16 text-center text-slate-400 text-xs font-bold bg-white border border-slate-200 rounded-2xl">
-            No se encontraron pedidos en esta selección.
+          <div className="py-16 text-center text-slate-400 text-xs font-bold bg-white border border-slate-200 rounded-2xl shadow-xs">
+            No se encontraron pedidos en esta vista.
           </div>
         ) : (
           filteredRequests.map((req, idx) => {
             const orderNum = filteredRequests.length - idx;
-            const totalUnits = req.items.reduce((acc, i) => acc + i.quantity, 0);
+            const isPending = req.status === 'Pendiente' || req.status === 'En revisión';
 
             return (
               <div 
                 key={req.id}
-                className="border-b-2 border-slate-200 pb-8 space-y-4"
+                className="bg-white border border-slate-200 rounded-2xl shadow-clinical-sm p-5 sm:p-6 space-y-4 hover:border-slate-300 transition-all"
               >
-                {/* Header Directo del Pedido */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="text-[11px] font-black uppercase text-[#006156] bg-emerald-50 px-2.5 py-0.5 rounded border border-emerald-200">
-                        Pedido N° {orderNum}
-                      </span>
-                      <Badge type="request" value={req.status} />
+                {/* 1. Fila de Encabezado: Número, Usuario, Fecha y Estado */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 border-b border-slate-100 pb-3.5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-50 text-[#006156] flex items-center justify-center font-black text-sm shrink-0 border border-emerald-100">
+                      #{orderNum}
                     </div>
-                    <h2 className="text-lg sm:text-xl font-black text-slate-900">
-                      Solicitud de {req.user}
-                    </h2>
-                    <p className="text-xs font-semibold text-slate-400 mt-0.5">
-                      Fecha y Hora: <strong className="text-slate-700">{req.date}</strong>
-                    </p>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h2 className="text-base font-black text-slate-800">
+                          Pedido N° {orderNum}
+                        </h2>
+                        <Badge type="request" value={req.status} />
+                      </div>
+                      <p className="text-xs font-semibold text-slate-500 mt-0.5">
+                        Solicitante: <strong className="text-slate-800">{req.user}</strong> • {req.date}
+                      </p>
+                    </div>
                   </div>
 
-                  {/* Acciones de Estado Directas */}
-                  <div className="flex items-center gap-2">
-                    {req.status === 'Pendiente' && (
-                      <button
-                        type="button"
-                        onClick={() => handleStatusChange(req.id, 'comprado')}
-                        className="px-4 py-2.5 rounded-xl bg-[#006156] hover:bg-[#004d44] text-white font-extrabold text-xs shadow-sm flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
-                      >
-                        <CheckCircle2 className="w-4 h-4" />
-                        <span>Marcar como Comprado</span>
-                      </button>
-                    )}
-                    {req.status === 'Comprado' && (
-                      <div className="px-3.5 py-2 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-800 font-bold text-xs flex items-center gap-1.5">
-                        <Truck className="w-4 h-4 text-indigo-600" />
-                        <span>En camino a cocina</span>
-                      </div>
+                  {/* Estado Visual Destacado */}
+                  <div className="self-start sm:self-auto">
+                    {isPending ? (
+                      <span className="text-[11px] font-extrabold text-rose-700 bg-rose-50 px-3 py-1 rounded-full border border-rose-200 flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                        Por Comprar
+                      </span>
+                    ) : (
+                      <span className="text-[11px] font-extrabold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 flex items-center gap-1.5">
+                        <Truck className="w-3.5 h-3.5 text-[#006156]" />
+                        Comprado / En Camino
+                      </span>
                     )}
                   </div>
                 </div>
 
-                {/* Reproductor Prominente de Audio de Voz */}
+                {/* 2. Reproductor de Audio (Si existe) */}
                 {req.audioUrl && (
-                  <div className="p-4 rounded-xl bg-emerald-50/80 border border-emerald-200 space-y-2">
-                    <div className="flex items-center justify-between text-xs font-extrabold text-[#006156] uppercase tracking-wider">
+                  <div className="p-3.5 rounded-xl bg-emerald-50/70 border border-emerald-200/80 space-y-2">
+                    <div className="flex items-center justify-between text-xs font-extrabold text-[#006156]">
                       <span className="flex items-center gap-1.5">
-                        <Volume2 className="w-4.5 h-4.5 text-[#006156] animate-pulse" />
-                        Escuchar Nota de Voz Grabada por la Señora de Cocina
+                        <Volume2 className="w-4 h-4 text-[#006156] animate-pulse" />
+                        Instrucción en Nota de Voz de Cocina
                       </span>
                       <span className="text-[10px] bg-emerald-100 text-[#006156] px-2 py-0.5 rounded-full font-bold">
                         Audio Adjunto
@@ -324,48 +315,52 @@ export default function ComprasView() {
                   </div>
                 )}
 
-                {/* Motivo o Observaciones de la Cocina */}
+                {/* 3. Motivo u Observaciones de Cocina */}
                 {req.reason && (
-                  <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs">
-                    <span className="font-extrabold text-[#006156] uppercase text-[10px] block mb-1">
-                      Motivo / Observación de Cocina:
+                  <div className="p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs text-slate-700">
+                    <span className="font-extrabold text-[#006156] text-[10px] uppercase block mb-1">
+                      Observación / Justificación:
                     </span>
-                    <p className="font-semibold italic text-slate-800 leading-relaxed">
+                    <p className="font-semibold italic text-slate-800">
                       &ldquo;{req.reason}&rdquo;
                     </p>
                   </div>
                 )}
 
-                {/* Tabla Plana de Insumos (Sin Cards) */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-xs font-extrabold text-slate-600 px-1">
-                    <span>Insumos Requeridos ({req.items.length})</span>
-                    <span className="text-[#006156]">
-                      Total Unidades: <strong>{totalUnits}</strong>
-                    </span>
+                {/* 4. Tabla Limpia de Insumos */}
+                <div className="space-y-1.5">
+                  <div className="text-xs font-extrabold text-slate-500 uppercase tracking-wider px-0.5">
+                    Insumos Requeridos ({req.items.length})
                   </div>
 
                   <div className="border border-slate-200 rounded-xl overflow-hidden bg-white">
                     <table className="w-full text-left text-xs">
-                      <thead className="bg-[#006156] text-white">
+                      <thead className="bg-slate-50 text-slate-600 border-b border-slate-200">
                         <tr>
-                          <th className="py-2.5 px-3 font-bold text-center w-10">#</th>
-                          <th className="py-2.5 px-3 font-bold">Insumo / Producto</th>
-                          <th className="py-2.5 px-3 font-bold text-center w-24">Unidad</th>
-                          <th className="py-2.5 px-3 font-bold text-center w-24">Cantidad</th>
-                          <th className="py-2.5 px-3 font-bold">Observaciones</th>
+                          <th className="py-2.5 px-3 font-extrabold text-center w-10">#</th>
+                          <th className="py-2.5 px-3 font-extrabold">Insumo / Producto</th>
+                          <th className="py-2.5 px-3 font-extrabold text-center w-24">Unidad</th>
+                          <th className="py-2.5 px-3 font-extrabold text-center w-24">Cantidad</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
                         {req.items.map((item, itemIdx) => (
                           <tr key={itemIdx} className={itemIdx % 2 === 1 ? 'bg-slate-50/50' : 'bg-white'}>
                             <td className="py-2.5 px-3 font-bold text-slate-400 text-center">{itemIdx + 1}</td>
-                            <td className="py-2.5 px-3 font-extrabold text-slate-800 text-sm">{item.productName}</td>
-                            <td className="py-2.5 px-3 text-center font-semibold text-slate-500">{item.unit}</td>
-                            <td className="py-2.5 px-3 text-center font-black text-[#006156] text-sm">
-                              {item.quantity}
+                            <td className="py-2.5 px-3 font-extrabold text-slate-800 text-sm">
+                              {item.productName}
+                              {item.notes && (
+                                <span className="block text-xs font-normal text-slate-400 italic mt-0.5">
+                                  Obs: {item.notes}
+                                </span>
+                              )}
                             </td>
-                            <td className="py-2.5 px-3 text-slate-500 italic">{item.notes || '-'}</td>
+                            <td className="py-2.5 px-3 text-center font-semibold text-slate-500 uppercase text-[11px]">{item.unit}</td>
+                            <td className="py-2.5 px-3 text-center">
+                              <span className="inline-block px-2.5 py-0.5 bg-emerald-50 text-[#006156] font-black text-sm rounded-lg border border-emerald-200">
+                                {item.quantity}
+                              </span>
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -373,26 +368,42 @@ export default function ComprasView() {
                   </div>
                 </div>
 
-                {/* Acciones de Imprimir / Compartir */}
-                <div className="flex items-center justify-end gap-2 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => handlePrintRequest(req, orderNum)}
-                    className="px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer"
-                  >
-                    <Printer className="w-3.5 h-3.5 text-slate-500" />
-                    <span>Imprimir Hoja</span>
-                  </button>
+                {/* 5. BARRA DE ACCIÓN PRINCIPAL (UBICACIÓN CLARA Y DIRECTA) */}
+                <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+                  {/* Botones Secundarios Útiles (Imprimir / WhatsApp) */}
+                  <div className="flex items-center gap-2 w-full sm:w-auto">
+                    <button
+                      type="button"
+                      onClick={() => handlePrintRequest(req, orderNum)}
+                      className="flex-1 sm:flex-initial px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                    >
+                      <Printer className="w-3.5 h-3.5 text-slate-500" />
+                      <span>Imprimir</span>
+                    </button>
 
-                  <button
-                    type="button"
-                    onClick={() => handleShareWhatsApp(req, orderNum)}
-                    className="px-3.5 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-[#006156] font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer"
-                  >
-                    <Share2 className="w-3.5 h-3.5 text-[#006156]" />
-                    <span>Enviar a WhatsApp</span>
-                  </button>
+                    <button
+                      type="button"
+                      onClick={() => handleShareWhatsApp(req, orderNum)}
+                      className="flex-1 sm:flex-initial px-3 py-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-[#006156] font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                    >
+                      <Share2 className="w-3.5 h-3.5 text-[#006156]" />
+                      <span>WhatsApp</span>
+                    </button>
+                  </div>
+
+                  {/* BOTÓN PRINCIPAL DESTACADO (MARCAR COMO COMPRADO) */}
+                  {isPending && (
+                    <button
+                      type="button"
+                      onClick={() => handleStatusChange(req.id, 'comprado')}
+                      className="w-full sm:w-auto min-h-[44px] px-6 py-2.5 rounded-xl bg-[#006156] hover:bg-[#004d44] text-white font-extrabold text-xs shadow-clinical-md flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"
+                    >
+                      <CheckCircle2 className="w-4 h-4 text-[#39ADA3]" />
+                      <span>Marcar como Comprado</span>
+                    </button>
+                  )}
                 </div>
+
               </div>
             );
           })
