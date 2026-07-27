@@ -16,11 +16,7 @@ import {
   Calendar, 
   Truck,
   Volume2,
-  ChevronLeft,
-  ChevronRight,
-  FileText,
-  Check,
-  Sparkles
+  FileText
 } from 'lucide-react';
 import AudioPlayer from '../AudioPlayer';
 import { RequestItem } from '../../lib/mockData';
@@ -68,7 +64,7 @@ export default function ComprasView() {
     });
   }, [requests, searchQuery, statusFilter]);
 
-  // Active order
+  // Selected request
   const currentReq = useMemo(() => {
     if (filteredRequests.length === 0) return null;
     const idx = Math.min(selectedIndex, filteredRequests.length - 1);
@@ -101,7 +97,7 @@ export default function ComprasView() {
       <!DOCTYPE html>
       <html>
       <head>
-        <title>HOJA DE COMPRAS N° ${orderNum} - DULCE ESPERA</title>
+        <title>HOJA DE COMPRAS N° ${orderNum} - CLÍNICA MONTALVO</title>
         <style>
           @page { size: A4; margin: 15mm; }
           body { font-family: system-ui, -apple-system, sans-serif; padding: 20px; color: #0f172a; bg: #ffffff; }
@@ -114,15 +110,15 @@ export default function ComprasView() {
           .meta-val { font-weight: 800; color: #0f172a; font-size: 15px; margin-top: 2px; }
           table { width: 100%; border-collapse: collapse; margin-top: 15px; border-radius: 12px; overflow: hidden; }
           th { background: #006156; color: white; padding: 14px 12px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; text-align: left; }
-          .reason-box { background: #f0fdf4; border: 1.5px dashed border: #86efac; padding: 14px 18px; border-radius: 12px; font-size: 13px; color: #166534; margin-bottom: 20px; }
+          .reason-box { background: #f0fdf4; border: 1.5px dashed #86efac; padding: 14px 18px; border-radius: 12px; font-size: 13px; color: #166534; margin-bottom: 20px; }
           .summary-bar { background: #f1f5f9; padding: 14px 20px; border-radius: 12px; margin-top: 25px; display: flex; justify-content: space-between; font-weight: 800; font-size: 14px; }
           .footer { margin-top: 50px; text-align: center; font-size: 11px; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 15px; }
         </style>
       </head>
       <body>
         <div class="header">
-          <h1 class="logo-title">DULCE ESPERA</h1>
-          <div class="subtitle">HOJA DE PEDIDO DE COMPRAS N° ${orderNum}</div>
+          <h1 class="logo-title">CLÍNICA MONTALVO</h1>
+          <div class="subtitle">HOJA DE PEDIDO DE COMPRAS DE COCINA N° ${orderNum}</div>
         </div>
         <div class="meta-box">
           <div class="meta-item">
@@ -162,7 +158,7 @@ export default function ComprasView() {
           <span style="color: #006156;">Total Unidades a Comprar: ${totalQty}</span>
         </div>
         <div class="footer">
-          Documento impreso desde la Plataforma de Gestión de Abasto Dulce Espera.
+          Documento generado para la encargada de compras • Clínica Montalvo / FileMaker Sync.
         </div>
       </body>
       </html>
@@ -176,7 +172,7 @@ export default function ComprasView() {
   };
 
   const handleShareWhatsApp = (req: RequestItem, orderNum: number) => {
-    let text = `🛒 *HOJA DE COMPRAS N° ${orderNum} - DULCE ESPERA*\n`;
+    let text = `🛒 *HOJA DE COMPRAS N° ${orderNum} - CLÍNICA MONTALVO*\n`;
     text += `*Solicitante:* ${req.user}\n`;
     text += `*Fecha:* ${req.date}\n`;
     text += `*Estado:* ${req.status}\n`;
@@ -193,25 +189,25 @@ export default function ComprasView() {
   };
 
   return (
-    <div className="fixed inset-0 w-full h-[100dvh] bg-[#f4f7f6] flex flex-col overflow-hidden select-none animate-fade-in font-sans">
+    <div className="fixed inset-0 w-full h-[100dvh] bg-[#f8fafc] flex flex-col overflow-hidden select-none animate-fade-in font-sans">
       
-      {/* ─── Elegant Top Header ─── */}
+      {/* ─── Official Header (Clínica Montalvo Dark Green) ─── */}
       <header className="bg-gradient-to-r from-[#004d44] via-[#006156] to-[#004d44] text-white px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-clinical-md shrink-0 z-20">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shadow-inner">
-            <ShoppingBag className="w-5 h-5 text-emerald-300" />
+            <ShoppingBag className="w-5 h-5 text-[#39ADA3]" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-base sm:text-lg font-black tracking-wide text-white uppercase">
-                DULCE ESPERA
+                CLÍNICA MONTALVO
               </h1>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 uppercase tracking-widest hidden sm:inline-block">
+              <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-[#39ADA3]/20 text-[#39ADA3] border border-[#39ADA3]/30 uppercase tracking-widest hidden sm:inline-block">
                 Módulo de Compras
               </span>
             </div>
             <p className="text-[11px] text-emerald-100/80 font-semibold tracking-wide">
-              Panel interactivo de pedidos de cocina y notas de voz
+              Panel de pedidos de cocina, audios de voz y despacho
             </p>
           </div>
         </div>
@@ -238,14 +234,14 @@ export default function ComprasView() {
         </div>
       </header>
 
-      {/* ─── Main Screen Body: Split View for Orders ─── */}
+      {/* ─── Main Content Body ─── */}
       <div className="flex-1 min-h-0 flex flex-col lg:flex-row overflow-hidden">
 
-        {/* ══════ LEFT COLUMN / SIDEBAR: ORDERS SELECTOR ══════ */}
+        {/* ══════ LEFT SIDEBAR: ORDERS LIST ══════ */}
         <div className="w-full lg:w-96 bg-white border-b lg:border-b-0 lg:border-r border-slate-200 flex flex-col shrink-0 overflow-hidden shadow-sm">
           
-          {/* KPI Mini Bar */}
-          <div className="p-3.5 bg-slate-50 border-b border-slate-200 grid grid-cols-4 gap-2 text-center shrink-0">
+          {/* KPI Bar */}
+          <div className="p-3 bg-slate-50 border-b border-slate-200 grid grid-cols-4 gap-1.5 text-center shrink-0">
             <div 
               onClick={() => setStatusFilter(statusFilter === 'Pendiente' ? 'All' : 'Pendiente')}
               className={`p-2 rounded-xl cursor-pointer transition-all border ${
@@ -287,13 +283,13 @@ export default function ComprasView() {
             </div>
           </div>
 
-          {/* Search bar */}
+          {/* Search Bar */}
           <div className="p-3 border-b border-slate-200 shrink-0 bg-white">
             <div className="relative">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
-                placeholder="Buscar por insumo o cocinera..."
+                placeholder="Buscar insumo o cocinera..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 outline-none focus:border-[#006156]"
@@ -339,8 +335,8 @@ export default function ComprasView() {
                     </div>
 
                     {req.audioUrl && (
-                      <div className="flex items-center gap-1 text-[10px] font-extrabold text-emerald-700 bg-emerald-100/60 px-2 py-0.5 rounded-md w-fit">
-                        <Volume2 className="w-3 h-3 text-emerald-600 animate-pulse" />
+                      <div className="flex items-center gap-1 text-[10px] font-extrabold text-[#006156] bg-emerald-100/60 px-2 py-0.5 rounded-md w-fit">
+                        <Volume2 className="w-3 h-3 text-[#006156] animate-pulse" />
                         <span>Nota de Voz</span>
                       </div>
                     )}
@@ -351,13 +347,13 @@ export default function ComprasView() {
           </div>
         </div>
 
-        {/* ══════ RIGHT COLUMN: FULL-SCREEN OFFICIAL SHEET VIEW ══════ */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-8 bg-[#f4f7f6] flex flex-col items-center">
+        {/* ══════ RIGHT: OFFICIAL SHEET DISPLAY ══════ */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-8 bg-[#f8fafc] flex flex-col items-center">
           {!currentReq ? (
             <div className="m-auto bg-white p-12 rounded-3xl border border-slate-200 text-center shadow-sm max-w-md">
               <EmptyState
                 title="Selecciona un pedido"
-                description="Haz clic en cualquier pedido del menú lateral para visualizar la hoja completa de insumos."
+                description="Haz clic en cualquier pedido del menú lateral para visualizar la planilla completa de insumos."
               />
             </div>
           ) : (
@@ -382,11 +378,11 @@ export default function ComprasView() {
                       </h2>
                       <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-emerald-100/90 pt-1">
                         <span className="flex items-center gap-1.5">
-                          <User className="w-4 h-4 text-emerald-300" />
+                          <User className="w-4 h-4 text-[#39ADA3]" />
                           Solicitante: <strong className="text-white font-bold">{currentReq.user}</strong>
                         </span>
                         <span className="flex items-center gap-1.5">
-                          <Calendar className="w-4 h-4 text-emerald-300" />
+                          <Calendar className="w-4 h-4 text-[#39ADA3]" />
                           Fecha: <strong className="text-white font-bold">{currentReq.date}</strong>
                         </span>
                       </div>
@@ -398,7 +394,7 @@ export default function ComprasView() {
                         <button
                           type="button"
                           onClick={() => handleStatusChange(currentReq.id, 'comprado')}
-                          className="px-5 py-3 rounded-2xl bg-emerald-400 hover:bg-emerald-300 text-[#003832] font-black text-xs shadow-clinical-md flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
+                          className="px-5 py-3 rounded-2xl bg-[#39ADA3] hover:bg-[#2e8b83] text-white font-black text-xs shadow-clinical-md flex items-center gap-2 transition-all active:scale-95 cursor-pointer"
                         >
                           <CheckCircle2 className="w-4 h-4" />
                           <span>Marcar como Comprado</span>
@@ -406,7 +402,7 @@ export default function ComprasView() {
                       )}
                       {currentReq.status === 'Comprado' && (
                         <div className="px-4 py-2 rounded-xl bg-white/10 border border-white/20 text-emerald-200 font-bold text-xs flex items-center gap-2">
-                          <Truck className="w-4 h-4 text-emerald-300" />
+                          <Truck className="w-4 h-4 text-[#39ADA3]" />
                           <span>En camino a cocina</span>
                         </div>
                       )}
@@ -418,7 +414,7 @@ export default function ComprasView() {
                     
                     {/* PROMINENT AUDIO PLAYER BANNER */}
                     {currentReq.audioUrl && (
-                      <div className="p-5 rounded-2xl bg-[#006156]/10 border-2 border-[#006156]/30 shadow-xs space-y-2.5">
+                      <div className="p-5 rounded-2xl bg-emerald-50 border-2 border-emerald-300/80 shadow-xs space-y-2.5">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2 text-[#006156] font-extrabold text-xs uppercase tracking-wider">
                             <Volume2 className="w-5 h-5 text-[#006156] animate-pulse" />
@@ -450,7 +446,7 @@ export default function ComprasView() {
                       </div>
                     )}
 
-                    {/* High-Contrast Clinical Items Table */}
+                    {/* Table of Items */}
                     <div className="space-y-3">
                       <div className="flex items-center justify-between px-1">
                         <h3 className="text-xs font-black text-slate-600 uppercase tracking-wider flex items-center gap-2">
@@ -515,7 +511,7 @@ export default function ComprasView() {
                       <button
                         type="button"
                         onClick={() => handleShareWhatsApp(currentReq, currentOrderNum)}
-                        className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-2 shadow-xs transition-all active:scale-95 cursor-pointer"
+                        className="px-4 py-2.5 rounded-xl bg-[#006156] hover:bg-[#004d44] text-white font-bold text-xs flex items-center gap-2 shadow-xs transition-all active:scale-95 cursor-pointer"
                       >
                         <Share2 className="w-4 h-4 text-white" />
                         <span>Enviar a WhatsApp</span>
