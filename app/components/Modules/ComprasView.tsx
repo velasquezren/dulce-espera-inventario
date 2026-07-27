@@ -20,7 +20,7 @@ import { RequestItem } from '../../lib/mockData';
 
 // Backend logic for classifying items into purchase groups (Mercado vs Supermercado)
 function getGrupoInsumo(categoria: string, nombre: string): string {
-  const cat = (categoria || '').toLowerCase().strip ? (categoria || '').toLowerCase().trim() : '';
+  const cat = (categoria || '').toLowerCase().trim();
   const nom = (nombre || '').toLowerCase();
 
   const mercadoKeywords = ["verdura", "fruta", "carne", "proteina", "pollo", "pescado", "embutido", "fresco", "huevo", "pimenton", "platano", "tomate", "cebolla", "papa"];
