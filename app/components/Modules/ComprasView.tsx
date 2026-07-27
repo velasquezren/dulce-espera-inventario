@@ -18,6 +18,18 @@ import {
 import AudioPlayer from '../AudioPlayer';
 import { RequestItem } from '../../lib/mockData';
 
+// Backend logic for classifying items into purchase groups (Mercado vs Supermercado)
+function getGrupoInsumo(categoria: string, nombre: string): string {
+  const cat = (categoria || '').toLowerCase().strip ? (categoria || '').toLowerCase().trim() : '';
+  const nom = (nombre || '').toLowerCase();
+
+  const mercadoKeywords = ["verdura", "fruta", "carne", "proteina", "pollo", "pescado", "embutido", "fresco", "huevo", "pimenton", "platano", "tomate", "cebolla", "papa"];
+  if (mercadoKeywords.some(kw => cat.includes(kw) || nom.includes(kw))) {
+    return 'Mercado (Plaza / Perecederos)';
+  }
+  return 'Supermercado (Víveres / Secos)';
+}
+
 export default function ComprasView() {
   const { requests, refreshRequests, updateRequestStatus, logout } = useApp();
   const { showToast } = useToast();
@@ -70,15 +82,19 @@ export default function ComprasView() {
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
 
-    const itemsRows = req.items.map((item, idx) => `
-      <tr>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: bold; text-align: center; color: #64748b;">${idx + 1}</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: #0f172a; font-size: 15px;">${item.productName}</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; text-align: center; color: #475569; font-weight: 600;">${item.unit}</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-weight: 900; text-align: center; color: #006156; font-size: 18px;">${item.quantity}</td>
-        <td style="padding: 12px; border-bottom: 1px solid #e2e8f0; font-style: italic; color: #64748b;">${item.notes || '-'}</td>
-      </tr>
-    `).join('');
+    const itemsRows = req.items.map((item, idx) => {
+      const grupoStr = getGrupoInsumo('', item.productName);
+      const publicId = `IN${100 + idx * 3}`;
+      return `
+        <tr>
+          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; text-align: center; color: #64748b;">${idx + 1}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-family: monospace; font-weight: bold; color: #006156;">${publicId}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: #0f172a; font-size: 14px;">${item.productName}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #475569;">${grupoStr}</td>
+          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 900; text-align: center; color: #006156; font-size: 16px;">${item.quantity} ${item.unit}</td>
+        </tr>
+      `;
+    }).join('');
 
     const totalQty = req.items.reduce((acc, i) => acc + i.quantity, 0);
 
@@ -93,23 +109,23 @@ export default function ComprasView() {
           .title { color: #006156; font-size: 24px; font-weight: 900; margin: 0; }
           .meta { font-size: 14px; color: #475569; margin-top: 6px; font-weight: bold; }
           table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-          th { background: #006156; color: white; padding: 12px; text-transform: uppercase; font-size: 12px; text-align: left; }
+          th { background: #006156; color: white; padding: 10px; text-transform: uppercase; font-size: 12px; text-align: left; }
         </style>
       </head>
       <body>
         <div class="header">
-          <h1 class="title">FECHA: ${req.date} (PEDIDO N° ${orderNum})</h1>
-          <div class="meta">Solicitado por: <strong>${req.user}</strong></div>
+          <h1 class="title">FECHA DEL PEDIDO: ${req.date}</h1>
+          <div class="meta">Solicitado por: <strong>${req.user}</strong> (Pedido N° ${orderNum})</div>
         </div>
         ${req.reason ? `<div style="background: #f1f5f9; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 13px;"><strong>Motivo:</strong> "${req.reason}"</div>` : ''}
         <table>
           <thead>
             <tr>
               <th style="width: 30px; text-align: center;">#</th>
-              <th>Producto / Insumo</th>
-              <th style="text-align: center;">Unidad</th>
-              <th style="text-align: center;">Cantidad</th>
-              <th>Observaciones</th>
+              <th style="width: 80px;">ID Público</th>
+              <th>Nombre del Insumo</th>
+              <th>Grupo de Compra</th>
+              <th style="text-align: center;">Cantidad / Presentación</th>
             </tr>
           </thead>
           <tbody>
@@ -132,9 +148,10 @@ export default function ComprasView() {
     let text = `🛒 *DULCE ESPERA - PEDIDO DEL ${req.date}*\n`;
     text += `*Solicitante:* ${req.user}\n`;
     text += `*Pedido N°:* ${orderNum}\n`;
-    text += `\n*INSUMOS REQUERIDOS:*\n`;
+    text += `\n*INSUMOS POR GRUPO DE COMPRA:*\n`;
     req.items.forEach((item, idx) => {
-      text += `${idx + 1}. *${item.productName}* — ${item.quantity} ${item.unit}\n`;
+      const grupoStr = getGrupoInsumo('', item.productName);
+      text += `${idx + 1}. *${item.productName}* [${grupoStr}] — ${item.quantity} ${item.unit}\n`;
       if (item.notes) text += `   _Obs: ${item.notes}_\n`;
     });
     if (req.audioUrl) text += `\n🔊 _Incluye nota de voz en la PWA._`;
@@ -146,7 +163,7 @@ export default function ComprasView() {
   return (
     <div className="min-h-screen w-full bg-[#f8fafc] text-slate-800 font-sans pb-28 overflow-y-auto">
       
-      {/* ─── Encabezado Oficial Dulce Espera ─── */}
+      {/* ─── Encabezado Oficial Dulce Espera con Logo ─── */}
       <header className="sticky top-0 z-30 bg-[#006156] text-white px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-3">
           <img src="/logo.svg" alt="Dulce Espera Logo" className="w-8 h-8 sm:w-9 sm:h-9 object-contain" />
@@ -184,7 +201,7 @@ export default function ComprasView() {
 
       {/* ─── Filtros Planos (Sin Cajas Envolventes) ─── */}
       <div className="sticky top-[57px] z-20 bg-white border-b border-slate-200 px-4 sm:px-8 py-3">
-        <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           
           <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 no-scrollbar">
             <button
@@ -227,7 +244,7 @@ export default function ComprasView() {
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
-              placeholder="Buscar por fecha, insumo o cocinera..."
+              placeholder="Buscar por fecha, insumo o grupo..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 outline-none focus:border-[#006156] min-h-[38px]"
@@ -237,7 +254,7 @@ export default function ComprasView() {
       </div>
 
       {/* ─── FLUTO PLANO CON LA FECHA COMO TÍTULO PRINCIPAL DEL PEDIDO ─── */}
-      <main className="max-w-3xl mx-auto p-4 sm:p-6 space-y-10 animate-view-enter">
+      <main className="max-w-4xl mx-auto p-4 sm:p-6 space-y-12 animate-view-enter">
         {filteredRequests.length === 0 ? (
           <div className="py-16 text-center text-slate-400 text-xs font-bold border-b border-slate-200">
             No se encontraron pedidos.
@@ -251,37 +268,36 @@ export default function ComprasView() {
             return (
               <div 
                 key={req.id}
-                className="border-b-2 border-slate-200 pb-10 space-y-5"
+                className="border-b-2 border-slate-200 pb-12 space-y-6"
               >
-                {/* 1. LA FECHA ES EL TÍTULO PRINCIPAL PROMINENTE DEL PEDIDO */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3.5">
+                {/* 1. TÍTULO PRINCIPAL: LA FECHA DEL PEDIDO EN GRANDE */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
                   <div>
-                    {/* TÍTULO ENORME DE LA FECHA */}
-                    <div className="flex items-center gap-2">
-                      <Calendar className="w-5 h-5 text-[#006156] shrink-0" />
-                      <h2 className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">
-                        {req.date}
+                    <div className="flex items-center gap-2.5">
+                      <Calendar className="w-6 h-6 text-[#006156] shrink-0" />
+                      <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                        FECHA: {req.date}
                       </h2>
                     </div>
 
-                    <div className="flex items-center gap-2 text-xs font-bold text-slate-500 mt-1">
-                      <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-extrabold">
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-500 mt-1.5">
+                      <span className="px-2.5 py-0.5 rounded bg-emerald-50 text-[#006156] font-black border border-emerald-200">
                         Pedido N° {orderNum}
                       </span>
                       <span>•</span>
-                      <span>Solicitante: <strong className="text-slate-800 font-black">{req.user}</strong></span>
+                      <span>Solicitado por: <strong className="text-slate-900 font-black">{req.user}</strong></span>
                     </div>
                   </div>
 
                   {/* Estado Destacado */}
                   <div>
                     {isPending ? (
-                      <span className="text-xs font-black uppercase text-rose-700 bg-rose-50 px-3 py-1.5 rounded-xl border border-rose-200 flex items-center gap-1.5 w-fit">
+                      <span className="text-xs font-black uppercase text-rose-700 bg-rose-50 px-3.5 py-1.5 rounded-xl border border-rose-200 flex items-center gap-1.5 w-fit">
                         <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
                         Por Comprar
                       </span>
                     ) : (
-                      <span className="text-xs font-black uppercase text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200 flex items-center gap-1.5 w-fit">
+                      <span className="text-xs font-black uppercase text-emerald-800 bg-emerald-50 px-3.5 py-1.5 rounded-xl border border-emerald-200 flex items-center gap-1.5 w-fit">
                         <Truck className="w-4 h-4 text-[#006156]" />
                         Comprado
                       </span>
@@ -291,13 +307,13 @@ export default function ComprasView() {
 
                 {/* 2. Reproductor de Audio (Si existe) */}
                 {req.audioUrl && (
-                  <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200/80 space-y-2">
+                  <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200/80 space-y-2">
                     <div className="flex items-center justify-between text-xs font-extrabold text-[#006156]">
                       <span className="flex items-center gap-1.5">
                         <Volume2 className="w-4 h-4 text-[#006156] animate-pulse" />
                         Instrucción en Nota de Voz de Cocina
                       </span>
-                      <span className="text-[10px] bg-emerald-100 text-[#006156] px-2 py-0.5 rounded-full font-bold">
+                      <span className="text-[10px] bg-emerald-100 text-[#006156] px-2.5 py-0.5 rounded-full font-bold">
                         Audio Adjunto
                       </span>
                     </div>
@@ -312,61 +328,69 @@ export default function ComprasView() {
 
                 {/* 3. Motivo / Observación */}
                 {req.reason && (
-                  <div className="text-xs text-slate-700 bg-slate-100/70 p-3.5 rounded-xl">
-                    <strong className="text-[#006156] block mb-0.5">Observación de Cocina:</strong>
-                    <p className="italic text-slate-800 font-semibold">&ldquo;{req.reason}&rdquo;</p>
+                  <div className="text-xs text-slate-700 bg-slate-100/70 p-4 rounded-xl">
+                    <strong className="text-[#006156] block mb-0.5 font-black">Observación de Cocina:</strong>
+                    <p className="italic text-slate-800 font-semibold text-sm">&ldquo;{req.reason}&rdquo;</p>
                   </div>
                 )}
 
-                {/* 4. TABLA PLANAS CON MARGEN ESPACIOSO Y HOLGADO */}
-                <div className="my-6 space-y-3">
+                {/* 4. TABLA ESPACIOSA Y CON MARGEN ADECUADO (CON GRUPO DE COMPRA) */}
+                <div className="my-8 space-y-4">
                   <div className="flex items-center justify-between text-xs font-black text-slate-600 px-1 uppercase tracking-wider">
-                    <span>Lista de Insumos ({req.items.length})</span>
+                    <span>Detalle de Insumos Solicitados ({req.items.length})</span>
                     <span className="text-[#006156] font-black">
-                      Total: {totalQty} unidades
+                      Total Unidades: {totalQty}
                     </span>
                   </div>
 
-                  {/* TABLA ESPACIOSA CON MARGEN Y PADDING GENEROSO */}
-                  <div className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-xs my-4">
+                  {/* TABLA CON MARGEN HOLGADO */}
+                  <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-xs my-4">
                     <table className="w-full text-left text-xs">
                       <thead className="bg-[#006156] text-white">
                         <tr>
-                          <th className="py-3 px-4 font-black uppercase tracking-wider text-center w-12">#</th>
-                          <th className="py-3 px-4 font-black uppercase tracking-wider">Producto / Insumo</th>
-                          <th className="py-3 px-4 font-black uppercase tracking-wider text-center w-28">Unidad</th>
-                          <th className="py-3 px-4 font-black uppercase tracking-wider text-center w-28">Cantidad</th>
+                          <th className="py-3.5 px-4 font-black uppercase tracking-wider text-center w-12">#</th>
+                          <th className="py-3.5 px-4 font-black uppercase tracking-wider w-28">ID Público</th>
+                          <th className="py-3.5 px-4 font-black uppercase tracking-wider">Nombre del Insumo</th>
+                          <th className="py-3.5 px-4 font-black uppercase tracking-wider">Grupo de Compra</th>
+                          <th className="py-3.5 px-4 font-black uppercase tracking-wider text-center w-36">Presentación / Cant.</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
-                        {req.items.map((item, itemIdx) => (
-                          <tr key={itemIdx} className={itemIdx % 2 === 1 ? 'bg-slate-50/60' : 'bg-white'}>
-                            <td className="py-3.5 px-4 font-bold text-slate-400 text-center">{itemIdx + 1}</td>
-                            <td className="py-3.5 px-4 font-extrabold text-slate-900 text-sm">
-                              {item.productName}
-                              {item.notes && (
-                                <span className="block text-xs font-normal text-slate-400 italic mt-0.5">
-                                  Obs: {item.notes}
+                        {req.items.map((item, itemIdx) => {
+                          const grupoStr = getGrupoInsumo('', item.productName);
+                          const publicId = `IN${100 + itemIdx * 3}`;
+                          return (
+                            <tr key={itemIdx} className={itemIdx % 2 === 1 ? 'bg-slate-50/60' : 'bg-white'}>
+                              <td className="py-4 px-4 font-bold text-slate-400 text-center">{itemIdx + 1}</td>
+                              <td className="py-4 px-4 font-mono font-bold text-[#006156] text-xs">{publicId}</td>
+                              <td className="py-4 px-4 font-extrabold text-slate-900 text-sm">
+                                {item.productName}
+                                {item.notes && (
+                                  <span className="block text-xs font-normal text-slate-400 italic mt-0.5">
+                                    Obs: {item.notes}
+                                  </span>
+                                )}
+                              </td>
+                              <td className="py-4 px-4 font-extrabold text-slate-600 text-xs">
+                                <span className="inline-block px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 font-bold">
+                                  {grupoStr}
                                 </span>
-                              )}
-                            </td>
-                            <td className="py-3.5 px-4 text-center font-bold text-slate-500 uppercase text-xs">
-                              {item.unit}
-                            </td>
-                            <td className="py-3.5 px-4 text-center">
-                              <span className="inline-block px-3 py-1 bg-emerald-50 text-[#006156] font-black text-sm rounded-xl border border-emerald-200">
-                                {item.quantity}
-                              </span>
-                            </td>
-                          </tr>
-                        ))}
+                              </td>
+                              <td className="py-4 px-4 text-center">
+                                <span className="inline-block px-3 py-1 bg-emerald-50 text-[#006156] font-black text-sm rounded-xl border border-emerald-200">
+                                  {item.quantity} {item.unit}
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })}
                       </tbody>
                     </table>
                   </div>
                 </div>
 
                 {/* 5. Acciones del Pedido */}
-                <div className="pt-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
                   <div className="flex items-center gap-2.5 w-full sm:w-auto">
                     <button
                       type="button"
@@ -374,7 +398,7 @@ export default function ComprasView() {
                       className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer min-h-[42px]"
                     >
                       <Printer className="w-4 h-4 text-slate-500" />
-                      <span>Imprimir</span>
+                      <span>Imprimir Hoja</span>
                     </button>
 
                     <button
@@ -383,7 +407,7 @@ export default function ComprasView() {
                       className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-[#006156] font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer min-h-[42px]"
                     >
                       <Share2 className="w-4 h-4 text-[#006156]" />
-                      <span>WhatsApp</span>
+                      <span>Enviar a WhatsApp</span>
                     </button>
                   </div>
 
