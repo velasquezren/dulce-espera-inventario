@@ -15,10 +15,35 @@ import {
   Check,
   Calendar,
   ShoppingBag,
-  Store
+  Store,
+  Tag
 } from 'lucide-react';
 import AudioPlayer from '../AudioPlayer';
 import { RequestItem } from '../../lib/mockData';
+
+// Helper to get category for an item
+function getItemCategory(productName: string): string {
+  const name = (productName || '').toLowerCase();
+  if (name.includes('tomate') || name.includes('cebolla') || name.includes('papa') || name.includes('zanahoria') || name.includes('lechuga') || name.includes('limon') || name.includes('pimenton') || name.includes('platano') || name.includes('verdura')) {
+    return 'Verduras';
+  }
+  if (name.includes('manzana') || name.includes('fruta') || name.includes('naranja') || name.includes('platano')) {
+    return 'Frutas';
+  }
+  if (name.includes('leche') || name.includes('queso') || name.includes('mantequilla') || name.includes('crema') || name.includes('yogur')) {
+    return 'Lácteos';
+  }
+  if (name.includes('carne') || name.includes('pollo') || name.includes('pescado') || name.includes('huevo') || name.includes('jamon')) {
+    return 'Carnes y Proteínas';
+  }
+  if (name.includes('detergente') || name.includes('jabón') || name.includes('limpiador') || name.includes('esponja') || name.includes('papel')) {
+    return 'Limpieza';
+  }
+  if (name.includes('comino') || name.includes('harina') || name.includes('aceite') || name.includes('arroz') || name.includes('sal') || name.includes('azucar') || name.includes('fideos')) {
+    return 'Abarrotes';
+  }
+  return 'Otros';
+}
 
 // Backend logic for classifying items into purchase groups (Mercado vs Supermercado)
 function getGrupoInsumo(categoria: string, nombre: string): string {
@@ -84,8 +109,15 @@ export default function ComprasView() {
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
 
+    // Sort items by category
+    const sortedItems = [...req.items].sort((a, b) => {
+      const catA = getItemCategory(a.productName);
+      const catB = getItemCategory(b.productName);
+      return catA.localeCompare(catB) || a.productName.localeCompare(b.productName);
+    });
+
     // Group items by Grupo
-    const grouped = req.items.reduce((acc, item) => {
+    const grouped = sortedItems.reduce((acc, item) => {
       const g = getGrupoInsumo('', item.productName);
       if (!acc[g]) acc[g] = [];
       acc[g].push(item);
@@ -98,15 +130,17 @@ export default function ComprasView() {
     Object.entries(grouped).forEach(([grupoName, items]) => {
       tableContentHtml += `
         <tr style="background: #e6f0ef;">
-          <td colspan="3" style="padding: 10px; font-weight: 900; color: #006156; text-transform: uppercase; font-size: 13px; border-bottom: 2px solid #006156;">
+          <td colspan="4" style="padding: 10px; font-weight: 900; color: #006156; text-transform: uppercase; font-size: 13px; border-bottom: 2px solid #006156;">
             GRUPO: ${grupoName} (${items.length} insumos)
           </td>
         </tr>
       `;
       items.forEach((item) => {
+        const categoryStr = getItemCategory(item.productName);
         tableContentHtml += `
           <tr>
             <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; text-align: center; color: #64748b;">${globalIndex++}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #006156;">${categoryStr}</td>
             <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: #0f172a; font-size: 14px;">${item.productName}</td>
             <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 900; text-align: center; color: #006156; font-size: 16px;">${item.quantity} ${item.unit}</td>
           </tr>
@@ -140,6 +174,7 @@ export default function ComprasView() {
           <thead>
             <tr>
               <th style="width: 30px; text-align: center;">#</th>
+              <th style="width: 120px;">Categoría</th>
               <th>Nombre del Insumo</th>
               <th style="text-align: center; width: 160px;">Cantidad / Presentación</th>
             </tr>
@@ -165,8 +200,15 @@ export default function ComprasView() {
     text += `*Solicitante:* ${req.user}\n`;
     text += `*Pedido N°:* ${orderNum}\n`;
     
+    // Sort items by category
+    const sortedItems = [...req.items].sort((a, b) => {
+      const catA = getItemCategory(a.productName);
+      const catB = getItemCategory(b.productName);
+      return catA.localeCompare(catB) || a.productName.localeCompare(b.productName);
+    });
+
     // Group items by Grupo for WhatsApp
-    const grouped = req.items.reduce((acc, item) => {
+    const grouped = sortedItems.reduce((acc, item) => {
       const g = getGrupoInsumo('', item.productName);
       if (!acc[g]) acc[g] = [];
       acc[g].push(item);
@@ -176,7 +218,8 @@ export default function ComprasView() {
     Object.entries(grouped).forEach(([grupoName, items]) => {
       text += `\n📌 *GRUPO: ${grupoName.toUpperCase()}*\n`;
       items.forEach((item, idx) => {
-        text += `  ${idx + 1}. *${item.productName}* — ${item.quantity} ${item.unit}\n`;
+        const cat = getItemCategory(item.productName);
+        text += `  ${idx + 1}. [${cat}] *${item.productName}* — ${item.quantity} ${item.unit}\n`;
         if (item.notes) text += `     _Obs: ${item.notes}_\n`;
       });
     });
@@ -199,7 +242,7 @@ export default function ComprasView() {
               DULCE ESPERA
             </h1>
             <p className="text-[10px] text-emerald-100/90 font-bold uppercase tracking-wider">
-              Inventario de Cocina • Pedidos por Grupo de Compra
+              Inventario de Cocina • Pedidos por Categoría y Grupo
             </p>
           </div>
         </div>
@@ -271,7 +314,7 @@ export default function ComprasView() {
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
-              placeholder="Buscar por fecha, insumo o grupo..."
+              placeholder="Buscar por fecha, categoría o insumo..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 outline-none focus:border-[#006156] min-h-[38px]"
@@ -280,7 +323,7 @@ export default function ComprasView() {
         </div>
       </div>
 
-      {/* ─── FLUTO PLANO CON PEDIDOS ORGANIZADOS POR GRUPO DE COMPRA ─── */}
+      {/* ─── FLUTO PLANO CON PEDIDOS ORDENADOS POR CATEGORÍA Y GRUPO DE COMPRA ─── */}
       <main className="max-w-4xl mx-auto p-4 sm:p-6 space-y-12 animate-view-enter">
         {filteredRequests.length === 0 ? (
           <div className="py-16 text-center text-slate-400 text-xs font-bold border-b border-slate-200">
@@ -292,8 +335,15 @@ export default function ComprasView() {
             const isPending = req.status === 'Pendiente' || req.status === 'En revisión';
             const totalQty = req.items.reduce((acc, i) => acc + i.quantity, 0);
 
-            // Group items strictly by Grupo de Compra (Mercado vs Supermercado)
-            const itemsByGrupo = req.items.reduce((acc, item) => {
+            // Sort items by category and name
+            const sortedItems = [...req.items].sort((a, b) => {
+              const catA = getItemCategory(a.productName);
+              const catB = getItemCategory(b.productName);
+              return catA.localeCompare(catB) || a.productName.localeCompare(b.productName);
+            });
+
+            // Group sorted items by Grupo de Compra (Mercado vs Supermercado)
+            const itemsByGrupo = sortedItems.reduce((acc, item) => {
               const grupoName = getGrupoInsumo('', item.productName);
               if (!acc[grupoName]) acc[grupoName] = [];
               acc[grupoName].push(item);
@@ -369,10 +419,10 @@ export default function ComprasView() {
                   </div>
                 )}
 
-                {/* 4. TABLAS ORGANIZADAS POR GRUPO DE COMPRA (SIN ID PÚBLICO) */}
+                {/* 4. TABLAS CON COLUMNA DE CATEGORÍA Y ORDENADAS POR CATEGORÍA */}
                 <div className="my-8 space-y-6">
                   <div className="flex items-center justify-between text-xs font-black text-slate-600 px-1 uppercase tracking-wider">
-                    <span>Insumos Organizados por Grupo de Compra</span>
+                    <span>Insumos Ordenados por Categoría y Grupo</span>
                     <span className="text-[#006156] font-black">
                       Total: {totalQty} unidades
                     </span>
@@ -390,35 +440,46 @@ export default function ComprasView() {
                           <span>GRUPO: {grupoName} ({itemsGroup.length} insumos)</span>
                         </div>
 
-                        {/* Tabla Holgada por Grupo (Sin Columna ID Público) */}
+                        {/* Tabla Holgada por Grupo con Columna de Categoría */}
                         <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-xs">
                           <table className="w-full text-left text-xs">
                             <thead className="bg-[#006156] text-white">
                               <tr>
                                 <th className="py-3.5 px-4 font-black uppercase tracking-wider text-center w-12">#</th>
+                                <th className="py-3.5 px-4 font-black uppercase tracking-wider w-36">Categoría</th>
                                 <th className="py-3.5 px-4 font-black uppercase tracking-wider">Nombre del Insumo</th>
-                                <th className="py-3.5 px-4 font-black uppercase tracking-wider text-center w-40">Cantidad / Presentación</th>
+                                <th className="py-3.5 px-4 font-black uppercase tracking-wider text-center w-36">Presentación / Cant.</th>
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100">
-                              {itemsGroup.map((item, itemIdx) => (
-                                <tr key={itemIdx} className={itemIdx % 2 === 1 ? 'bg-slate-50/60' : 'bg-white'}>
-                                  <td className="py-4 px-4 font-bold text-slate-400 text-center">{itemIdx + 1}</td>
-                                  <td className="py-4 px-4 font-extrabold text-slate-900 text-sm">
-                                    {item.productName}
-                                    {item.notes && (
-                                      <span className="block text-xs font-normal text-slate-400 italic mt-0.5">
-                                        Obs: {item.notes}
+                              {itemsGroup.map((item, itemIdx) => {
+                                const categoryName = getItemCategory(item.productName);
+
+                                return (
+                                  <tr key={itemIdx} className={itemIdx % 2 === 1 ? 'bg-slate-50/60' : 'bg-white'}>
+                                    <td className="py-4 px-4 font-bold text-slate-400 text-center">{itemIdx + 1}</td>
+                                    <td className="py-4 px-4 font-bold text-[#006156] text-xs">
+                                      <span className="inline-flex items-center gap-1 bg-emerald-50 text-[#006156] px-2.5 py-1 rounded-md border border-emerald-200 font-extrabold">
+                                        <Tag className="w-3 h-3 text-[#006156]" />
+                                        {categoryName}
                                       </span>
-                                    )}
-                                  </td>
-                                  <td className="py-4 px-4 text-center">
-                                    <span className="inline-block px-3.5 py-1.5 bg-emerald-50 text-[#006156] font-black text-sm rounded-xl border border-emerald-200">
-                                      {item.quantity} {item.unit}
-                                    </span>
-                                  </td>
-                                </tr>
-                              ))}
+                                    </td>
+                                    <td className="py-4 px-4 font-extrabold text-slate-900 text-sm">
+                                      {item.productName}
+                                      {item.notes && (
+                                        <span className="block text-xs font-normal text-slate-400 italic mt-0.5">
+                                          Obs: {item.notes}
+                                        </span>
+                                      )}
+                                    </td>
+                                    <td className="py-4 px-4 text-center">
+                                      <span className="inline-block px-3.5 py-1.5 bg-[#e6f0ef] text-[#006156] font-black text-sm rounded-xl border border-[#39ADA3]/40">
+                                        {item.quantity} {item.unit}
+                                      </span>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
                             </tbody>
                           </table>
                         </div>
