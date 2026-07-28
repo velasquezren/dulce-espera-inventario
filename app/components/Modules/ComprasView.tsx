@@ -13,7 +13,9 @@ import {
   Truck,
   Volume2,
   Check,
-  Calendar
+  Calendar,
+  ShoppingBag,
+  Store
 } from 'lucide-react';
 import AudioPlayer from '../AudioPlayer';
 import { RequestItem } from '../../lib/mockData';
@@ -82,19 +84,38 @@ export default function ComprasView() {
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
 
-    const itemsRows = req.items.map((item, idx) => {
-      const grupoStr = getGrupoInsumo('', item.productName);
-      const publicId = `IN${100 + idx * 3}`;
-      return `
-        <tr>
-          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; text-align: center; color: #64748b;">${idx + 1}</td>
-          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-family: monospace; font-weight: bold; color: #006156;">${publicId}</td>
-          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: #0f172a; font-size: 14px;">${item.productName}</td>
-          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #475569;">${grupoStr}</td>
-          <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 900; text-align: center; color: #006156; font-size: 16px;">${item.quantity} ${item.unit}</td>
+    // Group items by Grupo
+    const grouped = req.items.reduce((acc, item) => {
+      const g = getGrupoInsumo('', item.productName);
+      if (!acc[g]) acc[g] = [];
+      acc[g].push(item);
+      return acc;
+    }, {} as Record<string, typeof req.items>);
+
+    let tableContentHtml = '';
+    let globalIndex = 1;
+
+    Object.entries(grouped).forEach(([grupoName, items]) => {
+      tableContentHtml += `
+        <tr style="background: #e6f0ef;">
+          <td colspan="5" style="padding: 10px; font-weight: 900; color: #006156; text-transform: uppercase; font-size: 13px; border-bottom: 2px solid #006156;">
+            GRUPO: ${grupoName} (${items.length} insumos)
+          </td>
         </tr>
       `;
-    }).join('');
+      items.forEach((item) => {
+        const publicId = `IN${100 + globalIndex * 3}`;
+        tableContentHtml += `
+          <tr>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; text-align: center; color: #64748b;">${globalIndex++}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-family: monospace; font-weight: bold; color: #006156;">${publicId}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: #0f172a; font-size: 14px;">${item.productName}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #475569;">${grupoName}</td>
+            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 900; text-align: center; color: #006156; font-size: 16px;">${item.quantity} ${item.unit}</td>
+          </tr>
+        `;
+      });
+    });
 
     const totalQty = req.items.reduce((acc, i) => acc + i.quantity, 0);
 
@@ -114,7 +135,7 @@ export default function ComprasView() {
       </head>
       <body>
         <div class="header">
-          <h1 class="title">FECHA DEL PEDIDO: ${req.date}</h1>
+          <h1 class="title">FECHA: ${req.date}</h1>
           <div class="meta">Solicitado por: <strong>${req.user}</strong> (Pedido N° ${orderNum})</div>
         </div>
         ${req.reason ? `<div style="background: #f1f5f9; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 13px;"><strong>Motivo:</strong> "${req.reason}"</div>` : ''}
@@ -129,7 +150,7 @@ export default function ComprasView() {
             </tr>
           </thead>
           <tbody>
-            ${itemsRows}
+            ${tableContentHtml}
           </tbody>
         </table>
         <div style="margin-top: 25px; font-weight: 900; text-align: right; color: #006156; font-size: 15px;">
@@ -148,12 +169,23 @@ export default function ComprasView() {
     let text = `🛒 *DULCE ESPERA - PEDIDO DEL ${req.date}*\n`;
     text += `*Solicitante:* ${req.user}\n`;
     text += `*Pedido N°:* ${orderNum}\n`;
-    text += `\n*INSUMOS POR GRUPO DE COMPRA:*\n`;
-    req.items.forEach((item, idx) => {
-      const grupoStr = getGrupoInsumo('', item.productName);
-      text += `${idx + 1}. *${item.productName}* [${grupoStr}] — ${item.quantity} ${item.unit}\n`;
-      if (item.notes) text += `   _Obs: ${item.notes}_\n`;
+    
+    // Group items by Grupo for WhatsApp
+    const grouped = req.items.reduce((acc, item) => {
+      const g = getGrupoInsumo('', item.productName);
+      if (!acc[g]) acc[g] = [];
+      acc[g].push(item);
+      return acc;
+    }, {} as Record<string, typeof req.items>);
+
+    Object.entries(grouped).forEach(([grupoName, items]) => {
+      text += `\n📌 *GRUPO: ${grupoName.toUpperCase()}*\n`;
+      items.forEach((item, idx) => {
+        text += `  ${idx + 1}. *${item.productName}* — ${item.quantity} ${item.unit}\n`;
+        if (item.notes) text += `     _Obs: ${item.notes}_\n`;
+      });
     });
+
     if (req.audioUrl) text += `\n🔊 _Incluye nota de voz en la PWA._`;
 
     const encoded = encodeURIComponent(text);
@@ -172,7 +204,7 @@ export default function ComprasView() {
               DULCE ESPERA
             </h1>
             <p className="text-[10px] text-emerald-100/90 font-bold uppercase tracking-wider">
-              Inventario de Cocina • Pedidos de Compras
+              Inventario de Cocina • Pedidos por Grupo de Compra
             </p>
           </div>
         </div>
@@ -253,7 +285,7 @@ export default function ComprasView() {
         </div>
       </div>
 
-      {/* ─── FLUTO PLANO CON LA FECHA COMO TÍTULO PRINCIPAL DEL PEDIDO ─── */}
+      {/* ─── FLUTO PLANO CON PEDIDOS ORGANIZADOS POR GRUPO DE COMPRA ─── */}
       <main className="max-w-4xl mx-auto p-4 sm:p-6 space-y-12 animate-view-enter">
         {filteredRequests.length === 0 ? (
           <div className="py-16 text-center text-slate-400 text-xs font-bold border-b border-slate-200">
@@ -265,12 +297,20 @@ export default function ComprasView() {
             const isPending = req.status === 'Pendiente' || req.status === 'En revisión';
             const totalQty = req.items.reduce((acc, i) => acc + i.quantity, 0);
 
+            // Group items strictly by Grupo de Compra (Mercado vs Supermercado)
+            const itemsByGrupo = req.items.reduce((acc, item) => {
+              const grupoName = getGrupoInsumo('', item.productName);
+              if (!acc[grupoName]) acc[grupoName] = [];
+              acc[grupoName].push(item);
+              return acc;
+            }, {} as Record<string, typeof req.items>);
+
             return (
               <div 
                 key={req.id}
                 className="border-b-2 border-slate-200 pb-12 space-y-6"
               >
-                {/* 1. TÍTULO PRINCIPAL: LA FECHA DEL PEDIDO EN GRANDE */}
+                {/* 1. TÍTULO PRINCIPAL: LA FECHA DEL PEDIDO */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4">
                   <div>
                     <div className="flex items-center gap-2.5">
@@ -334,59 +374,67 @@ export default function ComprasView() {
                   </div>
                 )}
 
-                {/* 4. TABLA ESPACIOSA Y CON MARGEN ADECUADO (CON GRUPO DE COMPRA) */}
-                <div className="my-8 space-y-4">
+                {/* 4. TABLAS ORGANIZADAS POR GRUPO DE COMPRA (MERCADO VS SUPERMERCADO) */}
+                <div className="my-8 space-y-6">
                   <div className="flex items-center justify-between text-xs font-black text-slate-600 px-1 uppercase tracking-wider">
-                    <span>Detalle de Insumos Solicitados ({req.items.length})</span>
+                    <span>Insumos Organizados por Grupo de Compra</span>
                     <span className="text-[#006156] font-black">
-                      Total Unidades: {totalQty}
+                      Total: {totalQty} unidades
                     </span>
                   </div>
 
-                  {/* TABLA CON MARGEN HOLGADO */}
-                  <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-xs my-4">
-                    <table className="w-full text-left text-xs">
-                      <thead className="bg-[#006156] text-white">
-                        <tr>
-                          <th className="py-3.5 px-4 font-black uppercase tracking-wider text-center w-12">#</th>
-                          <th className="py-3.5 px-4 font-black uppercase tracking-wider w-28">ID Público</th>
-                          <th className="py-3.5 px-4 font-black uppercase tracking-wider">Nombre del Insumo</th>
-                          <th className="py-3.5 px-4 font-black uppercase tracking-wider">Grupo de Compra</th>
-                          <th className="py-3.5 px-4 font-black uppercase tracking-wider text-center w-36">Presentación / Cant.</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100">
-                        {req.items.map((item, itemIdx) => {
-                          const grupoStr = getGrupoInsumo('', item.productName);
-                          const publicId = `IN${100 + itemIdx * 3}`;
-                          return (
-                            <tr key={itemIdx} className={itemIdx % 2 === 1 ? 'bg-slate-50/60' : 'bg-white'}>
-                              <td className="py-4 px-4 font-bold text-slate-400 text-center">{itemIdx + 1}</td>
-                              <td className="py-4 px-4 font-mono font-bold text-[#006156] text-xs">{publicId}</td>
-                              <td className="py-4 px-4 font-extrabold text-slate-900 text-sm">
-                                {item.productName}
-                                {item.notes && (
-                                  <span className="block text-xs font-normal text-slate-400 italic mt-0.5">
-                                    Obs: {item.notes}
-                                  </span>
-                                )}
-                              </td>
-                              <td className="py-4 px-4 font-extrabold text-slate-600 text-xs">
-                                <span className="inline-block px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 font-bold">
-                                  {grupoStr}
-                                </span>
-                              </td>
-                              <td className="py-4 px-4 text-center">
-                                <span className="inline-block px-3 py-1 bg-emerald-50 text-[#006156] font-black text-sm rounded-xl border border-emerald-200">
-                                  {item.quantity} {item.unit}
-                                </span>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
+                  {Object.entries(itemsByGrupo).map(([grupoName, itemsGroup], groupIdx) => {
+                    const isMercado = grupoName.includes('Mercado');
+                    const groupIcon = isMercado ? <ShoppingBag className="w-4 h-4 text-[#006156]" /> : <Store className="w-4 h-4 text-[#39ADA3]" />;
+
+                    return (
+                      <div key={groupIdx} className="space-y-3">
+                        {/* Cabecera del Grupo de Compra */}
+                        <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#e6f0ef] border border-[#39ADA3]/40 text-[#006156] font-black text-xs uppercase tracking-wider w-fit">
+                          {groupIcon}
+                          <span>GRUPO: {grupoName} ({itemsGroup.length} insumos)</span>
+                        </div>
+
+                        {/* Tabla Holgada por Grupo */}
+                        <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-xs">
+                          <table className="w-full text-left text-xs">
+                            <thead className="bg-[#006156] text-white">
+                              <tr>
+                                <th className="py-3.5 px-4 font-black uppercase tracking-wider text-center w-12">#</th>
+                                <th className="py-3.5 px-4 font-black uppercase tracking-wider w-28">ID Público</th>
+                                <th className="py-3.5 px-4 font-black uppercase tracking-wider">Nombre del Insumo</th>
+                                <th className="py-3.5 px-4 font-black uppercase tracking-wider text-center w-36">Presentación / Cant.</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100">
+                              {itemsGroup.map((item, itemIdx) => {
+                                const publicId = `IN${100 + itemIdx * 3}`;
+                                return (
+                                  <tr key={itemIdx} className={itemIdx % 2 === 1 ? 'bg-slate-50/60' : 'bg-white'}>
+                                    <td className="py-4 px-4 font-bold text-slate-400 text-center">{itemIdx + 1}</td>
+                                    <td className="py-4 px-4 font-mono font-bold text-[#006156] text-xs">{publicId}</td>
+                                    <td className="py-4 px-4 font-extrabold text-slate-900 text-sm">
+                                      {item.productName}
+                                      {item.notes && (
+                                        <span className="block text-xs font-normal text-slate-400 italic mt-0.5">
+                                          Obs: {item.notes}
+                                        </span>
+                                      )}
+                                    </td>
+                                    <td className="py-4 px-4 text-center">
+                                      <span className="inline-block px-3.5 py-1.5 bg-emerald-50 text-[#006156] font-black text-sm rounded-xl border border-emerald-200">
+                                        {item.quantity} {item.unit}
+                                      </span>
+                                    </td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {/* 5. Acciones del Pedido */}
@@ -407,7 +455,7 @@ export default function ComprasView() {
                       className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-[#006156] font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer min-h-[42px]"
                     >
                       <Share2 className="w-4 h-4 text-[#006156]" />
-                      <span>Enviar a WhatsApp</span>
+                      <span>WhatsApp</span>
                     </button>
                   </div>
 
