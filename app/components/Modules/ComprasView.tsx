@@ -16,7 +16,11 @@ import {
   Calendar,
   ShoppingBag,
   Store,
-  Tag
+  Tag,
+  ChevronDown,
+  ChevronUp,
+  Square,
+  CheckSquare
 } from 'lucide-react';
 import AudioPlayer from '../AudioPlayer';
 import { RequestItem } from '../../lib/mockData';
@@ -27,7 +31,7 @@ function getItemCategory(productName: string): string {
   if (name.includes('tomate') || name.includes('cebolla') || name.includes('papa') || name.includes('zanahoria') || name.includes('lechuga') || name.includes('limon') || name.includes('pimenton') || name.includes('platano') || name.includes('verdura')) {
     return 'Verduras';
   }
-  if (name.includes('manzana') || name.includes('fruta') || name.includes('naranja') || name.includes('platano')) {
+  if (name.includes('manzana') || name.includes('fruta') || name.includes('naranja')) {
     return 'Frutas';
   }
   if (name.includes('leche') || name.includes('queso') || name.includes('mantequilla') || name.includes('crema') || name.includes('yogur')) {
@@ -64,6 +68,33 @@ export default function ComprasView() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'All' | 'Pendiente' | 'Comprado'>('All');
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // State to track checked items per order: { `${orderId}-${itemIdx}`: boolean }
+  const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
+
+  // State to track expanded groups per order: { `${orderId}-${grupoName}`: boolean }
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
+
+  const toggleItemCheck = (orderId: string, itemIdx: number) => {
+    const key = `${orderId}-${itemIdx}`;
+    setCheckedItems(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+  };
+
+  const toggleGroupExpand = (orderId: string, grupoName: string) => {
+    const key = `${orderId}-${grupoName}`;
+    setExpandedGroups(prev => ({
+      ...prev,
+      [key]: prev[key] === undefined ? false : !prev[key] // Default is expanded (true) if undefined
+    }));
+  };
+
+  const isGroupExpanded = (orderId: string, grupoName: string) => {
+    const key = `${orderId}-${grupoName}`;
+    return expandedGroups[key] !== false; // Default true (expanded)
+  };
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -233,7 +264,7 @@ export default function ComprasView() {
   return (
     <div className="min-h-screen w-full bg-[#f8fafc] text-slate-800 font-sans pb-28 overflow-y-auto">
       
-      {/* ─── Encabezado Oficial Dulce Espera con Logo ─── */}
+      {/* ─── Encabezado Oficial Dulce Espera ─── */}
       <header className="sticky top-0 z-30 bg-[#006156] text-white px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-3">
           <img src="/logo.svg" alt="Dulce Espera Logo" className="w-8 h-8 sm:w-9 sm:h-9 object-contain" />
@@ -242,7 +273,7 @@ export default function ComprasView() {
               DULCE ESPERA
             </h1>
             <p className="text-[10px] text-emerald-100/90 font-bold uppercase tracking-wider">
-              Inventario de Cocina • Pedidos por Categoría y Grupo
+              Inventario de Cocina • Checklist de Compras
             </p>
           </div>
         </div>
@@ -269,7 +300,7 @@ export default function ComprasView() {
         </div>
       </header>
 
-      {/* ─── Filtros Planos (Sin Cajas Envolventes) ─── */}
+      {/* ─── Filtros Planos ─── */}
       <div className="sticky top-[57px] z-20 bg-white border-b border-slate-200 px-4 sm:px-8 py-3">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           
@@ -314,7 +345,7 @@ export default function ComprasView() {
             <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
-              placeholder="Buscar por fecha, categoría o insumo..."
+              placeholder="Buscar insumo o grupo..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 outline-none focus:border-[#006156] min-h-[38px]"
@@ -323,7 +354,7 @@ export default function ComprasView() {
         </div>
       </div>
 
-      {/* ─── FLUTO PLANO CON PEDIDOS ORDENADOS POR CATEGORÍA Y GRUPO DE COMPRA ─── */}
+      {/* ─── FLUTO PLANO DE PEDIDOS CON GRUPOS DESPLEGABLES Y CHECKLIST TÁCTIL ─── */}
       <main className="max-w-4xl mx-auto p-4 sm:p-6 space-y-12 animate-view-enter">
         {filteredRequests.length === 0 ? (
           <div className="py-16 text-center text-slate-400 text-xs font-bold border-b border-slate-200">
@@ -334,6 +365,9 @@ export default function ComprasView() {
             const orderNum = filteredRequests.length - idx;
             const isPending = req.status === 'Pendiente' || req.status === 'En revisión';
             const totalQty = req.items.reduce((acc, i) => acc + i.quantity, 0);
+
+            // Calculate checked items count for this order
+            const checkedCountForOrder = req.items.filter((_, itemIdx) => checkedItems[`${req.id}-${itemIdx}`]).length;
 
             // Sort items by category and name
             const sortedItems = [...req.items].sort((a, b) => {
@@ -374,8 +408,8 @@ export default function ComprasView() {
                     </div>
                   </div>
 
-                  {/* Estado Destacado */}
-                  <div>
+                  {/* Estado y Progreso del Checklist */}
+                  <div className="flex flex-col items-start sm:items-end gap-1.5">
                     {isPending ? (
                       <span className="text-xs font-black uppercase text-rose-700 bg-rose-50 px-3.5 py-1.5 rounded-xl border border-rose-200 flex items-center gap-1.5 w-fit">
                         <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
@@ -387,6 +421,11 @@ export default function ComprasView() {
                         Comprado
                       </span>
                     )}
+
+                    {/* Progress Checklist Pill */}
+                    <div className="text-[11px] font-extrabold text-[#006156] bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                      Checklist en tienda: <strong>{checkedCountForOrder} / {req.items.length} listos</strong>
+                    </div>
                   </div>
                 </div>
 
@@ -419,10 +458,10 @@ export default function ComprasView() {
                   </div>
                 )}
 
-                {/* 4. TABLAS CON COLUMNA DE CATEGORÍA Y ORDENADAS POR CATEGORÍA */}
+                {/* 4. GRUPOS DESPLEGABLES (MERCADO / SUPERMERCADO) + CHECKLIST FÁCIL PARA TELÉFONO */}
                 <div className="my-8 space-y-6">
                   <div className="flex items-center justify-between text-xs font-black text-slate-600 px-1 uppercase tracking-wider">
-                    <span>Insumos Ordenados por Categoría y Grupo</span>
+                    <span>Insumos Organizados por Grupo (Desplegable)</span>
                     <span className="text-[#006156] font-black">
                       Total: {totalQty} unidades
                     </span>
@@ -430,59 +469,94 @@ export default function ComprasView() {
 
                   {Object.entries(itemsByGrupo).map(([grupoName, itemsGroup], groupIdx) => {
                     const isMercado = grupoName.includes('Mercado');
-                    const groupIcon = isMercado ? <ShoppingBag className="w-4 h-4 text-[#006156]" /> : <Store className="w-4 h-4 text-[#39ADA3]" />;
+                    const groupIcon = isMercado ? <ShoppingBag className="w-4.5 h-4.5 text-[#006156]" /> : <Store className="w-4.5 h-4.5 text-[#39ADA3]" />;
+                    const expanded = isGroupExpanded(req.id, grupoName);
 
                     return (
-                      <div key={groupIdx} className="space-y-3">
-                        {/* Cabecera del Grupo de Compra */}
-                        <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#e6f0ef] border border-[#39ADA3]/40 text-[#006156] font-black text-xs uppercase tracking-wider w-fit">
-                          {groupIcon}
-                          <span>GRUPO: {grupoName} ({itemsGroup.length} insumos)</span>
-                        </div>
+                      <div key={groupIdx} className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-xs">
+                        
+                        {/* Cabecera Interactiva Desplegable del Grupo */}
+                        <button
+                          type="button"
+                          onClick={() => toggleGroupExpand(req.id, grupoName)}
+                          className="w-full flex items-center justify-between px-4 py-3 bg-[#e6f0ef] hover:bg-[#d5e7e5] text-[#006156] font-black text-xs uppercase tracking-wider transition-all cursor-pointer select-none"
+                        >
+                          <div className="flex items-center gap-2.5">
+                            {groupIcon}
+                            <span>GRUPO: {grupoName}</span>
+                            <span className="px-2 py-0.5 rounded-full bg-white text-[#006156] text-[11px] font-extrabold shadow-xs">
+                              {itemsGroup.length} insumos
+                            </span>
+                          </div>
 
-                        {/* Tabla Holgada por Grupo con Columna de Categoría */}
-                        <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-xs">
-                          <table className="w-full text-left text-xs">
-                            <thead className="bg-[#006156] text-white">
-                              <tr>
-                                <th className="py-3.5 px-4 font-black uppercase tracking-wider text-center w-12">#</th>
-                                <th className="py-3.5 px-4 font-black uppercase tracking-wider w-36">Categoría</th>
-                                <th className="py-3.5 px-4 font-black uppercase tracking-wider">Nombre del Insumo</th>
-                                <th className="py-3.5 px-4 font-black uppercase tracking-wider text-center w-36">Presentación / Cant.</th>
-                              </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100">
-                              {itemsGroup.map((item, itemIdx) => {
-                                const categoryName = getItemCategory(item.productName);
+                          <div className="flex items-center gap-1 font-bold text-xs text-[#006156]">
+                            <span>{expanded}</span>
+                            {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                          </div>
+                        </button>
 
-                                return (
-                                  <tr key={itemIdx} className={itemIdx % 2 === 1 ? 'bg-slate-50/60' : 'bg-white'}>
-                                    <td className="py-4 px-4 font-bold text-slate-400 text-center">{itemIdx + 1}</td>
-                                    <td className="py-4 px-4 font-bold text-[#006156] text-xs">
-                                      <span className="inline-flex items-center gap-1 bg-emerald-50 text-[#006156] px-2.5 py-1 rounded-md border border-emerald-200 font-extrabold">
-                                        <Tag className="w-3 h-3 text-[#006156]" />
-                                        {categoryName}
-                                      </span>
-                                    </td>
-                                    <td className="py-4 px-4 font-extrabold text-slate-900 text-sm">
-                                      {item.productName}
-                                      {item.notes && (
-                                        <span className="block text-xs font-normal text-slate-400 italic mt-0.5">
-                                          Obs: {item.notes}
-                                        </span>
+                        {/* Lista Desplegable con Checklist Fáciles de Marcar en el Teléfono */}
+                        {expanded && (
+                          <div className="divide-y divide-slate-100">
+                            {itemsGroup.map((item, itemIdx) => {
+                              // Global item index within order
+                              const originalItemIndex = req.items.findIndex(i => i.productName === item.productName);
+                              const isChecked = checkedItems[`${req.id}-${originalItemIndex}`] || false;
+                              const categoryName = getItemCategory(item.productName);
+
+                              return (
+                                <div 
+                                  key={itemIdx}
+                                  onClick={() => toggleItemCheck(req.id, originalItemIndex)}
+                                  className={`p-3.5 sm:p-4 flex items-center justify-between gap-3 transition-all cursor-pointer select-none ${
+                                    isChecked ? 'bg-emerald-50/70 opacity-75' : 'hover:bg-slate-50'
+                                  }`}
+                                >
+                                  {/* Checkbox Táctil Grande */}
+                                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                                    <div className="shrink-0 text-[#006156] min-h-[44px] min-w-[44px] flex items-center justify-center">
+                                      {isChecked ? (
+                                        <CheckSquare className="w-6 h-6 text-[#006156]" />
+                                      ) : (
+                                        <Square className="w-6 h-6 text-slate-300 hover:text-[#006156]" />
                                       )}
-                                    </td>
-                                    <td className="py-4 px-4 text-center">
-                                      <span className="inline-block px-3.5 py-1.5 bg-[#e6f0ef] text-[#006156] font-black text-sm rounded-xl border border-[#39ADA3]/40">
-                                        {item.quantity} {item.unit}
-                                      </span>
-                                    </td>
-                                  </tr>
-                                );
-                              })}
-                            </tbody>
-                          </table>
-                        </div>
+                                    </div>
+
+                                    <div className="min-w-0 flex-1">
+                                      <div className="flex items-center gap-2">
+                                        <span className={`font-extrabold text-sm ${isChecked ? 'line-through text-slate-500' : 'text-slate-900'}`}>
+                                          {item.productName}
+                                        </span>
+                                        <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] font-bold shrink-0">
+                                          <Tag className="w-2.5 h-2.5" />
+                                          {categoryName}
+                                        </span>
+                                      </div>
+
+                                      {item.notes && (
+                                        <p className="text-xs text-slate-400 italic mt-0.5">
+                                          Obs: {item.notes}
+                                        </p>
+                                      )}
+                                    </div>
+                                  </div>
+
+                                  {/* Cantidad / Presentación */}
+                                  <div className="shrink-0">
+                                    <span className={`inline-block px-3.5 py-1.5 text-sm font-black rounded-xl border transition-all ${
+                                      isChecked 
+                                        ? 'bg-emerald-100 text-emerald-900 border-emerald-300' 
+                                        : 'bg-[#e6f0ef] text-[#006156] border-[#39ADA3]/40'
+                                    }`}>
+                                      {item.quantity} {item.unit}
+                                    </span>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+
                       </div>
                     );
                   })}
