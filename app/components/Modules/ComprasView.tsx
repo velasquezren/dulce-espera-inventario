@@ -21,13 +21,8 @@ import {
   ChevronUp,
   Square,
   CheckSquare,
-  Sparkles,
-  ClipboardList,
   User,
-  Clock,
-  ArrowRight,
-  Filter,
-  CheckCheck
+  Filter
 } from 'lucide-react';
 import AudioPlayer from '../AudioPlayer';
 import { RequestItem } from '../../lib/mockData';
@@ -158,24 +153,9 @@ export default function ComprasView() {
     });
   }, [requests, searchQuery, statusFilter]);
 
-  // Overall Global Counts & Stats
+  // Overall Global Counts
   const pendingCount = requests.filter(r => r.status === 'Pendiente' || r.status === 'En revisión').length;
   const purchasedCount = requests.filter(r => r.status === 'Comprado' || r.status === 'Entregado').length;
-
-  const totalItemsCount = useMemo(() => {
-    return filteredRequests.reduce((sum, req) => sum + req.items.length, 0);
-  }, [filteredRequests]);
-
-  const totalCheckedItemsCount = useMemo(() => {
-    return filteredRequests.reduce((sum, req) => {
-      const orderChecked = req.items.filter((_, idx) => checkedItems[`${req.id}-${idx}`]).length;
-      return sum + orderChecked;
-    }, 0);
-  }, [filteredRequests, checkedItems]);
-
-  const overallProgressPercentage = totalItemsCount > 0 
-    ? Math.round((totalCheckedItemsCount / totalItemsCount) * 100) 
-    : 0;
 
   const handlePrintRequest = (req: RequestItem, orderNum: number) => {
     const printWindow = window.open('', '_blank');
@@ -309,53 +289,49 @@ export default function ComprasView() {
   return (
     <div className="min-h-screen w-full bg-[#f8fafc] text-slate-800 font-sans pb-32 overflow-y-auto antialiased">
       
-      {/* ─── 1. ENCABEZADO HOSPITALARIO MINIMALISTA (Blanco, Limpio, Profesional) ─── */}
+      {/* ─── 1. ENCABEZADO HOSPITALARIO (Blanco, Logo Puro) ─── */}
       <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-8 py-3.5 shadow-xs transition-all">
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
           
-          {/* Logo + Identidad Clínica Montalvo */}
+          {/* Logo Puro (Sin caja/card) + Identidad Clínica Montalvo */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-white border border-slate-200/80 p-1.5 flex items-center justify-center shadow-2xs shrink-0">
-              <img src="/logo.svg" alt="Clínica Montalvo Logo" className="w-full h-full object-contain" />
-            </div>
+            <img src="/logo.svg" alt="Clínica Montalvo Logo" className="w-8 h-8 object-contain shrink-0" />
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-base sm:text-lg font-black text-[#006156] tracking-tight leading-none">
                   CLÍNICA MONTALVO
                 </h1>
                 <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded-full bg-[#e6f0ef] text-[#006156] text-[10px] font-extrabold uppercase tracking-wider border border-[#39ADA3]/30">
-                  PWA Hospitalaria
+                  Modulo de Compras
                 </span>
               </div>
               <p className="text-xs text-slate-500 font-semibold mt-0.5 flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-[#39ADA3] animate-pulse inline-block" />
-                Módulo de Compras & Checklist de Insumos
+                Checklist de Insumos & Pedidos de Cocina
               </p>
             </div>
           </div>
 
           {/* Acciones del Header */}
           <div className="flex items-center gap-2">
-            {/* Botón Actualizar Sincronización */}
             <button
               type="button"
               onClick={handleRefresh}
               disabled={isRefreshing}
-              className="h-10 px-3 sm:px-3.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-2 transition-all cursor-pointer active:scale-95 disabled:opacity-50 border border-slate-200/60"
+              className="h-9 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 disabled:opacity-50 border border-slate-200/60"
               title="Actualizar pedidos"
             >
-              <RotateCw className={`w-4 h-4 text-[#006156] ${isRefreshing ? 'animate-spin' : ''}`} />
-              <span className="hidden sm:inline">Sincronizar</span>
+              <RotateCw className={`w-3.5 h-3.5 text-[#006156] ${isRefreshing ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">Actualizar</span>
             </button>
 
-            {/* Botón Salir */}
             <button
               type="button"
               onClick={logout}
-              className="h-10 px-3 sm:px-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 border border-slate-200/80 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95 shadow-2xs"
+              className="h-9 px-3 rounded-xl bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-900 border border-slate-200/80 font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer active:scale-95"
               title="Salir de Compras"
             >
-              <LogOut className="w-4 h-4 text-slate-500" />
+              <LogOut className="w-3.5 h-3.5 text-slate-500" />
               <span className="hidden sm:inline">Salir</span>
             </button>
           </div>
@@ -363,148 +339,100 @@ export default function ComprasView() {
         </div>
       </header>
 
-      {/* ─── 2. BARRA DE RESUMEN Y BÚSQUEDA / FILTROS ESTILO LINEAR/APPLE HEALTH ─── */}
-      <section className="bg-white border-b border-slate-200/80 px-4 sm:px-8 py-4">
-        <div className="max-w-5xl mx-auto space-y-4">
+      {/* ─── 2. FILTROS SUBTILES (Sin Cards de Resumen, Botones No Invasivos) ─── */}
+      <section className="bg-white border-b border-slate-200/80 px-4 sm:px-8 py-3">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           
-          {/* Card de Progreso & Resumen Ejecutivo */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {/* Widget 1: Indicador de Progreso en Tienda */}
-            <div className="p-4 rounded-xl bg-[#f8fafc] border border-slate-200/80 flex flex-col justify-between space-y-2">
-              <div className="flex items-center justify-between text-xs font-bold text-slate-500">
-                <span className="flex items-center gap-1.5 text-slate-700">
-                  <CheckCheck className="w-4 h-4 text-[#006156]" />
-                  Progreso Checklist
-                </span>
-                <span className="text-[#006156] font-extrabold text-sm">{overallProgressPercentage}%</span>
-              </div>
-              
-              <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-[#006156] to-[#39ADA3] transition-all duration-500 rounded-full"
-                  style={{ width: `${overallProgressPercentage}%` }}
-                />
-              </div>
+          {/* Filtros sutiles tipo pestañas ligeras */}
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => setStatusFilter('All')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition-all cursor-pointer flex items-center gap-1.5 ${
+                statusFilter === 'All' 
+                  ? 'bg-[#006156] text-white shadow-2xs' 
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+            >
+              <span>Todos</span>
+              <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${
+                statusFilter === 'All' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
+              }`}>
+                {requests.length}
+              </span>
+            </button>
 
-              <p className="text-[11px] font-semibold text-slate-500">
-                {totalCheckedItemsCount} de {totalItemsCount} productos listos en la tienda
-              </p>
-            </div>
+            <button
+              type="button"
+              onClick={() => setStatusFilter('Pendiente')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition-all cursor-pointer flex items-center gap-1.5 ${
+                statusFilter === 'Pendiente' 
+                  ? 'bg-[#006156] text-white shadow-2xs' 
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0" />
+              <span>Por Comprar</span>
+              <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${
+                statusFilter === 'Pendiente' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
+              }`}>
+                {pendingCount}
+              </span>
+            </button>
 
-            {/* Widget 2: Pedidos Por Comprar */}
-            <div className="p-4 rounded-xl bg-[#f8fafc] border border-slate-200/80 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Por Comprar</p>
-                <p className="text-2xl font-black text-slate-900 mt-1">{pendingCount}</p>
-                <p className="text-[11px] font-semibold text-rose-600 mt-0.5">Requiérense atencion en tienda</p>
-              </div>
-              <div className="w-11 h-11 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600 shrink-0">
-                <ClipboardList className="w-5 h-5" />
-              </div>
-            </div>
-
-            {/* Widget 3: Pedidos Comprados */}
-            <div className="p-4 rounded-xl bg-[#f8fafc] border border-slate-200/80 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Comprados</p>
-                <p className="text-2xl font-black text-slate-900 mt-1">{purchasedCount}</p>
-                <p className="text-[11px] font-semibold text-[#006156] mt-0.5">Listos o despachados</p>
-              </div>
-              <div className="w-11 h-11 rounded-xl bg-[#e6f0ef] border border-[#39ADA3]/30 flex items-center justify-center text-[#006156] shrink-0">
-                <Truck className="w-5 h-5" />
-              </div>
-            </div>
+            <button
+              type="button"
+              onClick={() => setStatusFilter('Comprado')}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-extrabold transition-all cursor-pointer flex items-center gap-1.5 ${
+                statusFilter === 'Comprado' 
+                  ? 'bg-[#006156] text-white shadow-2xs' 
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+              }`}
+            >
+              <Check className="w-3.5 h-3.5 shrink-0" />
+              <span>Comprados</span>
+              <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${
+                statusFilter === 'Comprado' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
+              }`}>
+                {purchasedCount}
+              </span>
+            </button>
           </div>
 
-          {/* Filtros Segmentados + Buscador Rápido */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-2">
-            
-            {/* Tabs de Filtro de Estado */}
-            <div className="inline-flex p-1 bg-slate-100/90 rounded-xl border border-slate-200/80 self-start sm:self-auto w-full sm:w-auto">
-              <button
-                type="button"
-                onClick={() => setStatusFilter('All')}
-                className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-extrabold transition-all cursor-pointer text-center min-h-[38px] flex items-center justify-center gap-1.5 ${
-                  statusFilter === 'All' 
-                    ? 'bg-white text-[#006156] shadow-xs border border-slate-200/60' 
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
+          {/* Input de Búsqueda Sutil */}
+          <div className="relative flex-1 max-w-full sm:max-w-xs">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Buscar insumo, solicitante o fecha..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-4 py-1.5 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200/90 focus:border-[#006156] rounded-xl text-xs font-semibold text-slate-900 outline-none transition-all min-h-[36px]"
+            />
+            {searchQuery && (
+              <button 
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 hover:text-slate-600"
               >
-                <span>Todos</span>
-                <span className="px-1.5 py-0.5 text-[10px] rounded-full bg-slate-200 text-slate-700 font-black">
-                  {requests.length}
-                </span>
+                ✕
               </button>
-
-              <button
-                type="button"
-                onClick={() => setStatusFilter('Pendiente')}
-                className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-extrabold transition-all cursor-pointer text-center min-h-[38px] flex items-center justify-center gap-1.5 ${
-                  statusFilter === 'Pendiente' 
-                    ? 'bg-[#006156] text-white shadow-xs' 
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <span className="w-2 h-2 rounded-full bg-rose-400 shrink-0" />
-                <span>Por Comprar</span>
-                <span className="px-1.5 py-0.5 text-[10px] rounded-full bg-white/20 text-white font-black">
-                  {pendingCount}
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setStatusFilter('Comprado')}
-                className={`flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-extrabold transition-all cursor-pointer text-center min-h-[38px] flex items-center justify-center gap-1.5 ${
-                  statusFilter === 'Comprado' 
-                    ? 'bg-[#39ADA3] text-white shadow-xs' 
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <Check className="w-3.5 h-3.5 text-white shrink-0" />
-                <span>Comprados</span>
-                <span className="px-1.5 py-0.5 text-[10px] rounded-full bg-white/20 text-white font-black">
-                  {purchasedCount}
-                </span>
-              </button>
-            </div>
-
-            {/* Input de Búsqueda Rápida */}
-            <div className="relative flex-1 max-w-full sm:max-w-xs">
-              <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-              <input
-                type="text"
-                placeholder="Buscar insumo, solicitante o fecha..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200/90 focus:border-[#006156] rounded-xl text-xs font-semibold text-slate-900 outline-none transition-all min-h-[40px] shadow-2xs"
-              />
-              {searchQuery && (
-                <button 
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 hover:text-slate-600"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-
+            )}
           </div>
 
         </div>
       </section>
 
-      {/* ─── 3. LISTADO DE PEDIDOS DE COMPRAS ─── */}
-      <main className="max-w-5xl mx-auto p-4 sm:p-8 space-y-8 animate-view-enter">
+      {/* ─── 3. LISTADO DE PEDIDOS (Una Card Principal por Pedido, Sin Cards Anidadas) ─── */}
+      <main className="max-w-5xl mx-auto p-4 sm:p-8 space-y-6 animate-view-enter">
         
         {filteredRequests.length === 0 ? (
-          <div className="py-20 text-center bg-white border border-slate-200/80 rounded-2xl p-8 space-y-3 shadow-2xs">
-            <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
-              <Filter className="w-6 h-6" />
+          <div className="py-16 text-center bg-white border border-slate-200/80 rounded-2xl p-8 space-y-2">
+            <div className="w-10 h-10 rounded-xl bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+              <Filter className="w-5 h-5" />
             </div>
-            <h3 className="text-sm font-extrabold text-slate-800">No se encontraron pedidos</h3>
+            <h3 className="text-sm font-extrabold text-slate-800">No hay pedidos registrados</h3>
             <p className="text-xs text-slate-500 max-w-sm mx-auto">
-              No hay solicitudes de compras que coincidan con la búsqueda o el filtro seleccionado.
+              No se encontraron solicitudes con los filtros aplicados.
             </p>
           </div>
         ) : (
@@ -515,7 +443,6 @@ export default function ComprasView() {
 
             // Checked items count for this order
             const checkedCountForOrder = req.items.filter((_, itemIdx) => checkedItems[`${req.id}-${itemIdx}`]).length;
-            const orderIsComplete = checkedCountForOrder === req.items.length && req.items.length > 0;
 
             // Sort items by category and name
             const sortedItems = [...req.items].sort((a, b) => {
@@ -535,13 +462,12 @@ export default function ComprasView() {
             return (
               <article 
                 key={req.id}
-                className="bg-white border border-slate-200/90 rounded-2xl p-5 sm:p-7 shadow-xs space-y-6 hover:border-slate-300 transition-all"
+                className="bg-white border border-slate-200/90 rounded-2xl p-5 sm:p-6 shadow-2xs space-y-5"
               >
                 
                 {/* Cabecera del Pedido */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
                   
-                  {/* Fecha y Solicitante */}
                   <div className="space-y-1">
                     <div className="flex items-center gap-2.5 flex-wrap">
                       <div className="flex items-center gap-2 text-slate-900 font-black text-lg sm:text-xl tracking-tight">
@@ -549,7 +475,7 @@ export default function ComprasView() {
                         <span>FECHA: {req.date}</span>
                       </div>
 
-                      <span className="px-2.5 py-0.5 rounded-lg bg-[#e6f0ef] text-[#006156] text-xs font-black border border-[#39ADA3]/30">
+                      <span className="px-2.5 py-0.5 rounded-md bg-[#e6f0ef] text-[#006156] text-xs font-black border border-[#39ADA3]/30">
                         Pedido N° {orderNum}
                       </span>
                     </div>
@@ -560,62 +486,55 @@ export default function ComprasView() {
                         Solicitado por: <strong className="text-slate-900 font-extrabold">{req.user}</strong>
                       </span>
                       <span>•</span>
-                      <span>{req.items.length} insumos requeridos</span>
+                      <span>{req.items.length} insumos ({totalQty} unidades)</span>
                     </div>
                   </div>
 
-                  {/* Badges de Estado y Checklist Progress */}
-                  <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
-                    
-                    {/* Progress pill */}
-                    <div className="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5">
+                  {/* Badges de Estado */}
+                  <div className="flex items-center gap-2 self-start sm:self-auto">
+                    <div className="px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200 text-slate-600 text-xs font-bold flex items-center gap-1">
                       <CheckSquare className="w-3.5 h-3.5 text-[#006156]" />
-                      <span>{checkedCountForOrder} de {req.items.length} listos</span>
+                      <span>{checkedCountForOrder} / {req.items.length} listos</span>
                     </div>
 
-                    {/* Status badge */}
                     {isPending ? (
-                      <span className="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 text-xs font-extrabold uppercase flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-rose-500" />
+                      <span className="px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 border border-rose-200 text-xs font-extrabold uppercase flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
                         Por Comprar
                       </span>
                     ) : (
-                      <span className="px-3 py-1.5 rounded-xl bg-[#e6f0ef] text-[#006156] border border-[#39ADA3]/40 text-xs font-extrabold uppercase flex items-center gap-1.5">
-                        <Truck className="w-4 h-4 text-[#006156]" />
+                      <span className="px-2.5 py-1 rounded-lg bg-[#e6f0ef] text-[#006156] border border-[#39ADA3]/40 text-xs font-extrabold uppercase flex items-center gap-1.5">
+                        <Truck className="w-3.5 h-3.5 text-[#006156]" />
                         Comprado
                       </span>
                     )}
-
                   </div>
 
                 </div>
 
                 {/* Nota de Voz Adjunta */}
                 {req.audioUrl && (
-                  <div className="p-4 rounded-xl bg-[#f8fafc] border border-slate-200/80 space-y-2">
+                  <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
                     <div className="flex items-center justify-between text-xs font-extrabold text-[#006156]">
                       <span className="flex items-center gap-1.5">
                         <Volume2 className="w-4 h-4 text-[#006156]" />
                         Instrucción en Nota de Voz de Cocina
                       </span>
-                      <span className="text-[10px] bg-[#e6f0ef] text-[#006156] px-2.5 py-0.5 rounded-full font-bold border border-[#39ADA3]/30">
-                        Audio Adjunto
-                      </span>
                     </div>
                     <AudioPlayer 
                       audioUrl={req.audioUrl} 
                       duration={req.audioDuration}
-                      label="Toca para escuchar instrucción del pedido"
+                      label="Toca para escuchar nota de voz"
                       className="w-full bg-white border-slate-200/80"
                     />
                   </div>
                 )}
 
-                {/* Motivo u Observación de Cocina */}
+                {/* Observación de Cocina */}
                 {req.reason && (
-                  <div className="p-4 rounded-xl bg-slate-50 border-l-4 border-[#006156] space-y-1">
-                    <p className="text-xs font-extrabold text-[#006156] uppercase tracking-wider">
-                      Observación de Cocina:
+                  <div className="p-3.5 rounded-xl bg-slate-50 border-l-3 border-[#006156]">
+                    <p className="text-[11px] font-extrabold text-[#006156] uppercase tracking-wider">
+                      Observación:
                     </p>
                     <p className="text-xs sm:text-sm font-medium text-slate-700 italic">
                       &ldquo;{req.reason}&rdquo;
@@ -623,13 +542,8 @@ export default function ComprasView() {
                   </div>
                 )}
 
-                {/* Grupos de Compra Desplegables */}
+                {/* ─── GRUPOS DE INSUMOS (Diseño Plano, Sin Cards Anidadas) ─── */}
                 <div className="space-y-4 pt-1">
-                  
-                  <div className="flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-wider px-1">
-                    <span>Grupos de Insumos</span>
-                    <span className="text-[#006156] font-extrabold">Total: {totalQty} unidades</span>
-                  </div>
 
                   {Object.entries(itemsByGrupo).map(([grupoName, itemsGroup], groupIdx) => {
                     const isMercado = grupoName.includes('Mercado');
@@ -639,44 +553,39 @@ export default function ComprasView() {
                     
                     const expanded = isGroupExpanded(req.id, grupoName);
                     
-                    // Group checked count
                     const groupCheckedCount = itemsGroup.filter(item => {
                       const origIdx = req.items.findIndex(i => i.productName === item.productName);
                       return checkedItems[`${req.id}-${origIdx}`];
                     }).length;
 
                     return (
-                      <div 
-                        key={groupIdx} 
-                        className="border border-slate-200/90 rounded-xl overflow-hidden bg-white shadow-2xs transition-all"
-                      >
+                      <div key={groupIdx} className="pt-1">
                         
-                        {/* Cabecera Interactiva del Grupo */}
+                        {/* Cabecera PLANA del Grupo (Sin Marco de Card) */}
                         <button
                           type="button"
                           onClick={() => toggleGroupExpand(req.id, grupoName)}
-                          className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 hover:bg-slate-100/80 text-slate-800 font-extrabold text-xs tracking-wide transition-colors cursor-pointer select-none"
+                          className="w-full flex items-center justify-between py-2 border-b border-slate-200 text-left transition-colors cursor-pointer select-none group"
                         >
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-7 h-7 rounded-lg bg-white border border-slate-200/80 flex items-center justify-center shrink-0 shadow-2xs">
-                              {groupIcon}
-                            </div>
-                            <span className="text-slate-900 font-extrabold">{grupoName}</span>
-                            
-                            <span className="px-2 py-0.5 rounded-md bg-[#e6f0ef] text-[#006156] text-[11px] font-extrabold border border-[#39ADA3]/30">
-                              {groupCheckedCount} / {itemsGroup.length}
+                          <div className="flex items-center gap-2">
+                            {groupIcon}
+                            <span className="text-xs sm:text-sm font-extrabold text-[#006156] uppercase tracking-wider">
+                              {grupoName}
+                            </span>
+                            <span className="text-xs font-bold text-slate-400">
+                              ({groupCheckedCount}/{itemsGroup.length})
                             </span>
                           </div>
 
-                          <div className="flex items-center gap-1.5 text-slate-500 font-bold text-xs">
-                            <span>{expanded ? 'Ocultar' : 'Desplegar'}</span>
+                          <div className="flex items-center gap-1 text-slate-400 group-hover:text-slate-600 text-xs font-bold">
+                            <span>{expanded ? 'Ocultar' : 'Ver'}</span>
                             {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                           </div>
                         </button>
 
-                        {/* Lista del Checklist del Grupo */}
+                        {/* Lista PLANA del Checklist */}
                         {expanded && (
-                          <div className="divide-y divide-slate-100 border-t border-slate-100">
+                          <div className="divide-y divide-slate-100">
                             {itemsGroup.map((item, itemIdx) => {
                               const originalItemIndex = req.items.findIndex(i => i.productName === item.productName);
                               const isChecked = checkedItems[`${req.id}-${originalItemIndex}`] || false;
@@ -686,33 +595,29 @@ export default function ComprasView() {
                                 <div 
                                   key={itemIdx}
                                   onClick={() => toggleItemCheck(req.id, originalItemIndex)}
-                                  className={`p-3.5 sm:p-4 flex items-center justify-between gap-3 transition-all cursor-pointer select-none ${
-                                    isChecked 
-                                      ? 'bg-slate-50/70' 
-                                      : 'hover:bg-slate-50/50'
+                                  className={`py-3 px-1 flex items-center justify-between gap-3 transition-colors cursor-pointer select-none ${
+                                    isChecked ? 'opacity-60' : 'hover:bg-slate-50/60'
                                   }`}
                                 >
-                                  {/* Checkbox + Nombre del Producto */}
+                                  {/* Checkbox táctil + Nombre */}
                                   <div className="flex items-center gap-3 min-w-0 flex-1">
-                                    
-                                    {/* Touch Target 44px */}
-                                    <div className="shrink-0 text-[#006156] min-h-[44px] min-w-[44px] flex items-center justify-center">
+                                    <div className="shrink-0 text-[#006156] min-h-[40px] min-w-[40px] flex items-center justify-center">
                                       {isChecked ? (
-                                        <CheckSquare className="w-6 h-6 text-[#006156]" />
+                                        <CheckSquare className="w-5 h-5 text-[#006156]" />
                                       ) : (
-                                        <Square className="w-6 h-6 text-slate-300 hover:text-[#006156] transition-colors" />
+                                        <Square className="w-5 h-5 text-slate-300 hover:text-[#006156] transition-colors" />
                                       )}
                                     </div>
 
                                     <div className="min-w-0 flex-1">
                                       <div className="flex items-center gap-2 flex-wrap">
-                                        <span className={`font-extrabold text-sm sm:text-base transition-all ${
+                                        <span className={`font-bold text-sm transition-all ${
                                           isChecked ? 'line-through text-slate-400' : 'text-slate-900'
                                         }`}>
                                           {item.productName}
                                         </span>
                                         
-                                        <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md text-[10px] font-bold shrink-0 border border-slate-200/60">
+                                        <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-[10px] font-semibold shrink-0">
                                           <Tag className="w-2.5 h-2.5 text-slate-400" />
                                           {categoryName}
                                         </span>
@@ -724,15 +629,14 @@ export default function ComprasView() {
                                         </p>
                                       )}
                                     </div>
-
                                   </div>
 
-                                  {/* Pill de Cantidad */}
+                                  {/* Cantidad */}
                                   <div className="shrink-0">
-                                    <span className={`inline-block px-3.5 py-1.5 text-xs sm:text-sm font-black rounded-xl border transition-all ${
+                                    <span className={`inline-block px-3 py-1 text-xs font-black rounded-lg transition-all ${
                                       isChecked 
-                                        ? 'bg-slate-100 text-slate-500 border-slate-200' 
-                                        : 'bg-[#e6f0ef] text-[#006156] border-[#39ADA3]/40'
+                                        ? 'bg-slate-100 text-slate-500 border border-slate-200' 
+                                        : 'bg-[#e6f0ef] text-[#006156] border border-[#39ADA3]/30'
                                     }`}>
                                       {item.quantity} {item.unit}
                                     </span>
@@ -750,25 +654,25 @@ export default function ComprasView() {
 
                 </div>
 
-                {/* Toolbar de Acciones del Pedido (Escritorio / Tablet) */}
+                {/* Toolbar de Acciones del Pedido */}
                 <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
                   
                   <div className="flex items-center gap-2 w-full sm:w-auto">
                     <button
                       type="button"
                       onClick={() => handlePrintRequest(req, orderNum)}
-                      className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer min-h-[42px] border border-slate-200/60 active:scale-95"
+                      className="flex-1 sm:flex-initial px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer min-h-[38px] border border-slate-200/60 active:scale-95"
                     >
-                      <Printer className="w-4 h-4 text-slate-500" />
+                      <Printer className="w-3.5 h-3.5 text-slate-500" />
                       <span>Imprimir Hoja</span>
                     </button>
 
                     <button
                       type="button"
                       onClick={() => handleShareWhatsApp(req, orderNum)}
-                      className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-[#e6f0ef] hover:bg-[#d5e7e5] text-[#006156] border border-[#39ADA3]/40 font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer min-h-[42px] active:scale-95"
+                      className="flex-1 sm:flex-initial px-3.5 py-2 rounded-xl bg-[#e6f0ef] hover:bg-[#d5e7e5] text-[#006156] border border-[#39ADA3]/40 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer min-h-[38px] active:scale-95"
                     >
-                      <Share2 className="w-4 h-4 text-[#006156]" />
+                      <Share2 className="w-3.5 h-3.5 text-[#006156]" />
                       <span>WhatsApp</span>
                     </button>
                   </div>
@@ -777,7 +681,7 @@ export default function ComprasView() {
                     <button
                       type="button"
                       onClick={() => setConfirmModalOrder(req)}
-                      className="w-full sm:w-auto min-h-[46px] px-6 py-2.5 rounded-xl bg-[#006156] hover:bg-[#004d44] text-white font-extrabold text-xs shadow-xs flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer uppercase tracking-wider"
+                      className="w-full sm:w-auto min-h-[40px] px-5 py-2 rounded-xl bg-[#006156] hover:bg-[#004d44] text-white font-extrabold text-xs flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer uppercase tracking-wider"
                     >
                       <CheckCircle2 className="w-4 h-4 text-[#39ADA3]" />
                       <span>Marcar como Comprado</span>
@@ -793,14 +697,14 @@ export default function ComprasView() {
 
       </main>
 
-      {/* ─── 4. BARRA DE ACCIÓN FLOTANTE STICKY PARA CELULARES (Bottom Nav Táctil) ─── */}
+      {/* ─── 4. BARRA DE ACCIÓN FLOTANTE STICKY PARA CELULARES ─── */}
       {filteredRequests.length > 0 && (
         <div className="fixed lg:hidden bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-200/90 p-3 shadow-lg z-40 flex items-center gap-2.5">
           {filteredRequests[0]?.status === 'Pendiente' && (
             <button
               type="button"
               onClick={() => setConfirmModalOrder(filteredRequests[0])}
-              className="flex-1 py-3 px-4 rounded-xl bg-[#006156] active:bg-[#004d44] text-white font-black text-xs flex items-center justify-center gap-2 shadow-xs transition-transform cursor-pointer min-h-[46px]"
+              className="flex-1 py-2.5 px-4 rounded-xl bg-[#006156] active:bg-[#004d44] text-white font-black text-xs flex items-center justify-center gap-2 transition-transform cursor-pointer min-h-[44px]"
             >
               <CheckCircle2 className="w-4 h-4 text-[#39ADA3]" />
               <span>Marcar Comprado</span>
@@ -810,7 +714,7 @@ export default function ComprasView() {
           <button
             type="button"
             onClick={() => handleShareWhatsApp(filteredRequests[0], filteredRequests.length)}
-            className="py-3 px-4 rounded-xl bg-[#e6f0ef] text-[#006156] border border-[#39ADA3]/40 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer min-h-[46px]"
+            className="py-2.5 px-4 rounded-xl bg-[#e6f0ef] text-[#006156] border border-[#39ADA3]/40 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer min-h-[44px]"
             title="Enviar pedido por WhatsApp"
           >
             <Share2 className="w-4 h-4 text-[#006156]" />
@@ -820,7 +724,7 @@ export default function ComprasView() {
           <button
             type="button"
             onClick={() => handlePrintRequest(filteredRequests[0], filteredRequests.length)}
-            className="p-3 rounded-xl bg-slate-100 active:bg-slate-200 text-slate-700 border border-slate-200 flex items-center justify-center transition-colors cursor-pointer min-h-[46px] w-12"
+            className="p-2.5 rounded-xl bg-slate-100 active:bg-slate-200 text-slate-700 border border-slate-200 flex items-center justify-center transition-colors cursor-pointer min-h-[44px] w-11"
             title="Imprimir Hoja de Compras"
           >
             <Printer className="w-4 h-4 text-slate-600" />
@@ -828,7 +732,7 @@ export default function ComprasView() {
         </div>
       )}
 
-      {/* ─── 5. MODAL DE CONFIRMACIÓN ELEGANTE HOSPITALARIO ─── */}
+      {/* ─── 5. MODAL DE CONFIRMACIÓN ─── */}
       {confirmModalOrder && (
         <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
           <div className="bg-white border border-slate-200 rounded-2xl p-6 max-w-sm w-full shadow-lg space-y-4">
@@ -856,7 +760,7 @@ export default function ComprasView() {
               <button
                 type="button"
                 onClick={() => handleStatusChange(confirmModalOrder.id, 'comprado')}
-                className="flex-1 py-2.5 rounded-xl bg-[#006156] hover:bg-[#004d44] text-white font-extrabold text-xs shadow-xs transition-colors min-h-[42px] cursor-pointer"
+                className="flex-1 py-2.5 rounded-xl bg-[#006156] hover:bg-[#004d44] text-white font-extrabold text-xs transition-colors min-h-[42px] cursor-pointer"
               >
                 Sí, Confirmar
               </button>
@@ -869,3 +773,4 @@ export default function ComprasView() {
     </div>
   );
 }
+
