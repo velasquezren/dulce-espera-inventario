@@ -98,19 +98,16 @@ export default function ComprasView() {
     Object.entries(grouped).forEach(([grupoName, items]) => {
       tableContentHtml += `
         <tr style="background: #e6f0ef;">
-          <td colspan="5" style="padding: 10px; font-weight: 900; color: #006156; text-transform: uppercase; font-size: 13px; border-bottom: 2px solid #006156;">
+          <td colspan="3" style="padding: 10px; font-weight: 900; color: #006156; text-transform: uppercase; font-size: 13px; border-bottom: 2px solid #006156;">
             GRUPO: ${grupoName} (${items.length} insumos)
           </td>
         </tr>
       `;
       items.forEach((item) => {
-        const publicId = `IN${100 + globalIndex * 3}`;
         tableContentHtml += `
           <tr>
             <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; text-align: center; color: #64748b;">${globalIndex++}</td>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-family: monospace; font-weight: bold; color: #006156;">${publicId}</td>
             <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 800; color: #0f172a; font-size: 14px;">${item.productName}</td>
-            <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: bold; color: #475569;">${grupoName}</td>
             <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-weight: 900; text-align: center; color: #006156; font-size: 16px;">${item.quantity} ${item.unit}</td>
           </tr>
         `;
@@ -143,10 +140,8 @@ export default function ComprasView() {
           <thead>
             <tr>
               <th style="width: 30px; text-align: center;">#</th>
-              <th style="width: 80px;">ID Público</th>
               <th>Nombre del Insumo</th>
-              <th>Grupo de Compra</th>
-              <th style="text-align: center;">Cantidad / Presentación</th>
+              <th style="text-align: center; width: 160px;">Cantidad / Presentación</th>
             </tr>
           </thead>
           <tbody>
@@ -374,7 +369,7 @@ export default function ComprasView() {
                   </div>
                 )}
 
-                {/* 4. TABLAS ORGANIZADAS POR GRUPO DE COMPRA (MERCADO VS SUPERMERCADO) */}
+                {/* 4. TABLAS ORGANIZADAS POR GRUPO DE COMPRA (SIN ID PÚBLICO) */}
                 <div className="my-8 space-y-6">
                   <div className="flex items-center justify-between text-xs font-black text-slate-600 px-1 uppercase tracking-wider">
                     <span>Insumos Organizados por Grupo de Compra</span>
@@ -395,40 +390,35 @@ export default function ComprasView() {
                           <span>GRUPO: {grupoName} ({itemsGroup.length} insumos)</span>
                         </div>
 
-                        {/* Tabla Holgada por Grupo */}
+                        {/* Tabla Holgada por Grupo (Sin Columna ID Público) */}
                         <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-xs">
                           <table className="w-full text-left text-xs">
                             <thead className="bg-[#006156] text-white">
                               <tr>
                                 <th className="py-3.5 px-4 font-black uppercase tracking-wider text-center w-12">#</th>
-                                <th className="py-3.5 px-4 font-black uppercase tracking-wider w-28">ID Público</th>
                                 <th className="py-3.5 px-4 font-black uppercase tracking-wider">Nombre del Insumo</th>
-                                <th className="py-3.5 px-4 font-black uppercase tracking-wider text-center w-36">Presentación / Cant.</th>
+                                <th className="py-3.5 px-4 font-black uppercase tracking-wider text-center w-40">Cantidad / Presentación</th>
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-slate-100">
-                              {itemsGroup.map((item, itemIdx) => {
-                                const publicId = `IN${100 + itemIdx * 3}`;
-                                return (
-                                  <tr key={itemIdx} className={itemIdx % 2 === 1 ? 'bg-slate-50/60' : 'bg-white'}>
-                                    <td className="py-4 px-4 font-bold text-slate-400 text-center">{itemIdx + 1}</td>
-                                    <td className="py-4 px-4 font-mono font-bold text-[#006156] text-xs">{publicId}</td>
-                                    <td className="py-4 px-4 font-extrabold text-slate-900 text-sm">
-                                      {item.productName}
-                                      {item.notes && (
-                                        <span className="block text-xs font-normal text-slate-400 italic mt-0.5">
-                                          Obs: {item.notes}
-                                        </span>
-                                      )}
-                                    </td>
-                                    <td className="py-4 px-4 text-center">
-                                      <span className="inline-block px-3.5 py-1.5 bg-emerald-50 text-[#006156] font-black text-sm rounded-xl border border-emerald-200">
-                                        {item.quantity} {item.unit}
+                              {itemsGroup.map((item, itemIdx) => (
+                                <tr key={itemIdx} className={itemIdx % 2 === 1 ? 'bg-slate-50/60' : 'bg-white'}>
+                                  <td className="py-4 px-4 font-bold text-slate-400 text-center">{itemIdx + 1}</td>
+                                  <td className="py-4 px-4 font-extrabold text-slate-900 text-sm">
+                                    {item.productName}
+                                    {item.notes && (
+                                      <span className="block text-xs font-normal text-slate-400 italic mt-0.5">
+                                        Obs: {item.notes}
                                       </span>
-                                    </td>
-                                  </tr>
-                                );
-                              })}
+                                    )}
+                                  </td>
+                                  <td className="py-4 px-4 text-center">
+                                    <span className="inline-block px-3.5 py-1.5 bg-emerald-50 text-[#006156] font-black text-sm rounded-xl border border-emerald-200">
+                                      {item.quantity} {item.unit}
+                                    </span>
+                                  </td>
+                                </tr>
+                              ))}
                             </tbody>
                           </table>
                         </div>
