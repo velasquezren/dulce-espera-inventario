@@ -23,9 +23,9 @@ export default function ErrorSeccion({
   return (
     <div className="flex flex-col items-center justify-center rounded-card border border-critico-line bg-critico-soft px-6 py-14 text-center">
       <TriangleAlert className="size-8 text-critico" aria-hidden />
-      <h2 className="mt-3 text-base font-semibold tracking-tight text-ink">No se pudo mostrar esta seccion</h2>
+      <h2 className="mt-3 text-base font-semibold tracking-tight text-ink">No se pudo mostrar esta sección</h2>
       <p className="mt-1.5 max-w-sm text-[13px] leading-relaxed text-ink-soft">
-        El resto del sistema sigue funcionando. Reintenta; si el problema continua, avisa a sistemas.
+        El resto del sistema sigue funcionando. Reintenta; si el problema continúa, avisa a sistemas.
       </p>
       {error.digest && <p className="mt-2 text-[11px] text-ink-muted">Referencia: {error.digest}</p>}
       <div className="mt-5 flex flex-wrap items-center justify-center gap-2">

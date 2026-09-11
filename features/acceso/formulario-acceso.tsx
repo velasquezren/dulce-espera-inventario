@@ -25,13 +25,13 @@ export function FormularioAcceso() {
     router.replace(sesion.rol === 'compras' ? '/compras' : '/panel');
   }, [estado, sesion, router]);
 
-  if (estado === 'cargando') return <Pantalla mensaje="Verificando la sesion" />;
+  if (estado === 'cargando') return <Pantalla mensaje="Verificando la sesión" />;
   if (estado === 'activa') return <Pantalla mensaje="Entrando al sistema" />;
 
   const enviar = async (evento: React.FormEvent) => {
     evento.preventDefault();
     if (!usuario.trim() || !clave) {
-      setError('Escribe tu usuario y tu contrasena.');
+      setError('Escribe tu usuario y tu contraseña.');
       return;
     }
 
@@ -50,7 +50,7 @@ export function FormularioAcceso() {
         <div className="flex flex-col items-center gap-3 text-center">
           <Logotipo tamano={64} prioridad />
           <div>
-            <h1 className="text-lg font-semibold tracking-tight text-brand">Clinica Montalvo</h1>
+            <h1 className="text-lg font-semibold tracking-tight text-brand">Clínica Montalvo</h1>
             <p className="mt-0.5 text-[13px] text-ink-muted">Inventario e insumos de cocina</p>
           </div>
         </div>
@@ -91,7 +91,7 @@ export function FormularioAcceso() {
               <button
                 type="button"
                 onClick={() => setVerClave((v) => !v)}
-                aria-label={verClave ? 'Ocultar contrasena' : 'Mostrar contrasena'}
+                aria-label={verClave ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                 className="absolute right-1.5 top-[26px] flex size-9 items-center justify-center rounded-control text-ink-muted transition-colors hover:bg-surface-muted hover:text-ink"
               >
                 {verClave ? <EyeOff className="size-4" aria-hidden /> : <Eye className="size-4" aria-hidden />}
@@ -105,7 +105,7 @@ export function FormularioAcceso() {
                 onChange={(e) => setRecordar(e.target.checked)}
                 className="size-4 rounded border-line-strong accent-brand"
               />
-              Mantener la sesion abierta en este dispositivo
+              Mantener la sesión abierta en este dispositivo
             </label>
 
             <Boton type="submit" ancho tamano="lg" cargando={enviando}>
@@ -114,7 +114,7 @@ export function FormularioAcceso() {
           </form>
 
           <div className="mt-6 border-t border-line pt-5">
-            <p className="text-[11px] font-medium uppercase tracking-wider text-ink-muted">Acceso del area de compras</p>
+            <p className="text-[11px] font-medium uppercase tracking-wider text-ink-muted">Acceso del área de compras</p>
             <button
               type="button"
               onClick={accederComoCompras}
@@ -125,7 +125,7 @@ export function FormularioAcceso() {
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block text-[13px] font-medium text-ink">Entrar como compras</span>
-                <span className="block text-[11px] text-ink-muted">Acceso directo, sin contrasena</span>
+                <span className="block text-[11px] text-ink-muted">Acceso directo, sin contraseña</span>
               </span>
             </button>
           </div>
@@ -133,7 +133,7 @@ export function FormularioAcceso() {
 
         <p className="mt-6 flex items-center justify-center gap-1.5 text-[11px] text-ink-muted">
           <ShieldCheck className="size-3.5 text-accent" aria-hidden />
-          Uso interno de la Clinica Montalvo
+          Uso interno de la Clínica Montalvo
         </p>
       </div>
     </main>

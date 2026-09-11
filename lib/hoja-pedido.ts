@@ -1,7 +1,7 @@
-import { agruparPorCanal, resumenLineas } from '@/lib/domain/derivados';
-import { estado as definicionEstado } from '@/lib/domain/estados';
-import type { Pedido } from '@/lib/domain/tipos';
-import { formatoCantidad, formatoFechaHora } from '@/lib/formato';
+import { agruparPorCanal, resumenLineas } from './domain/derivados';
+import { estado as definicionEstado } from './domain/estados';
+import type { Pedido } from './domain/tipos';
+import { formatoCantidad, formatoFechaHora } from './formato';
 
 /**
  * Genera la hoja del pedido como imagen PNG de alta densidad para compartirla o
@@ -97,7 +97,7 @@ function componer(ctx: CanvasRenderingContext2D, pedido: Pedido): { bloques: Blo
   return { bloques, motivo };
 }
 
-export async function generarImagenPedido(pedido: Pedido): Promise<Blob> {
+export async function generarHojaPedido(pedido: Pedido): Promise<Blob> {
   const medidor = document.createElement('canvas').getContext('2d');
   if (!medidor) throw new Error('El navegador no permite generar la imagen');
 
@@ -126,7 +126,7 @@ export async function generarImagenPedido(pedido: Pedido): Promise<Blob> {
 
   ctx.fillStyle = COLOR.marca;
   ctx.font = fuente(600, 17);
-  ctx.fillText('CLINICA MONTALVO', MARGEN + (logo ? 54 : 0), y + 14);
+  ctx.fillText('CLÍNICA MONTALVO', MARGEN + (logo ? 54 : 0), y + 14);
 
   ctx.fillStyle = COLOR.suave;
   ctx.font = fuente(500, 12);
@@ -233,7 +233,7 @@ export async function generarImagenPedido(pedido: Pedido): Promise<Blob> {
   ctx.fillStyle = COLOR.tenue;
   ctx.font = fuente(500, 10);
   ctx.textAlign = 'center';
-  ctx.fillText('Documento generado desde la aplicacion de insumos de cocina', ANCHO / 2, y);
+  ctx.fillText('Documento generado desde la aplicación de insumos de cocina', ANCHO / 2, y);
   ctx.textAlign = 'left';
 
   return new Promise((resolver, rechazar) => {

@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     template: '%s · Dulce Espera',
   },
   description:
-    'Gestion de pedidos, despacho y recepcion de insumos de cocina de la Clinica Montalvo.',
+    'Gestión de pedidos, despacho y recepción de insumos de cocina de la Clínica Montalvo.',
   applicationName: 'Dulce Espera',
   appleWebApp: {
     capable: true,

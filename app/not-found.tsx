@@ -6,9 +6,9 @@ export default function NoEncontrado() {
     <div className="flex min-h-[100dvh] flex-col items-center justify-center gap-5 bg-canvas px-6 text-center">
       <Logotipo tamano={52} />
       <div className="max-w-sm">
-        <h1 className="text-lg font-semibold tracking-tight text-ink">Pagina no encontrada</h1>
+        <h1 className="text-lg font-semibold tracking-tight text-ink">Página no encontrada</h1>
         <p className="mt-2 text-[13px] leading-relaxed text-ink-muted">
-          La direccion que abriste no existe o fue movida.
+          La dirección que abriste no existe o fue movida.
         </p>
       </div>
       <Link

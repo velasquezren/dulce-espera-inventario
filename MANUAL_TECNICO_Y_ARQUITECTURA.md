@@ -117,10 +117,10 @@ flowchart TD
 - Documento formal en escala tipografica estricta, libre de emojis, optimizado para impresion fisica.
 
 ### 4.3 Hoja del Pedido en Imagen de Alta Densidad
-- Modulo `features/despacho`: vista segmentada por canal o lista unica y generacion de la hoja del
-  pedido en canvas a 3x, que se carga bajo demanda.
-- La imagen se descarga o se entrega al dialogo del sistema (Web Share API), que es quien ofrece
-  las aplicaciones disponibles en el dispositivo. La aplicacion no envia a ningun canal concreto.
+- `lib/hoja-pedido.ts` dibuja la hoja en canvas a 3x, agrupada por canal, con total y firmas.
+  Se carga bajo demanda desde el boton de cada pedido.
+- La imagen se entrega al dialogo del sistema (Web Share API) o se descarga. La aplicacion no
+  envia a ninguna aplicacion de mensajeria en particular.
 
 ---
 
@@ -128,6 +128,9 @@ flowchart TD
 
 ### 5.1 Principios
 
+- **Diseñado para el personal de cocina.** No es un panel administrativo: cuatro destinos, textos
+  en lenguaje corriente, tipografia de 15 px o mayor y objetivos tactiles de 44 px. Todo lo que
+  no sirve para pedir, seguir o recibir insumos vive en el area de compras o no existe.
 - **Una ruta real por modulo.** Ya no existe un unico `page.tsx` que conmuta modulos por estado:
   cada seccion es una ruta del App Router, con su propia URL, su historial de navegacion y su
   paquete de JavaScript independiente. El personal puede marcar `/cuaderno` como favorito y el
@@ -148,13 +151,11 @@ flowchart TD
 |---|---|---|
 | `/` | Redireccion al panel | Publica |
 | `/acceso` | Inicio de sesion | Publica |
-| `/panel` | Estado del dia, accesos rapidos y ultimos pedidos | Cocina |
-| `/cuaderno` | Catalogo de 771 insumos y cuaderno de anotaciones | Cocina |
-| `/solicitudes` | Seguimiento en lista o calendario | Cocina |
-| `/recepciones` | Confirmacion de mercaderia recibida | Cocina |
-| `/despacho` | Reportes oficiales y hoja del pedido en imagen | Cocina |
-| `/historial` | Bitacora de movimientos, CSV e impresion | Cocina |
-| `/cuenta` | Sesion, conexion e instalacion de la PWA | Cocina |
+| `/panel` | Inicio: accesos grandes y ultimos pedidos | Cocina |
+| `/cuaderno` | Catalogo de 771 insumos y lista para enviar | Cocina |
+| `/solicitudes` | Seguimiento de pedidos y hoja para compartir | Cocina |
+| `/recepciones` | Repaso linea por linea y confirmacion | Cocina |
+| `/cuenta` | Sesion e instalacion de la PWA | Cocina |
 | `/compras` | Lista de compras con checklist y cambio de estado | Rol compras |
 
 Todas las rutas se generan como contenido estatico (`next build` las marca como `Static`), por lo
@@ -172,7 +173,8 @@ components/
   ui/                        Biblioteca de interfaz: boton, campo, dialogo, avisos, filtros...
   shell/                     Barras lateral, superior e inferior, marca y guardas de acceso
   pwa/                       Registro del service worker
-features/                    Una carpeta por modulo funcional (cuaderno, solicitudes, ...)
+features/                    Una carpeta por pantalla (panel, cuaderno, solicitudes, recepciones,
+                             cuenta, acceso y compras)
 lib/
   api/                       Cliente HTTP tipado y un modulo por recurso de la API
   domain/                    Tipos, canales, estados, derivados y mensajes
@@ -212,6 +214,7 @@ servidor se muestra al usuario, una caida de red guarda el pedido y lo reintenta
 - **Accesibilidad:** objetivos tactiles de 44 px, foco visible, dialogos con foco atrapado y
   cierre con `Escape`, enlace para saltar al contenido y respeto por `prefers-reduced-motion`.
 - **Busqueda sin acentos:** "limon" encuentra "Limón" en los 771 insumos.
+- **Ortografia cuidada:** los textos de la interfaz llevan tildes y signos de interrogacion.
 - **Verificacion antes de desplegar:** `npm run typecheck`, `npm run lint` y `npm run build`
   deben terminar sin errores.
 

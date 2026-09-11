@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: 'Dulce Espera · Insumos de cocina',
     short_name: 'Dulce Espera',
     description:
-      'Gestion de pedidos, despacho y recepcion de insumos de cocina de la Clinica Montalvo.',
+      'Gestión de pedidos, despacho y recepción de insumos de cocina de la Clínica Montalvo.',
     start_url: '/',
     scope: '/',
     display: 'standalone',

@@ -3,10 +3,10 @@
 import { useState } from 'react';
 import { Check, ChevronDown, CloudOff } from 'lucide-react';
 import { cn } from '@/lib/cn';
-import { agruparPorCanal, resumenLineas } from '@/lib/domain/derivados';
+import { agruparPorCanal } from '@/lib/domain/derivados';
 import { estado as definicionEstado } from '@/lib/domain/estados';
 import type { Pedido } from '@/lib/domain/tipos';
-import { formatoCantidad, formatoFechaHora } from '@/lib/formato';
+import { formatoCantidad, formatoFecha, soloHora } from '@/lib/formato';
 import { pluralizar } from '@/lib/texto';
 import { Insignia } from '@/components/ui/insignia';
 
@@ -17,16 +17,15 @@ interface Verificacion {
 
 interface Props {
   pedido: Pedido;
-  /** Acciones dentro del detalle desplegado. */
+  /** Botones al pie del detalle desplegado. */
   acciones?: React.ReactNode;
-  /** Barra de accion siempre visible al pie de la tarjeta. */
-  pie?: React.ReactNode;
   /** Activa el repaso linea por linea al recibir la mercaderia. */
   verificacion?: Verificacion;
+  abiertoPorDefecto?: boolean;
 }
 
-export function TarjetaPedido({ pedido, acciones, pie, verificacion }: Props) {
-  const [abierto, setAbierto] = useState(false);
+export function TarjetaPedido({ pedido, acciones, verificacion, abiertoPorDefecto = false }: Props) {
+  const [abierto, setAbierto] = useState(abiertoPorDefecto);
   const definicion = definicionEstado(pedido.estado);
   const grupos = agruparPorCanal(pedido.lineas).filter((g) => g.lineas.length > 0);
 
@@ -36,64 +35,61 @@ export function TarjetaPedido({ pedido, acciones, pie, verificacion }: Props) {
         type="button"
         onClick={() => setAbierto((v) => !v)}
         aria-expanded={abierto}
-        className="flex w-full items-center gap-3 px-4 py-3.5 text-left transition-colors hover:bg-surface-muted"
+        className="flex w-full items-center gap-4 px-5 py-4 text-left transition-colors hover:bg-surface-muted"
       >
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <span className="text-sm font-semibold tracking-tight text-ink">{pedido.folio}</span>
+          <p className="text-base font-semibold text-ink">
+            {formatoFecha(pedido.fecha)}{' '}
+            <span className="font-normal text-ink-muted">a las {soloHora(pedido.fecha)}</span>
+          </p>
+          <p className="mt-1 text-sm text-ink-muted">
+            {pedido.lineas.length} {pluralizar(pedido.lineas.length, 'cosa anotada', 'cosas anotadas')}
+          </p>
+          <div className="mt-2.5 flex flex-wrap items-center gap-2">
             <Insignia tono={definicion.tono} punto>
               {definicion.etiqueta}
             </Insignia>
             {pedido.enCola && (
               <Insignia tono="alerta">
-                <CloudOff className="size-3" aria-hidden />
-                Sin enviar
+                <CloudOff className="size-4" aria-hidden />
+                Se enviará solo
               </Insignia>
             )}
           </div>
-          <p className="mt-1 truncate text-xs text-ink-muted">
-            {formatoFechaHora(pedido.fecha)} · {pedido.solicitante} · {pedido.lineas.length}{' '}
-            {pluralizar(pedido.lineas.length, 'insumo', 'insumos')}
-          </p>
         </div>
         <ChevronDown
-          className={cn('size-4 shrink-0 text-ink-muted transition-transform', abierto && 'rotate-180')}
+          className={cn('size-6 shrink-0 text-ink-muted transition-transform', abierto && 'rotate-180')}
           aria-hidden
         />
       </button>
 
       {abierto && (
-        <div className="border-t border-line bg-surface-muted/60 px-4 py-4">
+        <div className="border-t border-line bg-surface-muted/50 px-5 py-4">
           {pedido.motivo && (
-            <p className="mb-4 rounded-control border border-line bg-surface px-3.5 py-2.5 text-[13px] leading-relaxed text-ink-soft">
-              <span className="mr-1.5 font-medium text-ink">Motivo:</span>
-              {pedido.motivo}
-            </p>
+            <div className="mb-4 rounded-control border-l-4 border-brand bg-brand-soft/50 px-4 py-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-brand">Nota de cocina</p>
+              <p className="mt-1 text-[15px] leading-relaxed text-ink-soft">{pedido.motivo}</p>
+            </div>
           )}
 
           <div className="flex flex-col gap-4">
             {grupos.map((grupo) => (
               <div key={grupo.canal.id}>
-                <div className="mb-1.5 flex items-baseline justify-between gap-2">
-                  <h4 className="text-[11px] font-medium uppercase tracking-wider text-ink-muted">
-                    {grupo.canal.nombre}
-                  </h4>
-                  <span className="text-[11px] tabular-nums text-ink-muted">
-                    {grupo.lineas.length} {pluralizar(grupo.lineas.length, 'insumo', 'insumos')}
-                  </span>
-                </div>
+                <h4 className="mb-2 text-sm font-semibold uppercase tracking-wide text-ink-muted">
+                  {grupo.canal.nombreCorto}
+                </h4>
                 <ul className="divide-y divide-line overflow-hidden rounded-control border border-line bg-surface">
                   {grupo.lineas.map((linea) => {
                     const cantidad = (
-                      <span className="shrink-0 text-[13px] font-medium tabular-nums text-ink-soft">
+                      <span className="shrink-0 text-[15px] font-semibold tabular-nums text-ink">
                         {formatoCantidad(linea.cantidad)} {linea.presentacion}
                       </span>
                     );
 
                     if (!verificacion) {
                       return (
-                        <li key={linea.id} className="flex items-center gap-3 px-3 py-2">
-                          <span className="min-w-0 flex-1 truncate text-[13px] text-ink">{linea.nombre}</span>
+                        <li key={linea.id} className="flex items-center gap-3 px-4 py-3">
+                          <span className="min-w-0 flex-1 text-[15px] text-ink">{linea.nombre}</span>
                           {cantidad}
                         </li>
                       );
@@ -106,19 +102,19 @@ export function TarjetaPedido({ pedido, acciones, pie, verificacion }: Props) {
                           type="button"
                           onClick={() => verificacion.alternar(linea.id)}
                           aria-pressed={verificada}
-                          className="flex w-full items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-surface-muted"
+                          className="flex w-full items-center gap-3.5 px-4 py-3.5 text-left transition-colors hover:bg-surface-muted"
                         >
                           <span
                             className={cn(
-                              'flex size-5 shrink-0 items-center justify-center rounded border transition-colors',
-                              verificada ? 'border-brand bg-brand text-white' : 'border-line-strong',
+                              'flex size-7 shrink-0 items-center justify-center rounded-md border-2 transition-colors',
+                              verificada ? 'border-exito bg-exito text-white' : 'border-line-strong',
                             )}
                           >
-                            {verificada && <Check className="size-3.5" aria-hidden />}
+                            {verificada && <Check className="size-5" aria-hidden />}
                           </span>
                           <span
                             className={cn(
-                              'min-w-0 flex-1 truncate text-[13px]',
+                              'min-w-0 flex-1 text-[15px]',
                               verificada ? 'text-ink-muted line-through' : 'text-ink',
                             )}
                           >
@@ -134,14 +130,9 @@ export function TarjetaPedido({ pedido, acciones, pie, verificacion }: Props) {
             ))}
           </div>
 
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-line pt-3">
-            <p className="text-xs text-ink-muted">Total: {resumenLineas(pedido.lineas)}</p>
-            {acciones}
-          </div>
+          {acciones && <div className="mt-5 flex flex-col gap-2.5">{acciones}</div>}
         </div>
       )}
-
-      {pie && <div className="border-t border-line px-4 py-3">{pie}</div>}
     </article>
   );
 }

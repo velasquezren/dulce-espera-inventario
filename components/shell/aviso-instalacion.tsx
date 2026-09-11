@@ -12,14 +12,14 @@ export function AvisoInstalacion() {
   if (instalada || !disponible || descartado) return null;
 
   return (
-    <div data-no-imprimir className="flex items-center gap-3 border-b border-brand-line bg-brand-soft px-4 py-2.5 md:px-6">
-      <Download className="size-4 shrink-0 text-brand" aria-hidden />
-      <p className="flex-1 text-[13px] text-brand">
-        Instala la aplicacion para abrirla desde la pantalla de inicio y trabajar sin conexion.
-      </p>
+    <div
+      data-no-imprimir
+      className="flex items-center gap-3 rounded-card border border-brand-line bg-brand-soft px-4 py-3"
+    >
+      <Download className="size-5 shrink-0 text-brand" aria-hidden />
+      <p className="flex-1 text-sm text-brand">Instala la app en la pantalla de inicio.</p>
       <Boton
         tamano="sm"
-        variante="principal"
         onClick={() => {
           void instalar();
         }}
@@ -29,10 +29,10 @@ export function AvisoInstalacion() {
       <button
         type="button"
         onClick={() => setDescartado(true)}
-        aria-label="Ocultar aviso de instalacion"
+        aria-label="Ocultar aviso de instalación"
         className="rounded p-1 text-brand/70 transition-colors hover:text-brand"
       >
-        <X className="size-4" aria-hidden />
+        <X className="size-5" aria-hidden />
       </button>
     </div>
   );

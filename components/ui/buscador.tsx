@@ -20,7 +20,7 @@ export function Buscador({ valor, alCambiar, marcador, etiqueta, className }: Pr
         {etiqueta}
       </label>
       <Search
-        className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-ink-faint"
+        className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-ink-muted"
         aria-hidden
       />
       <input
@@ -30,16 +30,16 @@ export function Buscador({ valor, alCambiar, marcador, etiqueta, className }: Pr
         value={valor}
         placeholder={marcador ?? etiqueta}
         onChange={(e) => alCambiar(e.target.value)}
-        className="h-11 w-full rounded-control border border-line-strong bg-surface pl-10 pr-10 text-sm text-ink outline-none transition-colors placeholder:text-ink-faint focus:border-brand focus:ring-4 focus:ring-brand/10 [&::-webkit-search-cancel-button]:hidden"
+        className="h-13 w-full rounded-card border border-line-strong bg-surface pl-12 pr-12 text-[15px] text-ink outline-none transition-colors placeholder:text-ink-faint focus:border-brand focus:ring-4 focus:ring-brand/10 [&::-webkit-search-cancel-button]:hidden"
       />
       {valor && (
         <button
           type="button"
           onClick={() => alCambiar('')}
-          aria-label="Limpiar busqueda"
-          className="absolute right-2.5 top-1/2 flex size-7 -translate-y-1/2 items-center justify-center rounded-full text-ink-faint transition-colors hover:bg-surface-muted hover:text-ink-soft"
+          aria-label="Limpiar búsqueda"
+          className="absolute right-3 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-ink-muted transition-colors hover:bg-surface-muted hover:text-ink"
         >
-          <X className="size-4" aria-hidden />
+          <X className="size-5" aria-hidden />
         </button>
       )}
     </div>

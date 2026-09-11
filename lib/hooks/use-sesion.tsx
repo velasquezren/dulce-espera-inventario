@@ -51,10 +51,10 @@ export function SesionProvider({ children }: { children: React.ReactNode }) {
           return {
             ok: false,
             motivo: 'red',
-            mensaje: 'Sin conexion con el servidor. Verifica la red e intenta de nuevo.',
+            mensaje: 'Sin conexión con el servidor. Verifica la red e intenta de nuevo.',
           };
         }
-        return { ok: false, motivo: 'credenciales', mensaje: 'Usuario o contrasena incorrectos.' };
+        return { ok: false, motivo: 'credenciales', mensaje: 'Usuario o contraseña incorrectos.' };
       }
     },
     [guardar],

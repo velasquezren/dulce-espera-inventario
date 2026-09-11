@@ -9,7 +9,7 @@ export function HojaImpresion({ pedido }: { pedido: Pedido }) {
   return (
     <div className="hidden print:block">
       <header style={{ borderBottom: '2px solid #006156', paddingBottom: 12, marginBottom: 16 }}>
-        <h1 style={{ fontSize: '16pt', fontWeight: 600, color: '#006156', margin: 0 }}>CLINICA MONTALVO</h1>
+        <h1 style={{ fontSize: '16pt', fontWeight: 600, color: '#006156', margin: 0 }}>CLÍNICA MONTALVO</h1>
         <p style={{ fontSize: '9pt', color: '#475569', margin: '2pt 0 0' }}>
           Dulce Espera · Hoja de compras de cocina
         </p>
@@ -35,7 +35,7 @@ export function HojaImpresion({ pedido }: { pedido: Pedido }) {
               <tr>
                 <th style={{ width: '8%', textAlign: 'left', borderBottom: '1px solid #cbd5e1' }}>#</th>
                 <th style={{ textAlign: 'left', borderBottom: '1px solid #cbd5e1' }}>Insumo</th>
-                <th style={{ width: '22%', textAlign: 'left', borderBottom: '1px solid #cbd5e1' }}>Categoria</th>
+                <th style={{ width: '22%', textAlign: 'left', borderBottom: '1px solid #cbd5e1' }}>Categoría</th>
                 <th style={{ width: '18%', textAlign: 'right', borderBottom: '1px solid #cbd5e1' }}>Cantidad</th>
                 <th style={{ width: '12%', textAlign: 'center', borderBottom: '1px solid #cbd5e1' }}>Comprado</th>
               </tr>
@@ -66,7 +66,7 @@ export function HojaImpresion({ pedido }: { pedido: Pedido }) {
           Gobernanta / Compras
         </span>
         <span style={{ flex: 1, borderTop: '1px solid #cbd5e1', paddingTop: 4, fontSize: '8pt', color: '#475569' }}>
-          Recepcion en cocina
+          Recepción en cocina
         </span>
       </div>
     </div>

@@ -2,34 +2,25 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LogOut, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { ENLACES, ENLACE_CUENTA } from './navegacion';
 import { Marca } from './marca';
 
-interface Props {
-  colapsada: boolean;
-  alColapsar: (valor: boolean) => void;
-  alSalir: () => void;
-}
-
-export function BarraLateral({ colapsada, alColapsar, alSalir }: Props) {
+export function BarraLateral({ alSalir }: { alSalir: () => void }) {
   const ruta = usePathname();
   const enlaces = [...ENLACES, ENLACE_CUENTA];
 
   return (
     <aside
       data-no-imprimir
-      className={cn(
-        'fixed inset-y-0 left-0 z-30 hidden shrink-0 flex-col border-r border-line bg-surface transition-[width] duration-200 md:flex',
-        colapsada ? 'w-[76px]' : 'w-60',
-      )}
+      className="fixed inset-y-0 left-0 z-30 hidden w-64 shrink-0 flex-col border-r border-line bg-surface md:flex"
     >
-      <div className={cn('flex h-16 items-center border-b border-line', colapsada ? 'justify-center px-2' : 'px-4')}>
-        <Marca compacto={colapsada} />
+      <div className="flex h-20 items-center px-5">
+        <Marca />
       </div>
 
-      <nav aria-label="Navegacion principal" className={cn('flex flex-1 flex-col gap-1 overflow-y-auto py-4', colapsada ? 'px-2' : 'px-3')}>
+      <nav aria-label="Navegación principal" className="flex flex-1 flex-col gap-1.5 px-3 py-4">
         {enlaces.map((enlace) => {
           const activo = ruta.startsWith(enlace.href);
           const Icono = enlace.icono;
@@ -38,51 +29,26 @@ export function BarraLateral({ colapsada, alColapsar, alSalir }: Props) {
               key={enlace.href}
               href={enlace.href}
               aria-current={activo ? 'page' : undefined}
-              title={colapsada ? enlace.etiqueta : undefined}
               className={cn(
-                'flex items-center rounded-control text-[13px] font-medium transition-colors',
-                colapsada ? 'h-11 justify-center' : 'h-11 gap-3 px-3',
-                activo ? 'bg-brand-soft text-brand' : 'text-ink-soft hover:bg-surface-muted hover:text-ink',
+                'flex h-13 items-center gap-3 rounded-card px-4 text-[15px] font-medium transition-colors',
+                activo ? 'bg-brand text-white' : 'text-ink-soft hover:bg-brand-soft hover:text-brand',
               )}
             >
-              <Icono className={cn('size-[18px] shrink-0', activo ? 'text-brand' : 'text-ink-muted')} aria-hidden />
-              {!colapsada && <span className="truncate">{enlace.etiqueta}</span>}
+              <Icono className="size-5 shrink-0" aria-hidden />
+              {enlace.etiqueta}
             </Link>
           );
         })}
       </nav>
 
-      <div className={cn('flex flex-col gap-1 border-t border-line py-3', colapsada ? 'px-2' : 'px-3')}>
-        <button
-          type="button"
-          onClick={() => alColapsar(!colapsada)}
-          className={cn(
-            'flex h-10 items-center rounded-control text-[13px] font-medium text-ink-muted transition-colors hover:bg-surface-muted hover:text-ink',
-            colapsada ? 'justify-center' : 'gap-3 px-3',
-          )}
-          aria-label={colapsada ? 'Expandir menu' : 'Contraer menu'}
-        >
-          {colapsada ? (
-            <PanelLeftOpen className="size-[18px]" aria-hidden />
-          ) : (
-            <>
-              <PanelLeftClose className="size-[18px]" aria-hidden />
-              <span>Contraer menu</span>
-            </>
-          )}
-        </button>
-
+      <div className="px-3 pb-5">
         <button
           type="button"
           onClick={alSalir}
-          className={cn(
-            'flex h-10 items-center rounded-control text-[13px] font-medium text-critico transition-colors hover:bg-critico-soft',
-            colapsada ? 'justify-center' : 'gap-3 px-3',
-          )}
-          aria-label="Cerrar sesion"
+          className="flex h-12 w-full items-center gap-3 rounded-card px-4 text-[15px] font-medium text-critico transition-colors hover:bg-critico-soft"
         >
-          <LogOut className="size-[18px] shrink-0" aria-hidden />
-          {!colapsada && <span>Cerrar sesion</span>}
+          <LogOut className="size-5 shrink-0" aria-hidden />
+          Salir
         </button>
       </div>
     </aside>

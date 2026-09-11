@@ -15,7 +15,7 @@ export function EntornoCompras({ children }: { children: React.ReactNode }) {
   }, [estado, sesion, router]);
 
   if (estado !== 'activa' || sesion?.rol !== 'compras') {
-    return <Pantalla mensaje="Abriendo el area de compras" />;
+    return <Pantalla mensaje="Abriendo el área de compras" />;
   }
 
   return <>{children}</>;

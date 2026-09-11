@@ -11,12 +11,12 @@ export const ESTADOS: Record<EstadoPedido, DefinicionEstado> = {
   pendiente: {
     etiqueta: 'Pendiente',
     tono: 'alerta',
-    descripcion: 'Enviado a gobernanta, aun sin revisar',
+    descripcion: 'Enviado a gobernanta, aún sin revisar',
   },
   'en revision': {
-    etiqueta: 'En revision',
+    etiqueta: 'En revisión',
     tono: 'alerta',
-    descripcion: 'Compras esta evaluando la solicitud',
+    descripcion: 'Compras está evaluando la solicitud',
   },
   aceptado: {
     etiqueta: 'Aceptado',

@@ -66,7 +66,7 @@ async function descargar<T>(item: Registro<T>, marcarCarga: boolean): Promise<vo
   } catch (e) {
     actualizar(item, {
       cargando: false,
-      error: e instanceof Error ? e.message : 'No se pudo obtener la informacion',
+      error: e instanceof Error ? e.message : 'No se pudo obtener la información',
     });
   } finally {
     item.enCurso = false;

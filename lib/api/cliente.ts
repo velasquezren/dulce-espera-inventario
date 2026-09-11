@@ -65,7 +65,7 @@ export async function pedir<T>(ruta: string, opciones: Opciones = {}): Promise<T
   try {
     return (await respuesta.json()) as T;
   } catch {
-    throw new ErrorApi('La respuesta del servidor no es valida', respuesta.status);
+    throw new ErrorApi('La respuesta del servidor no es válida', respuesta.status);
   }
 }
 
@@ -79,7 +79,7 @@ async function mensajeDeError(respuesta: Response): Promise<string> {
   } catch {
     /* cuerpo vacio o no JSON */
   }
-  if (respuesta.status === 401 || respuesta.status === 403) return 'Credenciales no validas';
+  if (respuesta.status === 401 || respuesta.status === 403) return 'Credenciales no válidas';
   if (respuesta.status === 404) return 'El recurso solicitado no existe';
   if (respuesta.status >= 500) return 'El servidor no pudo procesar la solicitud';
   return `Error ${respuesta.status}`;

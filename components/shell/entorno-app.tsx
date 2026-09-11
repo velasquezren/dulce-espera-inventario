@@ -2,23 +2,19 @@
 
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
-import { cn } from '@/lib/cn';
 import { useSesion } from '@/lib/hooks/use-sesion';
 import { useEnLinea } from '@/lib/hooks/use-conexion';
 import { usePedidos } from '@/lib/hooks/use-pedidos';
-import { usePreferencia } from '@/lib/hooks/use-preferencia';
 import { Pantalla } from '@/components/shell/pantalla-carga';
 import { BarraLateral } from './barra-lateral';
 import { BarraSuperior } from './barra-superior';
 import { BarraInferior } from './barra-inferior';
-import { AvisoInstalacion } from './aviso-instalacion';
 
 export function EntornoApp({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { estado, sesion, salir } = useSesion();
   const enLinea = useEnLinea();
   const { enCola } = usePedidos();
-  const [colapsada, setColapsada] = usePreferencia('menuColapsado', false);
 
   useEffect(() => {
     if (estado === 'anonima') router.replace('/acceso');
@@ -26,7 +22,7 @@ export function EntornoApp({ children }: { children: React.ReactNode }) {
   }, [estado, sesion, router]);
 
   if (estado !== 'activa' || !sesion || sesion.rol === 'compras') {
-    return <Pantalla mensaje="Abriendo el area de cocina" />;
+    return <Pantalla mensaje="Abriendo el área de cocina" />;
   }
 
   return (
@@ -38,15 +34,14 @@ export function EntornoApp({ children }: { children: React.ReactNode }) {
         Ir al contenido
       </a>
 
-      <BarraLateral colapsada={colapsada} alColapsar={setColapsada} alSalir={salir} />
+      <BarraLateral alSalir={salir} />
 
-      <div className={cn('flex min-h-[100dvh] flex-col transition-[padding] duration-200', colapsada ? 'md:pl-[76px]' : 'md:pl-60')}>
+      <div className="flex min-h-[100dvh] flex-col md:pl-64">
         <BarraSuperior sesion={sesion} enLinea={enLinea} pendientes={enCola} />
-        <AvisoInstalacion />
 
         <main
           id="contenido"
-          className="mx-auto w-full max-w-6xl flex-1 px-4 pb-[calc(5.5rem+env(safe-area-inset-bottom,0px))] pt-5 md:px-6 md:pb-10"
+          className="mx-auto w-full max-w-3xl flex-1 px-4 pb-[calc(6rem+env(safe-area-inset-bottom,0px))] pt-6 md:px-8 md:pb-12"
         >
           {children}
         </main>

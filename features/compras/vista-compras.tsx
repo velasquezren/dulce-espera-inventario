@@ -106,7 +106,7 @@ export function VistaCompras() {
             <div className="flex min-w-0 items-center gap-3">
               <Marca />
               <span className="hidden rounded-full border border-brand-line bg-brand-soft px-2.5 py-1 text-[11px] font-medium text-brand sm:inline-block">
-                Area de compras
+                Área de compras
               </span>
             </div>
             <div className="flex shrink-0 items-center gap-2">
@@ -148,7 +148,7 @@ export function VistaCompras() {
 
           <Buscador
             etiqueta="Buscar pedidos"
-            marcador="Buscar por numero, insumo o solicitante"
+            marcador="Buscar por número, insumo o solicitante"
             valor={busqueda}
             alCambiar={setBusqueda}
           />
@@ -184,7 +184,7 @@ export function VistaCompras() {
           ) : visibles.length === 0 ? (
             <Vacio
               titulo="No hay pedidos en esta vista"
-              descripcion="Cuando cocina envie una lista nueva aparecera aqui para comprarla."
+              descripcion="Cuando cocina envíe una lista nueva aparecerá aquí para comprarla."
               icono={<ShoppingBag className="size-8" aria-hidden />}
             />
           ) : (

@@ -16,9 +16,9 @@ const VARIANTES: Record<Variante, string> = {
 };
 
 const TAMANOS: Record<Tamano, string> = {
-  sm: 'h-9 px-3 text-[13px] gap-1.5',
-  md: 'h-11 px-4 text-sm gap-2',
-  lg: 'h-12 px-5 text-[15px] gap-2',
+  sm: 'h-10 px-3.5 text-sm gap-2',
+  md: 'h-12 px-5 text-[15px] gap-2',
+  lg: 'h-14 px-6 text-base gap-2.5',
 };
 
 const BASE =
@@ -69,7 +69,7 @@ export const BotonIcono = forwardRef<HTMLButtonElement, PropsIcono>(function Bot
       className={cn(
         BASE,
         VARIANTES[variante],
-        tamano === 'sm' ? 'size-9' : 'size-11',
+        tamano === 'sm' ? 'size-10' : 'size-12',
         'shrink-0 p-0',
         className,
       )}

@@ -14,7 +14,7 @@ interface Props {
 
 export function Contador({ valor, alCambiar, minimo = 0, maximo = 9999, etiqueta, tamano = 'md' }: Props) {
   const acotar = (n: number) => Math.min(maximo, Math.max(minimo, n));
-  const alto = tamano === 'sm' ? 'size-9' : 'size-10';
+  const alto = tamano === 'sm' ? 'size-11' : 'size-12';
 
   return (
     <div className="inline-flex items-center gap-1.5" role="group" aria-label={etiqueta}>
@@ -28,7 +28,7 @@ export function Contador({ valor, alCambiar, minimo = 0, maximo = 9999, etiqueta
           'flex items-center justify-center rounded-control border border-line-strong bg-surface text-ink-soft transition-colors hover:bg-surface-muted disabled:opacity-40',
         )}
       >
-        <Minus className="size-4" aria-hidden />
+        <Minus className="size-5" aria-hidden />
       </button>
 
       <input
@@ -41,8 +41,8 @@ export function Contador({ valor, alCambiar, minimo = 0, maximo = 9999, etiqueta
         aria-label={`Cantidad de ${etiqueta}`}
         onChange={(e) => alCambiar(acotar(Number.parseInt(e.target.value, 10) || 0))}
         className={cn(
-          tamano === 'sm' ? 'h-9 w-14' : 'h-10 w-16',
-          'rounded-control border border-line-strong bg-surface text-center text-sm font-semibold tabular-nums text-ink outline-none transition-colors focus:border-brand focus:ring-4 focus:ring-brand/10',
+          tamano === 'sm' ? 'h-11 w-14' : 'h-12 w-16',
+          'rounded-control border border-line-strong bg-surface text-center text-base font-semibold tabular-nums text-ink outline-none transition-colors focus:border-brand focus:ring-4 focus:ring-brand/10',
         )}
       />
 
@@ -56,7 +56,7 @@ export function Contador({ valor, alCambiar, minimo = 0, maximo = 9999, etiqueta
           'flex items-center justify-center rounded-control border border-line-strong bg-surface text-ink-soft transition-colors hover:bg-surface-muted disabled:opacity-40',
         )}
       >
-        <Plus className="size-4" aria-hidden />
+        <Plus className="size-5" aria-hidden />
       </button>
     </div>
   );
