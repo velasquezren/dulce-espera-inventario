@@ -269,11 +269,11 @@ export default function Inventory() {
           {/* Level 1: Purchasing Channel / Group Tabs */}
           <div className="flex items-center gap-1.5 p-1.5 bg-slate-100/90 rounded-2xl overflow-x-auto scrollbar-none snap-x border border-slate-200/50">
             {[
-              { id: 'all', label: 'Todos', icon: '📦', count: groupCounts.all },
-              { id: 'Mercado', label: 'Mercado', icon: '🥬', count: groupCounts.Mercado },
-              { id: 'Super Mercado', label: 'Supermercado', icon: '🛒', count: groupCounts['Super Mercado'] },
-              { id: 'Proveedor', label: 'Proveedor', icon: '🚚', count: groupCounts.Proveedor },
-              ...(groupCounts.Otros > 0 ? [{ id: 'Otros', label: 'Otros', icon: '🏷️', count: groupCounts.Otros }] : [])
+              { id: 'all', label: 'Todos', count: groupCounts.all },
+              { id: 'Mercado', label: 'Mercado', count: groupCounts.Mercado },
+              { id: 'Super Mercado', label: 'Supermercado', count: groupCounts['Super Mercado'] },
+              { id: 'Proveedor', label: 'Proveedor', count: groupCounts.Proveedor },
+              ...(groupCounts.Otros > 0 ? [{ id: 'Otros', label: 'Otros', count: groupCounts.Otros }] : [])
             ].map((g) => {
               const isActive = selectedGroup === g.id;
               return (
@@ -288,7 +288,6 @@ export default function Inventory() {
                       : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
                   }`}
                 >
-                  <span className="text-sm leading-none">{g.icon}</span>
                   <span>{g.label}</span>
                   <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-black ${
                     isActive ? 'bg-primary text-white' : 'bg-slate-200/80 text-slate-500'
@@ -460,23 +459,23 @@ export default function Inventory() {
                         <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                           {/* Channel Badge */}
                           {product.group === 'Mercado' && (
-                            <span className="text-[9px] font-extrabold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-1">
-                              <span>🥬</span> Mercado
+                            <span className="text-[9px] font-extrabold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded uppercase tracking-wider">
+                              Mercado
                             </span>
                           )}
                           {product.group === 'Super Mercado' && (
-                            <span className="text-[9px] font-extrabold text-indigo-800 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-1">
-                              <span>🛒</span> Supermercado
+                            <span className="text-[9px] font-extrabold text-indigo-800 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded uppercase tracking-wider">
+                              Supermercado
                             </span>
                           )}
                           {product.group === 'Proveedor' && (
-                            <span className="text-[9px] font-extrabold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-1">
-                              <span>🚚</span> Proveedor
+                            <span className="text-[9px] font-extrabold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded uppercase tracking-wider">
+                              Proveedor
                             </span>
                           )}
                           {(!product.group || product.group === 'Otros') && (
-                            <span className="text-[9px] font-extrabold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-1">
-                              <span>📦</span> Otros
+                            <span className="text-[9px] font-extrabold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded uppercase tracking-wider">
+                              Otros
                             </span>
                           )}
 

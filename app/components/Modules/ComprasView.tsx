@@ -22,7 +22,8 @@ import {
   Square,
   CheckSquare,
   User,
-  Filter
+  Filter,
+  X
 } from 'lucide-react';
 import AudioPlayer from '../AudioPlayer';
 import { RequestItem } from '../../lib/mockData';
@@ -253,10 +254,10 @@ export default function ComprasView() {
   };
 
   const handleShareWhatsApp = (req: RequestItem, orderNum: number) => {
-    let text = `🛒 *CLÍNICA MONTALVO — LISTA DE COMPRAS*\n`;
-    text += `📅 *Fecha:* ${req.date}\n`;
-    text += `👤 *Solicitado por:* ${req.user}\n`;
-    text += `📋 *Pedido N°:* ${orderNum}\n`;
+    let text = `*CLÍNICA MONTALVO — LISTA DE COMPRAS*\n`;
+    text += `*Fecha:* ${req.date}\n`;
+    text += `*Solicitado por:* ${req.user}\n`;
+    text += `*Pedido N°:* ${orderNum}\n`;
     
     const sortedItems = [...req.items].sort((a, b) => {
       const catA = getItemCategory(a.productName);
@@ -272,7 +273,7 @@ export default function ComprasView() {
     }, {} as Record<string, typeof req.items>);
 
     Object.entries(grouped).forEach(([grupoName, items]) => {
-      text += `\n📍 *GRUPO: ${grupoName.toUpperCase()}*\n`;
+      text += `\n*GRUPO: ${grupoName.toUpperCase()}*\n`;
       items.forEach((item, idx) => {
         const cat = getItemCategory(item.productName);
         text += `  ${idx + 1}. [${cat}] *${item.productName}* — ${item.quantity} ${item.unit}\n`;
@@ -280,7 +281,7 @@ export default function ComprasView() {
       });
     });
 
-    if (req.audioUrl) text += `\n🔊 _Incluye nota de voz adjunta en la PWA._`;
+    if (req.audioUrl) text += `\n[Nota de voz adjunta en el sistema PWA]`;
 
     const encoded = encodeURIComponent(text);
     window.open(`https://wa.me/?text=${encoded}`, '_blank');
@@ -412,9 +413,9 @@ export default function ComprasView() {
             {searchQuery && (
               <button 
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 hover:text-slate-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
               >
-                ✕
+                <X className="w-3.5 h-3.5" />
               </button>
             )}
           </div>

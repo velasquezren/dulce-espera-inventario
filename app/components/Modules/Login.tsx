@@ -104,7 +104,7 @@ export default function Login() {
           </Button>
         </form>
 
-        {/* 🛒 Quick Access for Purchases / Encargada de Compras */}
+        {/* Quick Access for Purchases / Encargada de Compras */}
         <div className="pt-5 border-t border-slate-100 mt-6 space-y-2">
           <p className="text-xs font-extrabold text-slate-400 uppercase tracking-wider text-left">
             Acceso Directo a Compras:

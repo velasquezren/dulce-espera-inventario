@@ -30,7 +30,7 @@ export default function ErrorDebugger() {
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-red-700 text-white p-4 font-mono text-xs z-[9999] overflow-auto max-h-60 shadow-xl border-t-2 border-white">
       <div className="font-bold flex items-center justify-between border-b border-white/20 pb-1.5 mb-1.5">
-        <span>⚠️ DETECTOR DE ERRORES EN DISPOSITIVO:</span>
+        <span>[DIAGNÓSTICO] DETECTOR DE ERRORES EN DISPOSITIVO:</span>
         <button 
           onClick={() => setError(null)} 
           className="text-white hover:bg-white/20 px-2 py-0.5 rounded font-bold transition-colors"

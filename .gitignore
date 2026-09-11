@@ -56,5 +56,5 @@ env/
 .env.*.local
 
 
-~.xlsx
-
+~$*.xlsx
+insumos_2026_prepared.json

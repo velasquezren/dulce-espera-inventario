@@ -14,7 +14,7 @@ interface SemaforoButtonsProps {
 export default function SemaforoButtons({ currentEstado, onEstadoChange, disabled = false }: SemaforoButtonsProps) {
   return (
     <div className="flex items-center gap-1.5 w-full sm:w-auto font-sans">
-      {/* 🔴 Button 1: Falta */}
+      {/* Button 1: Falta */}
       <button
         type="button"
         disabled={disabled}
@@ -29,7 +29,7 @@ export default function SemaforoButtons({ currentEstado, onEstadoChange, disable
         <span>Falta</span>
       </button>
 
-      {/* 🟡 Button 2: Ya Pedí */}
+      {/* Button 2: Ya Pedí */}
       <button
         type="button"
         disabled={disabled}
@@ -44,7 +44,7 @@ export default function SemaforoButtons({ currentEstado, onEstadoChange, disable
         <span>Ya Pedí</span>
       </button>
 
-      {/* 🟢 Button 3: Llegó */}
+      {/* Button 3: Llegó */}
       <button
         type="button"
         disabled={disabled}
