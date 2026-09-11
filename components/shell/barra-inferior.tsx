@@ -26,14 +26,14 @@ export function BarraInferior() {
           >
             <span
               className={cn(
-                'flex h-9 w-16 items-center justify-center rounded-full transition-colors',
+                'flex h-9 w-14 items-center justify-center rounded-full transition-colors',
                 activo ? 'bg-brand text-white' : 'text-ink-muted',
               )}
             >
               <Icono className="size-6" aria-hidden />
             </span>
-            <span className={cn('text-[12px] font-medium', activo ? 'text-brand' : 'text-ink-muted')}>
-              {enlace.etiqueta}
+            <span className={cn('text-[11px] font-medium', activo ? 'text-brand' : 'text-ink-muted')}>
+              {enlace.etiquetaCorta}
             </span>
           </Link>
         );

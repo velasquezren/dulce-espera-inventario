@@ -4,6 +4,5 @@ import { urlApi } from './cliente';
 export const reportes = {
   excelPedido: (id: string) => urlApi(`/pedidos/${id}/reporte/excel`),
   pdfPedido: (id: string) => urlApi(`/pedidos/${id}/reporte/pdf`),
-  adminPedido: (id: string) => urlApi(`/pedidos/${id}/reporte-admin`),
   excelPendientes: () => urlApi('/api/pedidos/pendientes/excel'),
 };

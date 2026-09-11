@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { FileSpreadsheet, LogOut, RotateCw, ShoppingBag } from 'lucide-react';
+import { ArrowDownToLine, FileSpreadsheet, LogOut, RotateCw, ShoppingBag } from 'lucide-react';
 import { Boton } from '@/components/ui/boton';
 import { Buscador } from '@/components/ui/buscador';
 import { Chip } from '@/components/ui/filtros';
@@ -11,6 +11,9 @@ import { Metrica } from '@/components/ui/metrica';
 import { useAvisos } from '@/components/ui/avisos';
 import { Marca } from '@/components/shell/marca';
 import { reportes } from '@/lib/api/reportes';
+import { construirCsv, descargarArchivo } from '@/lib/csv';
+import { canal as definicionCanal } from '@/lib/domain/canales';
+import { formatoCantidad, formatoFecha, hoyISO, soloHora } from '@/lib/formato';
 import { CLAVES } from '@/lib/almacenamiento';
 import { estado as definicionEstado, estaAbierto } from '@/lib/domain/estados';
 import type { EstadoPedido, Pedido } from '@/lib/domain/tipos';
@@ -96,6 +99,34 @@ export function VistaCompras() {
     setActualizando(false);
   };
 
+  /** Historial completo, linea por linea, para archivar o analizar en Excel. */
+  const exportarHistorial = () => {
+    const filas = pedidos.flatMap((pedido) =>
+      pedido.lineas.map((linea) => [
+        formatoFecha(pedido.fecha),
+        soloHora(pedido.fecha),
+        pedido.folio,
+        pedido.solicitante,
+        definicionEstado(pedido.estado).etiqueta,
+        definicionCanal(linea.canal).nombreCorto,
+        linea.categoria,
+        linea.nombre,
+        formatoCantidad(linea.cantidad),
+        linea.presentacion,
+        pedido.motivo,
+      ]),
+    );
+
+    descargarArchivo(
+      construirCsv(
+        ['Fecha', 'Hora', 'Pedido', 'Solicitante', 'Estado', 'Canal', 'Categoria', 'Insumo', 'Cantidad', 'Presentacion', 'Motivo'],
+        filas,
+      ),
+      `historial-pedidos-${hoyISO()}.csv`,
+      'text/csv;charset=utf-8',
+    );
+  };
+
   const cargando = estado === 'cargando' && pedidos.length === 0;
 
   return (
@@ -165,15 +196,27 @@ export function VistaCompras() {
             </Chip>
           </div>
 
-          <a
-            href={reportes.excelPendientes()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 self-start text-[13px] font-medium text-brand hover:underline"
-          >
-            <FileSpreadsheet className="size-3.5" aria-hidden />
-            Excel maestro de pedidos pendientes
-          </a>
+          <div className="flex flex-wrap gap-2">
+            <a
+              href={reportes.excelPendientes()}
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-10 items-center gap-2 rounded-control border border-line-strong bg-surface px-3.5 text-sm font-medium text-ink-soft transition-colors hover:bg-surface-muted hover:text-ink"
+            >
+              <FileSpreadsheet className="size-4" aria-hidden />
+              Excel de pendientes
+            </a>
+            <Boton
+              variante="secundario"
+              tamano="sm"
+              onClick={exportarHistorial}
+              disabled={pedidos.length === 0}
+            >
+              <ArrowDownToLine className="size-4" aria-hidden />
+              Historial en CSV
+            </Boton>
+          </div>
 
           {cargando ? (
             <div className="flex flex-col gap-3">

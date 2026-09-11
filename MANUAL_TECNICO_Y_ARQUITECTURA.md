@@ -116,11 +116,24 @@ flowchart TD
 - Endpoint: `GET /pedidos/{id_publico}/reporte/pdf`
 - Documento formal en escala tipografica estricta, libre de emojis, optimizado para impresion fisica.
 
-### 4.3 Hoja del Pedido en Imagen de Alta Densidad
-- `lib/hoja-pedido.ts` dibuja la hoja en canvas a 3x, agrupada por canal, con total y firmas.
-  Se carga bajo demanda desde el boton de cada pedido.
-- La imagen se entrega al dialogo del sistema (Web Share API) o se descarga. La aplicacion no
-  envia a ninguna aplicacion de mensajeria en particular.
+### 4.3 Entrega de Documentos al Personal
+
+Los tres formatos conviven porque cubren situaciones distintas de la operacion diaria:
+
+| Documento | Origen | Para que sirve |
+|---|---|---|
+| Excel | `openpyxl` en el backend | Planilla con casillas para marcar lo recibido |
+| PDF | `xhtml2pdf` en el backend | Se imprime y se entrega firmado a la gobernanta |
+| Imagen | `lib/hoja-pedido.ts`, canvas a 3x | Se manda por mensaje y se lee bien en el telefono |
+
+Cada uno ofrece **compartir** y **descargar**:
+- Compartir baja el archivo con `fetch` y lo entrega a la Web Share API, que muestra las
+  aplicaciones del dispositivo. El boton solo aparece si el navegador admite compartir archivos,
+  lo que se comprueba con `navigator.canShare` y un archivo de prueba.
+- Descargar es un enlace directo al endpoint, sin pasar por JavaScript: funciona siempre, incluso
+  si falla CORS o el navegador no admite compartir.
+- La aplicacion no envia a ninguna aplicacion de mensajeria concreta ni guarda numeros de
+  telefono para ese fin.
 
 ---
 
@@ -155,6 +168,7 @@ flowchart TD
 | `/cuaderno` | Catalogo de 771 insumos y lista para enviar | Cocina |
 | `/solicitudes` | Seguimiento de pedidos y hoja para compartir | Cocina |
 | `/recepciones` | Repaso linea por linea y confirmacion | Cocina |
+| `/informes` | Excel, PDF e imagen del pedido: compartir o descargar | Cocina |
 | `/cuenta` | Sesion e instalacion de la PWA | Cocina |
 | `/compras` | Lista de compras con checklist y cambio de estado | Rol compras |
 
@@ -215,6 +229,8 @@ servidor se muestra al usuario, una caida de red guarda el pedido y lo reintenta
   cierre con `Escape`, enlace para saltar al contenido y respeto por `prefers-reduced-motion`.
 - **Busqueda sin acentos:** "limon" encuentra "Limón" en los 771 insumos.
 - **Ortografia cuidada:** los textos de la interfaz llevan tildes y signos de interrogacion.
+- **Exportaciones donde corresponde:** cocina obtiene los documentos de su pedido en `/informes`;
+  el historial completo en CSV vive en el area de compras, que es quien lo necesita para archivar.
 - **Verificacion antes de desplegar:** `npm run typecheck`, `npm run lint` y `npm run build`
   deben terminar sin errores.
 
