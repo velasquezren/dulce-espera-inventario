@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Card, Portal, useToast } from '../UI';
-import { RequestItem } from '../../lib/mockData';
+import { RequestItem, Product } from '../../lib/mockData';
 import AudioPlayer from '../AudioPlayer';
 import {
   Printer,
@@ -11,19 +11,119 @@ import {
   Share2,
   FileText,
   Search,
-  ChevronRight,
   ChevronDown,
   Package,
   Clock,
   ArrowUpDown,
-  X
+  X,
+  FileSpreadsheet,
+  ExternalLink,
+  Layers,
+  List,
+  CheckCircle2,
+  User,
+  Filter
 } from 'lucide-react';
 
-/* ────────────────────── types ────────────────────── */
+/* ────────────────────── types & configs ────────────────────── */
 type SortKey = 'date' | 'user' | 'items' | 'status';
 type SortDir = 'asc' | 'desc';
+type TableViewMode = 'channels' | 'flat';
 
-/* ────────────────────── helpers: text wrapping for canvas ────────────────────── */
+export interface ChannelGroup {
+  id: string;
+  name: string;
+  subtitle: string;
+  color: string;
+  badgeBg: string;
+  badgeText: string;
+}
+
+export const CHANNELS_CONFIG: ChannelGroup[] = [
+  {
+    id: 'Mercado',
+    name: 'Plaza de Mercado',
+    subtitle: 'Perecederos, Carnes, Frutas y Verduras frescas',
+    color: '#b45309',
+    badgeBg: 'bg-amber-50 border-amber-200/80',
+    badgeText: 'text-amber-800'
+  },
+  {
+    id: 'Super Mercado',
+    name: 'Supermercado y Abarrotes',
+    subtitle: 'Secos, Lácteos industriales, Granos y Limpieza',
+    color: '#006156',
+    badgeBg: 'bg-[#e6f0ef] border-[#39ADA3]/40',
+    badgeText: 'text-[#006156]'
+  },
+  {
+    id: 'Proveedor',
+    name: 'Proveedores Directos',
+    subtitle: 'Distribuidoras, Panadería, Kéfir y Especiales',
+    color: '#4338ca',
+    badgeBg: 'bg-indigo-50 border-indigo-200/80',
+    badgeText: 'text-indigo-800'
+  },
+  {
+    id: 'Otros',
+    name: 'Otros Insumos y Servicios',
+    subtitle: 'Descartables, envases y consumos varios',
+    color: '#475569',
+    badgeBg: 'bg-slate-100 border-slate-200',
+    badgeText: 'text-slate-700'
+  }
+];
+
+export function resolveItemChannel(item: { productName: string; group?: string }, products: Product[]): string {
+  if (item.group && item.group.trim()) {
+    const g = item.group.trim();
+    if (g.toLowerCase() === 'mercado') return 'Mercado';
+    if (g.toLowerCase() === 'super mercado' || g.toLowerCase() === 'supermercado' || g.toLowerCase() === 'super') return 'Super Mercado';
+    if (g.toLowerCase() === 'proveedor') return 'Proveedor';
+    return g;
+  }
+  const found = products.find(p => p.name.toLowerCase() === (item.productName || '').toLowerCase());
+  if (found && found.group) {
+    return found.group;
+  }
+  const name = (item.productName || '').toLowerCase();
+  if (name.includes('pollo') || name.includes('carne') || name.includes('tomate') || name.includes('cebolla') || name.includes('papa') || name.includes('lechuga') || name.includes('repollo') || name.includes('verdura') || name.includes('fruta') || name.includes('pescado') || name.includes('cerdo') || name.includes('res') || name.includes('huevo') || name.includes('limon')) {
+    return 'Mercado';
+  }
+  if (name.includes('distribuidora') || name.includes('panaderia') || name.includes('panadería') || name.includes('kefir') || name.includes('kéfir')) {
+    return 'Proveedor';
+  }
+  if (name.includes('descartable') || name.includes('limpieza') || name.includes('bolsa') || name.includes('servilleta')) {
+    return 'Otros';
+  }
+  return 'Super Mercado';
+}
+
+export function resolveItemCategory(item: { productName: string }, products: Product[]): string {
+  const found = products.find(p => p.name.toLowerCase() === (item.productName || '').toLowerCase());
+  if (found && found.category) {
+    return found.category;
+  }
+  const name = (item.productName || '').toLowerCase();
+  if (name.includes('pollo') || name.includes('carne') || name.includes('pescado') || name.includes('cerdo') || name.includes('res') || name.includes('huevo') || name.includes('jamon') || name.includes('salchicha')) {
+    return 'Carnes y Proteínas';
+  }
+  if (name.includes('tomate') || name.includes('cebolla') || name.includes('papa') || name.includes('lechuga') || name.includes('repollo') || name.includes('zanahoria') || name.includes('verdura')) {
+    return 'Verduras y Hortalizas';
+  }
+  if (name.includes('fruta') || name.includes('manzana') || name.includes('naranja') || name.includes('platano')) {
+    return 'Frutas';
+  }
+  if (name.includes('leche') || name.includes('queso') || name.includes('mantequilla') || name.includes('yogur')) {
+    return 'Lácteos';
+  }
+  if (name.includes('arroz') || name.includes('fideo') || name.includes('harina') || name.includes('quinua') || name.includes('avena')) {
+    return 'Granos y Cereales';
+  }
+  return 'Abarrotes y Varios';
+}
+
+/* ────────────────────── canvas helpers ────────────────────── */
 const getWrappedLinesCount = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number): number => {
   const words = text.split(' ');
   let line = '';
@@ -58,18 +158,14 @@ const drawWrappedText = (ctx: CanvasRenderingContext2D, text: string, x: number,
   return currentY;
 };
 
-/* ────────────────────── helper: canvas image generation ────────────────────── */
-const generateRequestImage = (req: RequestItem): Promise<Blob> => {
+/* ────────────────────── canvas image generation ────────────────────── */
+const generateRequestImage = (req: RequestItem, products: Product[]): Promise<Blob> => {
   return new Promise((resolve, reject) => {
     const logoImg = new Image();
     logoImg.src = '/logo.svg';
-    
-    logoImg.onload = () => {
-      drawCanvas(logoImg);
-    };
-    logoImg.onerror = () => {
-      drawCanvas(null);
-    };
+
+    logoImg.onload = () => drawCanvas(logoImg);
+    logoImg.onerror = () => drawCanvas(null);
 
     function drawCanvas(logo: HTMLImageElement | null) {
       const canvas = document.createElement('canvas');
@@ -79,243 +175,276 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
         return;
       }
 
-      const width = 600;
-      
-      // Calculate heights dynamically
-      const headerHeight = 110;
-      const infoHeight = 45; // reduced since we removed Cargo/Destino space
-      const sectionTitleHeight = 35;
-      const tableHeaderHeight = 30;
-      const rowHeight = 26;
-      const tableFooterHeight = 35;
+      const width = 640;
 
-      // Calculate reason text wrapping height
+      // Group items by channel
+      const groupedChannels = CHANNELS_CONFIG.map(cfg => {
+        const items = req.items.filter(it => resolveItemChannel(it, products) === cfg.id);
+        return {
+          ...cfg,
+          items,
+          totalUnits: items.reduce((acc, it) => acc + it.quantity, 0)
+        };
+      }).filter(c => c.items.length > 0);
+
+      const headerHeight = 115;
+      const infoHeight = 45;
+      const channelHeaderHeight = 32;
+      const tableThHeight = 24;
+      const rowHeight = 24;
+      const subtotalHeight = 26;
+
+      let tablesHeight = 0;
+      groupedChannels.forEach(c => {
+        tablesHeight += channelHeaderHeight + tableThHeight + (c.items.length * rowHeight) + subtotalHeight + 14;
+      });
+
+      // Reason height
       const tempCanvas = document.createElement('canvas');
       const tempCtx = tempCanvas.getContext('2d')!;
       tempCtx.font = 'italic 11px Inter, system-ui, -apple-system, sans-serif';
       const reasonText = req.reason ? `"${req.reason}"` : '';
-      const reasonLinesCount = req.reason ? getWrappedLinesCount(tempCtx, reasonText, 500) : 0;
-      const reasonHeight = req.reason ? 30 + (reasonLinesCount * 16) : 0;
+      const reasonLinesCount = req.reason ? getWrappedLinesCount(tempCtx, reasonText, 540) : 0;
+      const reasonHeight = req.reason ? 34 + (reasonLinesCount * 16) : 0;
 
-      const spaceBeforeFooter = 25;
-      const footerHeight = 55;
+      const grandTotalHeight = 38;
+      const signaturesHeight = 70;
+      const footerHeight = 40;
 
-      const height = headerHeight + infoHeight + sectionTitleHeight + tableHeaderHeight + 
-                     (req.items.length * rowHeight) + tableFooterHeight + reasonHeight + 
-                     spaceBeforeFooter + footerHeight;
+      const height = headerHeight + infoHeight + tablesHeight + grandTotalHeight + reasonHeight + signaturesHeight + footerHeight;
 
       const scale = 4;
       canvas.width = width * scale;
       canvas.height = height * scale;
-
-      // Scale drawing context for retina sharpness
       ctx.scale(scale, scale);
-
-      // Reset styles
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'alphabetic';
 
       // Background
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, width, height);
 
-      // Header Logo Icon
+      // Header Logo
       if (logo) {
-        ctx.drawImage(logo, 30, 30, 40, 40);
+        ctx.drawImage(logo, 30, 26, 42, 42);
       } else {
-        // Fallback vector icon
         ctx.fillStyle = '#006156';
         ctx.beginPath();
-        ctx.arc(50, 50, 20, 0, Math.PI * 2);
+        ctx.arc(51, 47, 21, 0, Math.PI * 2);
         ctx.fill();
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(47, 38, 6, 24);
-        ctx.fillRect(38, 47, 24, 6);
       }
 
-      // Brand Name Text (centered vertically relative to the 40px logo)
+      // Header Titles
       ctx.fillStyle = '#006156';
-      ctx.font = 'bold 22px Inter, system-ui, -apple-system, sans-serif';
+      ctx.font = 'bold 20px Inter, system-ui, -apple-system, sans-serif';
       ctx.textBaseline = 'middle';
-      ctx.fillText('DULCE ESPERA', 84, 50);
-      ctx.textBaseline = 'alphabetic'; // restore baseline
+      ctx.fillText('CLÍNICA MONTALVO — DULCE ESPERA', 84, 42);
+      ctx.textBaseline = 'alphabetic';
 
-      // Top Right Metadata
+      ctx.fillStyle = '#64748b';
+      ctx.font = '600 10px Inter, system-ui, -apple-system, sans-serif';
+      ctx.fillText('ORDEN OFICIAL DE COMPRAS Y DESPACHO DE INSUMOS', 84, 58);
+
+      // Top Right Info
       ctx.fillStyle = '#475569';
       ctx.font = 'bold 11px monospace';
       ctx.textAlign = 'right';
-      ctx.fillText(`N° LISTA: ${req.id.toUpperCase()}`, 570, 38);
-      ctx.fillText(`FECHA: ${req.date}`, 570, 54);
-      
+      ctx.fillText(`PEDIDO: #${req.id.toUpperCase()}`, 610, 38);
+      ctx.font = '500 10px Inter, system-ui, -apple-system, sans-serif';
+      ctx.fillText(`Fecha: ${req.date}`, 610, 52);
       ctx.fillStyle = '#006156';
-      ctx.fillText(`ESTADO: ${req.status.toUpperCase()}`, 570, 70);
-      ctx.textAlign = 'left'; // reset
+      ctx.font = 'bold 10px Inter, system-ui, -apple-system, sans-serif';
+      ctx.fillText(`ESTADO: ${req.status.toUpperCase()}`, 610, 66);
+      ctx.textAlign = 'left';
 
-      // Thick teal header divider line
+      // Header Divider
       ctx.strokeStyle = '#006156';
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 2.5;
       ctx.beginPath();
-      ctx.moveTo(30, 92);
-      ctx.lineTo(570, 92);
+      ctx.moveTo(30, 84);
+      ctx.lineTo(610, 84);
       ctx.stroke();
 
-      // Info section (Solicitado por)
-      let currentY = 118;
+      // Info Meta Row
+      let currentY = 106;
       ctx.fillStyle = '#0f172a';
       ctx.font = 'bold 11px Inter, system-ui, -apple-system, sans-serif';
       ctx.fillText('Solicitado por:', 30, currentY);
-
       ctx.fillStyle = '#475569';
       ctx.font = '500 11px Inter, system-ui, -apple-system, sans-serif';
-      ctx.fillText(req.user, 115, currentY);
+      ctx.fillText(req.user, 120, currentY);
 
-      // Section title
-      currentY = 155;
-      ctx.fillStyle = '#39ADA3';
-      ctx.fillRect(30, currentY - 11, 3, 14);
+      currentY = 135;
 
-      ctx.fillStyle = '#006156';
-      ctx.font = 'bold 10px Inter, system-ui, -apple-system, sans-serif';
-      ctx.fillText('PRODUCTOS SOLICITADOS', 40, currentY);
+      // Draw Channel Tables
+      let itemGlobalIdx = 1;
+      groupedChannels.forEach(c => {
+        // Channel Banner Bar
+        ctx.fillStyle = c.color;
+        ctx.fillRect(30, currentY, 580, 24);
 
-      // Table Header
-      currentY = 186;
-      ctx.fillStyle = '#006156';
-      ctx.font = 'bold 10px Inter, system-ui, -apple-system, sans-serif';
-      
-      ctx.textAlign = 'center';
-      ctx.fillText('N°', 42, currentY);
-      
-      ctx.textAlign = 'left';
-      ctx.fillText('Descripción del Insumo', 70, currentY);
-      
-      ctx.textAlign = 'center';
-      ctx.fillText('Unidad', 440, currentY);
-      
-      ctx.textAlign = 'right';
-      ctx.fillText('Cant.', 570, currentY);
-      ctx.textAlign = 'left'; // reset
-
-      // Table Header divider line
-      ctx.strokeStyle = '#006156';
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.moveTo(30, 194);
-      ctx.lineTo(570, 194);
-      ctx.stroke();
-
-      currentY = 214;
-
-      // Items
-      req.items.forEach((item: RequestItem['items'][number], idx: number) => {
-        // Continuous Alternating background rows (no gaps!)
-        if (idx % 2 === 1) {
-          ctx.fillStyle = '#f8fafb';
-          ctx.fillRect(30, currentY - 18, 540, 26);
-        }
-        
-        // Index
-        ctx.fillStyle = '#94a3b8';
+        ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 10px Inter, system-ui, -apple-system, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(String(idx + 1), 42, currentY);
-        
-        // Product Name
-        ctx.fillStyle = '#0f172a';
-        ctx.font = '600 11px Inter, system-ui, -apple-system, sans-serif';
-        ctx.textAlign = 'left';
-        let pName = item.productName || 'Producto';
-        if (pName.length > 44) pName = pName.slice(0, 41) + '...';
-        ctx.fillText(pName, 70, currentY);
+        ctx.fillText(c.name.toUpperCase(), 40, currentY + 16);
 
-        // Unit
-        ctx.fillStyle = '#64748b';
-        ctx.font = '500 11px Inter, system-ui, -apple-system, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(item.unit || 'uds', 440, currentY);
-
-        // Quantity
-        ctx.fillStyle = '#006156';
-        ctx.font = 'bold 12px Inter, system-ui, -apple-system, sans-serif';
         ctx.textAlign = 'right';
-        ctx.fillText(String(item.quantity), 570, currentY);
+        ctx.font = '500 9px Inter, system-ui, -apple-system, sans-serif';
+        ctx.fillText(`${c.items.length} insumos | ${c.totalUnits} uds`, 600, currentY + 16);
+        ctx.textAlign = 'left';
 
-        ctx.textAlign = 'left'; // reset
-        currentY += rowHeight;
+        currentY += 28;
+
+        // Table Header
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(30, currentY, 580, 20);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 9px Inter, system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('N°', 45, currentY + 14);
+        ctx.textAlign = 'left';
+        ctx.fillText('Descripción del Insumo', 70, currentY + 14);
+        ctx.fillText('Categoría', 360, currentY + 14);
+        ctx.textAlign = 'center';
+        ctx.fillText('Unidad', 490, currentY + 14);
+        ctx.textAlign = 'right';
+        ctx.fillText('Cant.', 595, currentY + 14);
+        ctx.textAlign = 'left';
+
+        currentY += 20;
+
+        // Item rows
+        c.items.forEach((item, idx) => {
+          if (idx % 2 === 1) {
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(30, currentY, 580, rowHeight);
+          }
+
+          ctx.fillStyle = '#94a3b8';
+          ctx.font = 'bold 9px Inter, system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(String(itemGlobalIdx++), 45, currentY + 16);
+
+          ctx.fillStyle = '#0f172a';
+          ctx.font = '600 10px Inter, system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'left';
+          let pName = item.productName || 'Producto';
+          if (pName.length > 40) pName = pName.slice(0, 38) + '...';
+          ctx.fillText(pName, 70, currentY + 16);
+
+          const catName = resolveItemCategory(item, products);
+          ctx.fillStyle = '#64748b';
+          ctx.font = '500 9px Inter, system-ui, -apple-system, sans-serif';
+          ctx.fillText(catName, 360, currentY + 16);
+
+          ctx.textAlign = 'center';
+          ctx.fillText(item.unit || 'uds', 490, currentY + 16);
+
+          ctx.fillStyle = c.color;
+          ctx.font = 'bold 11px Inter, system-ui, -apple-system, sans-serif';
+          ctx.textAlign = 'right';
+          ctx.fillText(String(item.quantity), 595, currentY + 16);
+
+          ctx.textAlign = 'left';
+
+          // Bottom cell line
+          ctx.strokeStyle = '#e2e8f0';
+          ctx.lineWidth = 0.8;
+          ctx.beginPath();
+          ctx.moveTo(30, currentY + rowHeight);
+          ctx.lineTo(610, currentY + rowHeight);
+          ctx.stroke();
+
+          currentY += rowHeight;
+        });
+
+        // Subtotal row
+        ctx.fillStyle = '#f1f5f9';
+        ctx.fillRect(30, currentY, 580, subtotalHeight);
+
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 9px Inter, system-ui, -apple-system, sans-serif';
+        ctx.textAlign = 'right';
+        ctx.fillText(`SUBTOTAL ${c.name.toUpperCase()}:`, 490, currentY + 17);
+
+        ctx.fillStyle = c.color;
+        ctx.font = 'bold 11px Inter, system-ui, -apple-system, sans-serif';
+        ctx.fillText(String(c.totalUnits), 595, currentY + 17);
+        ctx.textAlign = 'left';
+
+        currentY += subtotalHeight + 14;
       });
 
-      // Divider line before total
-      ctx.strokeStyle = '#006156';
-      ctx.lineWidth = 1.5;
+      // Grand Total Box
       ctx.beginPath();
-      ctx.moveTo(30, currentY - 12);
-      ctx.lineTo(570, currentY - 12);
+      ctx.roundRect(30, currentY, 580, 30, 6);
+      ctx.fillStyle = '#e6f0ef';
+      ctx.fill();
+      ctx.strokeStyle = '#006156';
+      ctx.lineWidth = 1;
       ctx.stroke();
 
-      // Summary Box
-      ctx.beginPath();
-      ctx.roundRect(30, currentY - 8, 540, 28, 6);
-      ctx.fillStyle = '#f0faf9';
-      ctx.fill();
-      
       ctx.fillStyle = '#006156';
       ctx.font = 'bold 11px Inter, system-ui, -apple-system, sans-serif';
-      ctx.fillText(`TOTAL: ${req.items.length} producto${req.items.length !== 1 ? 's' : ''}`, 40, currentY + 10);
+      ctx.fillText(`TOTAL PEDIDO: ${req.items.length} productos solicitados`, 45, currentY + 19);
 
-      const totalUnits = req.items.reduce((acc: number, item: any) => acc + item.quantity, 0);
+      const grandTotalUnits = req.items.reduce((acc, it) => acc + it.quantity, 0);
       ctx.textAlign = 'right';
-      ctx.fillText(String(totalUnits), 570, currentY + 10);
-      ctx.textAlign = 'left'; // reset
+      ctx.font = 'bold 13px Inter, system-ui, -apple-system, sans-serif';
+      ctx.fillText(`${grandTotalUnits} unidades`, 595, currentY + 20);
+      ctx.textAlign = 'left';
 
-      currentY += tableFooterHeight;
+      currentY += 40;
 
-      // Reason Box (wrapped correctly with rounded corners)
+      // Justification Box
       if (req.reason) {
-        currentY += 15;
-        
         ctx.beginPath();
-        ctx.roundRect(30, currentY - 15, 540, reasonHeight - 15, 6);
-        ctx.fillStyle = '#f0faf9';
+        ctx.roundRect(30, currentY, 580, reasonHeight - 10, 6);
+        ctx.fillStyle = '#fefce8';
         ctx.fill();
+        ctx.strokeStyle = '#fde047';
+        ctx.lineWidth = 1;
+        ctx.stroke();
 
-        ctx.fillStyle = '#39ADA3';
-        ctx.fillRect(30, currentY - 15, 3, reasonHeight - 15);
-
-        ctx.fillStyle = '#006156';
+        ctx.fillStyle = '#b45309';
         ctx.font = 'bold 9px Inter, system-ui, -apple-system, sans-serif';
-        ctx.fillText('Motivo / Justificación', 46, currentY);
+        ctx.fillText('MOTIVO / JUSTIFICACIÓN:', 45, currentY + 16);
 
-        ctx.fillStyle = '#334155';
-        ctx.font = 'italic 11px Inter, system-ui, -apple-system, sans-serif';
-        
-        // Draw the wrapped text inside the box
-        drawWrappedText(ctx, reasonText, 46, currentY + 18, 500, 16);
+        ctx.fillStyle = '#451a03';
+        ctx.font = 'italic 10px Inter, system-ui, -apple-system, sans-serif';
+        drawWrappedText(ctx, reasonText, 45, currentY + 30, 540, 15);
 
-        currentY += reasonHeight;
+        currentY += reasonHeight + 6;
       }
 
-      // Space before footer
-      currentY += spaceBeforeFooter;
-
-      // Footer copyright
-      ctx.strokeStyle = '#e2e8f0';
+      // Signatures
+      currentY += 24;
+      ctx.strokeStyle = '#cbd5e1';
       ctx.lineWidth = 1;
+
       ctx.beginPath();
-      ctx.moveTo(30, currentY);
-      ctx.lineTo(570, currentY);
+      ctx.moveTo(60, currentY);
+      ctx.lineTo(260, currentY);
       ctx.stroke();
 
+      ctx.beginPath();
+      ctx.moveTo(380, currentY);
+      ctx.lineTo(580, currentY);
+      ctx.stroke();
+
+      ctx.fillStyle = '#64748b';
+      ctx.font = 'bold 9px Inter, system-ui, -apple-system, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Firma Solicitante Cocina', 160, currentY + 14);
+      ctx.fillText('Firma Gobernanta / Compras', 480, currentY + 14);
+
+      // Footer
+      currentY += 34;
       ctx.fillStyle = '#94a3b8';
       ctx.font = '500 8px Inter, system-ui, -apple-system, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(`© ${new Date().getFullYear()} Dulce Espera — Lista de control de insumos.`, width / 2, currentY + 18);
+      ctx.fillText(`© ${new Date().getFullYear()} Dulce Espera — Documento oficial de despacho y adquisiciones.`, width / 2, currentY + 10);
 
       canvas.toBlob((blob) => {
-        if (blob) {
-          resolve(blob);
-        } else {
-          reject(new Error('Canvas generated null blob'));
-        }
+        if (blob) resolve(blob);
+        else reject(new Error('Canvas generated null blob'));
       }, 'image/png');
     }
   });
@@ -323,28 +452,25 @@ const generateRequestImage = (req: RequestItem): Promise<Blob> => {
 
 /* ────────────────────── component ────────────────────── */
 export default function WhatsAppDispatch() {
-  const { requests } = useApp();
+  const { requests, products } = useApp();
   const { showToast } = useToast();
 
-  /* selection ids */
   const [selectedReqId, setSelectedReqId] = useState('');
-
-  /* modal state */
   const [isReqModalOpen, setIsReqModalOpen] = useState(false);
-
-  /* search / filter / sort (inside Request selection modal) */
   const [searchOrderQuery, setSearchOrderQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [sortKey, setSortKey] = useState<SortKey>('date');
   const [sortDir, setSortDir] = useState<SortDir>('desc');
 
-  /* ui states */
   const [canShare, setCanShare] = useState(false);
   const [expandedPreview, setExpandedPreview] = useState(false);
+  const [tableViewMode, setTableViewMode] = useState<TableViewMode>('channels');
+  const [itemSearchFilter, setItemSearchFilter] = useState('');
 
   const previewRef = useRef<HTMLDivElement>(null);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://107.172.193.34.nip.io';
 
-  // Lock body scroll when request selection modal is open
+  // Lock body scroll when modal is open
   useEffect(() => {
     if (!isReqModalOpen) return;
     const originalStyle = window.getComputedStyle(document.body).overflow;
@@ -376,13 +502,32 @@ export default function WhatsAppDispatch() {
   /* derived data */
   const selectedReq = requests.find((r) => r.idPublico === selectedReqId || r.id === selectedReqId);
 
-  /* unique statuses for filter */
-  const uniqueStatuses = useMemo(() => {
-    const set = new Set(requests.map(r => r.status));
-    return Array.from(set);
-  }, [requests]);
+  /* Breakdown by channels for selected request */
+  const channelBreakdown = useMemo(() => {
+    if (!selectedReq) return [];
+    return CHANNELS_CONFIG.map(cfg => {
+      const items = selectedReq.items.filter(it => resolveItemChannel(it, products) === cfg.id);
+      return {
+        ...cfg,
+        items,
+        totalUnits: items.reduce((acc, it) => acc + it.quantity, 0)
+      };
+    });
+  }, [selectedReq, products]);
 
-  /* filtered + sorted requests (in selection modal) */
+  /* Filtered items within selected order */
+  const filteredOrderItems = useMemo(() => {
+    if (!selectedReq) return [];
+    if (!itemSearchFilter.trim()) return selectedReq.items;
+    const q = itemSearchFilter.toLowerCase();
+    return selectedReq.items.filter(it =>
+      it.productName.toLowerCase().includes(q) ||
+      resolveItemCategory(it, products).toLowerCase().includes(q) ||
+      resolveItemChannel(it, products).toLowerCase().includes(q)
+    );
+  }, [selectedReq, itemSearchFilter, products]);
+
+  /* Modal request filtering */
   const processedRequests = useMemo(() => {
     let list = [...requests];
 
@@ -419,26 +564,10 @@ export default function WhatsAppDispatch() {
     else { setSortKey(key); setSortDir('desc'); }
   };
 
-  const handleCopyImage = async () => {
-    if (!selectedReq) return;
-    try {
-      const blob = await generateRequestImage(selectedReq);
-      await navigator.clipboard.write([
-        new ClipboardItem({
-          [blob.type]: blob
-        })
-      ]);
-      showToast('¡Imagen copiada! Pégala en WhatsApp.', 'success');
-    } catch (err) {
-      console.error(err);
-      showToast('Error al copiar imagen. Prueba a descargar.', 'error');
-    }
-  };
-
   const handleShareImage = async () => {
     if (!selectedReq) return;
     try {
-      const blob = await generateRequestImage(selectedReq);
+      const blob = await generateRequestImage(selectedReq, products);
       const file = new File([blob], `Pedido_${selectedReq.id}.png`, { type: 'image/png' });
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
         await navigator.share({
@@ -450,7 +579,6 @@ export default function WhatsAppDispatch() {
         handleDownloadImage();
       }
     } catch (err) {
-      // El usuario canceló el cuadro nativo de compartir: no es un error real
       if (err instanceof Error && err.name === 'AbortError') return;
       console.error(err);
       showToast('No se pudo compartir la imagen', 'error');
@@ -460,7 +588,7 @@ export default function WhatsAppDispatch() {
   const handleDownloadImage = async () => {
     if (!selectedReq) return;
     try {
-      const blob = await generateRequestImage(selectedReq);
+      const blob = await generateRequestImage(selectedReq, products);
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
@@ -469,112 +597,144 @@ export default function WhatsAppDispatch() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-      showToast('¡Imagen descargada!', 'success');
+      showToast('Imagen descargada correctamente', 'success');
     } catch (err) {
       console.error(err);
       showToast('Error al descargar la imagen', 'error');
     }
   };
 
-
-
-  /* ─── Print PDF / Save as PDF ─── */
+  /* ─── Print PDF Window ─── */
   const handlePrintLocalPDF = () => {
     if (!selectedReq) return;
     const printWindow = window.open('', '_blank');
     if (!printWindow) return;
 
-    const totalUnits = selectedReq.items.reduce((sum, i) => sum + i.quantity, 0);
+    const grandTotalUnits = selectedReq.items.reduce((sum, i) => sum + i.quantity, 0);
 
-    const rowsHtml = selectedReq.items.map((item, idx) => `
-      <tr style="${idx % 2 === 0 ? '' : 'background:#f8fafb;'}">
-        <td style="width:36px;text-align:center;color:#94a3b8;font-weight:700;font-size:11px;padding:9px 6px">${idx + 1}</td>
-        <td style="padding:9px 10px;font-weight:600;color:#0f172a;font-size:12px">${item.productName}</td>
-        <td style="padding:9px 10px;text-align:center;font-size:12px;color:#64748b">${item.unit}</td>
-        <td style="padding:9px 10px;text-align:right;font-weight:800;color:#006156;font-size:13px">${item.quantity}</td>
-      </tr>
-    `).join('');
+    const grouped = CHANNELS_CONFIG.map(cfg => {
+      const items = selectedReq.items.filter(it => resolveItemChannel(it, products) === cfg.id);
+      return {
+        ...cfg,
+        items,
+        totalUnits: items.reduce((acc, it) => acc + it.quantity, 0)
+      };
+    }).filter(c => c.items.length > 0);
+
+    let channelTablesHtml = '';
+    let itemIdx = 1;
+
+    grouped.forEach(c => {
+      const rows = c.items.map(it => `
+        <tr style="border-bottom: 1px solid #e2e8f0;">
+          <td style="width: 32px; text-align: center; color: #64748b; font-weight: bold; font-size: 10px; padding: 7px 4px;">${itemIdx++}</td>
+          <td style="padding: 7px 8px; font-weight: bold; color: #0f172a; font-size: 11px;">${it.productName}</td>
+          <td style="padding: 7px 8px; color: #475569; font-size: 10px;">${resolveItemCategory(it, products)}</td>
+          <td style="padding: 7px 8px; text-align: right; font-weight: 800; color: ${c.color}; font-size: 11px;">${it.quantity}</td>
+          <td style="padding: 7px 8px; text-align: center; color: #475569; font-size: 10px;">${it.unit}</td>
+          <td style="width: 50px; text-align: center; font-size: 11px; color: #cbd5e1; padding: 7px 4px;">[ &nbsp; ]</td>
+        </tr>
+      `).join('');
+
+      channelTablesHtml += `
+        <div style="margin-top: 18px; margin-bottom: 14px; page-break-inside: avoid;">
+          <div style="display: flex; justify-content: space-between; align-items: center; background-color: ${c.color}; color: white; padding: 6px 10px; border-radius: 4px; margin-bottom: 4px;">
+            <span style="font-size: 11px; font-weight: 900; letter-spacing: 0.04em;">${c.name.toUpperCase()}</span>
+            <span style="font-size: 10px; font-weight: 600;">${c.items.length} ítems &bull; ${c.totalUnits} unidades</span>
+          </div>
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr style="background-color: #f1f5f9; border-bottom: 2px solid #cbd5e1;">
+                <th style="padding: 6px 4px; text-align: center; font-size: 9px; color: #475569; text-transform: uppercase;">N°</th>
+                <th style="padding: 6px 8px; text-align: left; font-size: 9px; color: #475569; text-transform: uppercase;">Descripción Insumo</th>
+                <th style="padding: 6px 8px; text-align: left; font-size: 9px; color: #475569; text-transform: uppercase;">Categoría</th>
+                <th style="padding: 6px 8px; text-align: right; font-size: 9px; color: #475569; text-transform: uppercase;">Cant.</th>
+                <th style="padding: 6px 8px; text-align: center; font-size: 9px; color: #475569; text-transform: uppercase;">Unidad</th>
+                <th style="padding: 6px 4px; text-align: center; font-size: 9px; color: #475569; text-transform: uppercase;">Check</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+              <tr style="background-color: #f8fafc; border-top: 1px solid #cbd5e1;">
+                <td colspan="3" style="padding: 6px 8px; text-align: right; font-weight: bold; font-size: 10px; color: #0f172a;">SUBTOTAL ${c.name.toUpperCase()}:</td>
+                <td style="padding: 6px 8px; text-align: right; font-weight: 800; font-size: 11px; color: ${c.color};">${c.totalUnits}</td>
+                <td colspan="2"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+    });
 
     const reasonHtml = selectedReq.reason ? `
-      <div style="margin-top:24px;padding:14px 16px;border-left:3px solid #39ADA3;background:#f0faf9">
-        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#006156;margin-bottom:4px">Motivo / Justificación</div>
-        <div style="font-size:12px;color:#334155;font-style:italic;line-height:1.6">&ldquo;${selectedReq.reason}&rdquo;</div>
+      <div style="margin-top: 20px; padding: 10px 14px; border-left: 3px solid #d97706; background-color: #fefce8; border-radius: 4px;">
+        <div style="font-size: 10px; font-weight: 800; text-transform: uppercase; color: #b45309; margin-bottom: 2px;">Motivo / Justificación</div>
+        <div style="font-size: 11px; color: #451a03; font-style: italic;">&ldquo;${selectedReq.reason}&rdquo;</div>
       </div>
     ` : '';
 
-    printWindow.document.write(`<!DOCTYPE html><html><head>
-      <title>Solicitud Insumos N° ${selectedReq.id.toUpperCase()}</title>
+    printWindow.document.write(`<!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta charset="UTF-8">
+      <title>Orden de Compra N° ${selectedReq.id.toUpperCase()} - Dulce Espera</title>
       <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:36px 40px;color:#0f172a;background:#fff;line-height:1.5;font-size:12px}
-        table{width:100%;border-collapse:collapse}
-        @media print{body{padding:20px 24px}}
-      </style></head><body>
-
-      <!-- Header -->
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:18px;border-bottom:3px solid #006156;margin-bottom:20px">
-        <div style="display:flex;align-items:center;gap:14px">
-          <img src="/logo.svg" alt="Logo" style="width:40px;height:40px;object-fit:contain"/>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; padding: 28px 36px; color: #0f172a; background: #fff; line-height: 1.4; font-size: 11px; }
+        @media print {
+          body { padding: 15px 20px; }
+          @page { margin: 12mm; size: letter; }
+        }
+      </style>
+    </head>
+    <body>
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 14px; border-bottom: 3px solid #006156; margin-bottom: 18px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <img src="/logo.svg" alt="Logo" style="width: 42px; height: 42px; object-fit: contain;" />
           <div>
-            <div style="font-size:20px;font-weight:800;color:#006156;letter-spacing:-.5px;line-height:1">DULCE ESPERA</div>
+            <div style="font-size: 19px; font-weight: 900; color: #006156; letter-spacing: -0.5px;">CLÍNICA MONTALVO &mdash; DULCE ESPERA</div>
+            <div style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Orden Oficial de Compras y Control de Insumos</div>
           </div>
         </div>
-        <div style="text-align:right;font-size:11px;color:#475569;line-height:1.8">
-          <div><strong>N° LISTA:</strong> ${selectedReq.id.toUpperCase()}</div>
+        <div style="text-align: right; font-size: 10px; color: #475569; line-height: 1.6;">
+          <div><strong>PEDIDO N°:</strong> #${selectedReq.id.toUpperCase()}</div>
           <div><strong>FECHA:</strong> ${selectedReq.date}</div>
-          <div><strong>ESTADO:</strong> <span style="color:#006156;font-weight:700">${selectedReq.status.toUpperCase()}</span></div>
+          <div><strong>ESTADO:</strong> <span style="color: #006156; font-weight: 800;">${selectedReq.status.toUpperCase()}</span></div>
         </div>
       </div>
 
-      <!-- Info row -->
-      <div style="display:flex;justify-content:space-between;font-size:11px;color:#475569;margin-bottom:22px;line-height:1.7">
-        <div>
-          <div><strong style="color:#0f172a">Solicitado por:</strong> ${selectedReq.user}</div>
-        </div>
+      <div style="display: flex; justify-content: space-between; font-size: 11px; color: #475569; margin-bottom: 12px; background: #f8fafc; padding: 8px 12px; border-radius: 6px; border: 1px solid #e2e8f0;">
+        <div><strong>Solicitado por:</strong> <span style="color: #0f172a; font-weight: bold;">${selectedReq.user}</span></div>
+        <div><strong>Total Ítems:</strong> ${selectedReq.items.length} &bull; <strong>Total Unidades:</strong> ${grandTotalUnits}</div>
       </div>
 
-      <!-- Section title -->
-      <div style="font-size:11px;font-weight:800;color:#006156;text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;border-left:3px solid #39ADA3;padding-left:8px">Productos Solicitados</div>
-
-      <!-- Table -->
-      <table>
-        <thead>
-          <tr style="border-bottom:2px solid #006156">
-            <th style="width:36px;text-align:center;padding:8px 6px;font-size:10px;font-weight:700;color:#006156;text-transform:uppercase">N°</th>
-            <th style="text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:#006156;text-transform:uppercase">Descripción del Insumo</th>
-            <th style="text-align:center;padding:8px 10px;font-size:10px;font-weight:700;color:#006156;text-transform:uppercase">Unidad</th>
-            <th style="text-align:right;padding:8px 10px;font-size:10px;font-weight:700;color:#006156;text-transform:uppercase">Cant.</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${rowsHtml}
-          <tr style="border-top:2px solid #006156;background:#f0faf9">
-            <td colspan="3" style="padding:10px;font-weight:800;color:#006156;font-size:12px;text-align:right">TOTAL: ${selectedReq.items.length} producto${selectedReq.items.length !== 1 ? 's' : ''}</td>
-            <td style="padding:10px;text-align:right;font-weight:800;color:#006156;font-size:14px">${totalUnits}</td>
-          </tr>
-        </tbody>
-      </table>
+      ${channelTablesHtml}
 
       ${reasonHtml}
 
-      <!-- Signatures -->
-      <div style="display:flex;justify-content:space-between;margin-top:50px;gap:40px">
-        <div style="flex:1;text-align:center">
-          <div style="border-top:1px solid #94a3b8;margin-top:40px;margin-bottom:6px"></div>
-          <div style="font-size:10px;color:#64748b;font-weight:700">Firma de Solicitante</div>
+      <div style="display: flex; justify-content: space-between; margin-top: 45px; gap: 40px; page-break-inside: avoid;">
+        <div style="flex: 1; text-align: center;">
+          <div style="border-top: 1px solid #94a3b8; margin-top: 35px; margin-bottom: 4px;"></div>
+          <div style="font-size: 9px; color: #64748b; font-weight: 700;">Firma Solicitante Cocina</div>
         </div>
-        <div style="flex:1;text-align:center">
-          <div style="border-top:1px solid #94a3b8;margin-top:40px;margin-bottom:6px"></div>
-          <div style="font-size:10px;color:#64748b;font-weight:700">Firma de Autorización</div>
+        <div style="flex: 1; text-align: center;">
+          <div style="border-top: 1px solid #94a3b8; margin-top: 35px; margin-bottom: 4px;"></div>
+          <div style="font-size: 9px; color: #64748b; font-weight: 700;">Firma Gobernanta / Compras</div>
+        </div>
+        <div style="flex: 1; text-align: center;">
+          <div style="border-top: 1px solid #94a3b8; margin-top: 35px; margin-bottom: 4px;"></div>
+          <div style="font-size: 9px; color: #64748b; font-weight: 700;">Recibido en Cocina (Control Físico)</div>
         </div>
       </div>
 
-      <div style="margin-top:40px;border-top:1px solid #e2e8f0;padding-top:12px;text-align:center;font-size:9px;color:#94a3b8">
-        &copy; ${new Date().getFullYear()} Dulce Espera &mdash; Documento oficial para control de insumos.
+      <div style="margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 8px; text-align: center; font-size: 8px; color: #94a3b8;">
+        &copy; ${new Date().getFullYear()} Dulce Espera &mdash; Documento oficial de abastecimiento estructurado por canales de adquisición.
       </div>
 
-      <script>window.onload=function(){window.print();setTimeout(function(){window.close()},500)}<\/script>
-    </body></html>`);
+      <script>window.onload = function() { window.print(); setTimeout(function() { window.close() }, 500); }<\/script>
+    </body>
+    </html>`);
+
     printWindow.document.close();
   };
 
@@ -593,35 +753,33 @@ export default function WhatsAppDispatch() {
   const getStatusInfo = (s: string) => statusConfig[s] || { bg: 'bg-slate-50 border-slate-200', text: 'text-slate-600', dot: 'bg-slate-400' };
 
   return (
-    <div className="animate-fade-in w-full max-w-[1200px] mx-auto space-y-6">
+    <div className="animate-fade-in w-full max-w-[1240px] mx-auto space-y-6 pb-20">
 
-      {/* ═══════ HEADER ═══════ */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div className="flex items-center gap-3.5">
-          <div className="p-3 rounded-2xl bg-[#25D366]/10 text-[#25D366] inline-flex shadow-clinical-sm border border-[#25D366]/15">
-            <svg className="w-7 h-7 fill-current" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
-              <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
-            </svg>
+      {/* ═══════ HEADER INSTITUCIONAL ═══════ */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 pb-4">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-[10px] font-black uppercase tracking-widest text-[#006156] bg-[#e6f0ef] px-2.5 py-0.5 rounded-md border border-[#39ADA3]/30">
+              Módulo de Despacho y Adquisiciones
+            </span>
           </div>
-          <div>
-            <h1 className="text-2xl font-extrabold tracking-tight text-slate-800">
-              Despacho de Pedidos
-            </h1>
-            <p className="text-xs text-slate-400 font-semibold mt-0.5">
-              Genera y comparte reportes oficiales de insumos en formato de PDF e Imagen
-            </p>
-          </div>
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-800">
+            Despacho y Control de Pedidos
+          </h1>
+          <p className="text-xs text-slate-500 font-medium mt-1">
+            Generación de reportes ejecutivos en Excel (.xlsx), PDF de alta resolución e imagen por canal de compra.
+          </p>
         </div>
 
         {/* Status indicators */}
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary-light text-primary text-xs font-bold border border-primary/10">
-            <Package className="w-3.5 h-3.5" />
-            {requests.length} Solicitudes
+        <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold border border-slate-200">
+            <Package className="w-3.5 h-3.5 text-slate-500" />
+            <span>{requests.length} Solicitudes</span>
           </div>
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-700 text-xs font-bold border border-amber-200/50">
-            <Clock className="w-3.5 h-3.5" />
-            {requests.filter(r => r.status === 'Pendiente').length} Pendientes
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-800 text-xs font-bold border border-amber-200/80">
+            <Clock className="w-3.5 h-3.5 text-amber-600" />
+            <span>{requests.filter(r => r.status === 'Pendiente').length} Pendientes</span>
           </div>
         </div>
       </div>
@@ -632,30 +790,41 @@ export default function WhatsAppDispatch() {
           <div className="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center mb-4">
             <FileText className="w-8 h-8 text-slate-300 stroke-[1.5]" />
           </div>
-          <h3 className="font-bold text-base text-slate-600">No hay solicitudes cargadas</h3>
+          <h3 className="font-bold text-base text-slate-700">No hay solicitudes disponibles</h3>
           <p className="text-xs text-slate-400 mt-1 max-w-[280px]">
-            Crea una solicitud de insumos en el formulario para poder despacharla.
+            Crea una solicitud de insumos en el formulario para poder emitir los reportes ejecutivos.
           </p>
         </Card>
       ) : (
-        /* ═══════ MAIN 2-COLUMN LAYOUT ═══════ */
+        /* ═══════ MAIN 2-COLUMN ENTERPRISE LAYOUT ═══════ */
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          
+
           {/* ═══════ COL 1: SELECTED ORDER DETAIL ═══════ */}
           <div className="lg:col-span-8 space-y-6">
-            
+
             {/* Request Detail Card */}
-            <Card className="border border-slate-200/80 rounded-2xl shadow-clinical-md overflow-hidden bg-white">
+            <Card className="border border-slate-200/90 rounded-2xl shadow-clinical-md overflow-hidden bg-white">
               {/* Header with requester and select button */}
-              <div className="px-6 py-5 bg-gradient-to-b from-slate-50/80 to-white border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="px-6 py-4 bg-gradient-to-b from-slate-50/90 to-white border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-[#006156]/10 text-[#006156] flex items-center justify-center font-black text-sm shrink-0 border border-[#006156]/20">
                     {selectedReq.user.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
                   </div>
                   <div>
-                    <h2 className="text-base font-extrabold text-slate-800 leading-tight">
-                      Solicitud de {selectedReq.user}
-                    </h2>
+                    <div className="flex items-center gap-2">
+                      <h2 className="text-base font-extrabold text-slate-800 leading-tight">
+                        Solicitud de {selectedReq.user}
+                      </h2>
+                      {(() => {
+                        const si = getStatusInfo(selectedReq.status);
+                        return (
+                          <span className={`inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full border ${si.bg} ${si.text}`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${si.dot}`} />
+                            {selectedReq.status}
+                          </span>
+                        );
+                      })()}
+                    </div>
                     <div className="flex items-center gap-2 mt-1 text-[11px] text-slate-400 font-semibold">
                       <span>ID: #{selectedReq.id.toUpperCase()}</span>
                       <span>•</span>
@@ -668,60 +837,203 @@ export default function WhatsAppDispatch() {
                 <button
                   type="button"
                   onClick={() => setIsReqModalOpen(true)}
-                  className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 border border-primary/30 hover:border-primary bg-white hover:bg-primary/5 rounded-xl font-bold text-xs text-primary transition-all active:scale-98 cursor-pointer"
+                  className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 border border-slate-200 hover:border-[#006156] bg-white hover:bg-[#e6f0ef]/50 rounded-xl font-bold text-xs text-slate-700 hover:text-[#006156] transition-all cursor-pointer shadow-xs active:scale-98 shrink-0"
                 >
-                  <ArrowUpDown className="w-3.5 h-3.5" />
+                  <ArrowUpDown className="w-3.5 h-3.5 text-slate-500" />
                   <span>Cambiar Pedido</span>
                 </button>
               </div>
 
-              {/* Status ribbon */}
-              <div className="px-6 py-2.5 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Estado de Aprobación</span>
-                {(() => {
-                  const si = getStatusInfo(selectedReq.status);
-                  return (
-                    <span className={`inline-flex items-center gap-1 text-xs font-bold px-2.5 py-0.5 rounded-full border ${si.bg} ${si.text}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${si.dot}`} />
-                      {selectedReq.status}
-                    </span>
-                  );
-                })()}
+              {/* Channel Summary Badges & View Switcher */}
+              <div className="px-6 py-3 bg-slate-50/80 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider mr-1">Canales:</span>
+                  {channelBreakdown.map(c => {
+                    if (c.items.length === 0) return null;
+                    return (
+                      <span
+                        key={c.id}
+                        className={`text-[11px] font-bold px-2.5 py-1 rounded-lg border ${c.badgeBg} ${c.badgeText} flex items-center gap-1.5`}
+                      >
+                        <span>{c.name}:</span>
+                        <strong>{c.items.length}</strong>
+                        <span className="text-[10px] opacity-75">({c.totalUnits} uds)</span>
+                      </span>
+                    );
+                  })}
+                </div>
+
+                {/* View Mode Toggle: Por Canales vs Lista Plana */}
+                <div className="flex items-center p-1 bg-slate-200/70 rounded-xl">
+                  <button
+                    type="button"
+                    onClick={() => setTableViewMode('channels')}
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                      tableViewMode === 'channels'
+                        ? 'bg-white text-[#006156] shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    <Layers className="w-3.5 h-3.5" />
+                    <span>Por Canales</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTableViewMode('flat')}
+                    className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                      tableViewMode === 'flat'
+                        ? 'bg-white text-[#006156] shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    <List className="w-3.5 h-3.5" />
+                    <span>Lista Plana</span>
+                  </button>
+                </div>
               </div>
 
-              {/* Items table */}
-              <div ref={previewRef} className={`transition-all duration-300 ${expandedPreview ? 'max-h-[600px]' : 'max-h-[280px]'} overflow-y-auto`}>
-                <table className="w-full text-xs text-left">
-                  <thead className="sticky top-0 z-10 bg-slate-50/90 backdrop-blur-sm border-b border-slate-100">
-                    <tr>
-                      <th className="py-3 pl-6 pr-2 text-[10px] font-black text-slate-400 uppercase tracking-wider w-8">#</th>
-                      <th className="py-3 px-2 text-[10px] font-black text-slate-400 uppercase tracking-wider">Producto</th>
-                      <th className="py-3 px-2 text-center text-[10px] font-black text-slate-400 uppercase tracking-wider w-20">Unidad</th>
-                      <th className="py-3 pl-2 pr-6 text-right text-[10px] font-black text-slate-400 uppercase tracking-wider w-16">Cant.</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {selectedReq.items.map((item, idx) => (
-                      <tr key={idx} className={`group transition-colors ${idx % 2 === 1 ? 'bg-slate-50/20' : 'bg-white'} hover:bg-slate-50`}>
-                        <td className="py-2.5 pl-6 pr-2 text-slate-400 font-bold text-[11px]">{idx + 1}</td>
-                        <td className="py-2.5 px-2 font-semibold text-slate-700">{item.productName}</td>
-                        <td className="py-2.5 px-2 text-center text-slate-400 font-medium text-[11px]">{item.unit}</td>
-                        <td className="py-2.5 pl-2 pr-6 text-right">
-                          <span className="font-extrabold text-primary text-sm">
-                            {item.quantity}
+              {/* Search Inside Order */}
+              {selectedReq.items.length > 6 && (
+                <div className="px-6 py-2 border-b border-slate-100 bg-white">
+                  <div className="relative">
+                    <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    <input
+                      type="text"
+                      placeholder="Filtrar insumo dentro de este pedido..."
+                      value={itemSearchFilter}
+                      onChange={(e) => setItemSearchFilter(e.target.value)}
+                      className="w-full pl-8 pr-7 py-1 text-xs font-semibold bg-slate-50 border border-slate-200 rounded-lg outline-none focus:border-[#006156] focus:bg-white text-slate-800"
+                    />
+                    {itemSearchFilter && (
+                      <button
+                        onClick={() => setItemSearchFilter('')}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Items Display: Mode 1: Grouped By Channels */}
+              {tableViewMode === 'channels' && (
+                <div ref={previewRef} className={`transition-all duration-300 ${expandedPreview ? 'max-h-[800px]' : 'max-h-[380px]'} overflow-y-auto divide-y divide-slate-100`}>
+                  {channelBreakdown.map(channel => {
+                    const activeItems = channel.items.filter(it =>
+                      !itemSearchFilter.trim() ||
+                      it.productName.toLowerCase().includes(itemSearchFilter.toLowerCase()) ||
+                      resolveItemCategory(it, products).toLowerCase().includes(itemSearchFilter.toLowerCase())
+                    );
+
+                    if (activeItems.length === 0) return null;
+
+                    return (
+                      <div key={channel.id} className="p-4 sm:p-5 space-y-2.5">
+                        {/* Channel Subheader */}
+                        <div className="flex items-center justify-between border-l-4 pl-3" style={{ borderColor: channel.color }}>
+                          <div>
+                            <h4 className="text-xs font-black uppercase tracking-wide text-slate-900">
+                              {channel.name}
+                            </h4>
+                            <p className="text-[10px] text-slate-500 font-medium">
+                              {channel.subtitle}
+                            </p>
+                          </div>
+                          <span className="text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
+                            {activeItems.length} ítems &bull; {activeItems.reduce((s, i) => s + i.quantity, 0)} uds
                           </span>
-                        </td>
+                        </div>
+
+                        {/* Table */}
+                        <div className="border border-slate-200/80 rounded-xl overflow-hidden shadow-xs">
+                          <table className="w-full text-xs text-left">
+                            <thead className="bg-slate-50 border-b border-slate-200">
+                              <tr>
+                                <th className="py-2.5 pl-4 pr-2 text-[10px] font-black text-slate-500 uppercase tracking-wider w-8">#</th>
+                                <th className="py-2.5 px-2 text-[10px] font-black text-slate-500 uppercase tracking-wider">Insumo</th>
+                                <th className="py-2.5 px-2 text-[10px] font-black text-slate-500 uppercase tracking-wider w-36">Categoría</th>
+                                <th className="py-2.5 px-2 text-center text-[10px] font-black text-slate-500 uppercase tracking-wider w-20">Unidad</th>
+                                <th className="py-2.5 pl-2 pr-4 text-right text-[10px] font-black text-slate-500 uppercase tracking-wider w-16">Cant.</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100 bg-white">
+                              {activeItems.map((item, idx) => (
+                                <tr key={idx} className={`hover:bg-slate-50 transition-colors ${idx % 2 === 1 ? 'bg-slate-50/30' : 'bg-white'}`}>
+                                  <td className="py-2 pl-4 pr-2 text-slate-400 font-bold text-[11px]">{idx + 1}</td>
+                                  <td className="py-2 px-2 font-bold text-slate-800">{item.productName}</td>
+                                  <td className="py-2 px-2 text-slate-500 text-[11px]">
+                                    <span className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[10px] font-semibold">
+                                      {resolveItemCategory(item, products)}
+                                    </span>
+                                  </td>
+                                  <td className="py-2 px-2 text-center text-slate-500 text-[11px]">{item.unit}</td>
+                                  <td className="py-2 pl-2 pr-4 text-right">
+                                    <span className="font-black text-sm" style={{ color: channel.color }}>
+                                      {item.quantity}
+                                    </span>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Items Display: Mode 2: Flat List */}
+              {tableViewMode === 'flat' && (
+                <div ref={previewRef} className={`transition-all duration-300 ${expandedPreview ? 'max-h-[800px]' : 'max-h-[380px]'} overflow-y-auto`}>
+                  <table className="w-full text-xs text-left">
+                    <thead className="sticky top-0 z-10 bg-slate-50 border-b border-slate-200">
+                      <tr>
+                        <th className="py-2.5 pl-6 pr-2 text-[10px] font-black text-slate-500 uppercase tracking-wider w-8">#</th>
+                        <th className="py-2.5 px-2 text-[10px] font-black text-slate-500 uppercase tracking-wider">Insumo</th>
+                        <th className="py-2.5 px-2 text-[10px] font-black text-slate-500 uppercase tracking-wider w-32">Canal</th>
+                        <th className="py-2.5 px-2 text-[10px] font-black text-slate-500 uppercase tracking-wider w-32">Categoría</th>
+                        <th className="py-2.5 px-2 text-center text-[10px] font-black text-slate-500 uppercase tracking-wider w-20">Unidad</th>
+                        <th className="py-2.5 pl-2 pr-6 text-right text-[10px] font-black text-slate-500 uppercase tracking-wider w-16">Cant.</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 bg-white">
+                      {filteredOrderItems.map((item, idx) => {
+                        const channelId = resolveItemChannel(item, products);
+                        const channelCfg = CHANNELS_CONFIG.find(c => c.id === channelId) || CHANNELS_CONFIG[3];
+                        return (
+                          <tr key={idx} className={`hover:bg-slate-50 transition-colors ${idx % 2 === 1 ? 'bg-slate-50/30' : 'bg-white'}`}>
+                            <td className="py-2.5 pl-6 pr-2 text-slate-400 font-bold text-[11px]">{idx + 1}</td>
+                            <td className="py-2.5 px-2 font-bold text-slate-800">{item.productName}</td>
+                            <td className="py-2.5 px-2">
+                              <span className={`text-[9px] font-black px-2 py-0.5 rounded border uppercase tracking-wider ${channelCfg.badgeBg} ${channelCfg.badgeText}`}>
+                                {channelCfg.name}
+                              </span>
+                            </td>
+                            <td className="py-2.5 px-2 text-slate-500 text-[11px]">
+                              {resolveItemCategory(item, products)}
+                            </td>
+                            <td className="py-2.5 px-2 text-center text-slate-500 text-[11px]">{item.unit}</td>
+                            <td className="py-2.5 pl-2 pr-6 text-right">
+                              <span className="font-extrabold text-[#006156] text-sm">
+                                {item.quantity}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
 
               {/* Expand/Collapse Items Toggle */}
-              {selectedReq.items.length > 5 && (
+              {selectedReq.items.length > 6 && (
                 <button
+                  type="button"
                   onClick={() => setExpandedPreview(!expandedPreview)}
-                  className="w-full px-6 py-2.5 border-t border-slate-100 flex items-center justify-center gap-1.5 text-xs font-bold text-primary hover:bg-primary/5 transition-colors cursor-pointer border-b"
+                  className="w-full px-6 py-2.5 border-t border-slate-100 flex items-center justify-center gap-1.5 text-xs font-bold text-[#006156] hover:bg-[#e6f0ef]/50 transition-colors cursor-pointer border-b"
                 >
                   <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${expandedPreview ? 'rotate-180' : ''}`} />
                   {expandedPreview ? 'Ver menos filas' : `Ver todas las ${selectedReq.items.length} filas`}
@@ -730,9 +1042,9 @@ export default function WhatsAppDispatch() {
 
               {/* Justification / Reason */}
               {selectedReq.reason && (
-                <div className="m-6 p-4 bg-amber-50/60 border border-amber-200/40 rounded-xl">
-                  <span className="text-[10px] font-black uppercase text-amber-700 tracking-wider block mb-1">Motivo / Justificación</span>
-                  <p className="text-xs text-slate-600 font-semibold italic leading-relaxed">
+                <div className="m-6 p-4 bg-amber-50/70 border border-amber-200/70 rounded-xl">
+                  <span className="text-[10px] font-black uppercase text-amber-800 tracking-wider block mb-1">Motivo / Justificación</span>
+                  <p className="text-xs text-slate-700 font-semibold italic leading-relaxed">
                     &ldquo;{selectedReq.reason}&rdquo;
                   </p>
                 </div>
@@ -745,77 +1057,144 @@ export default function WhatsAppDispatch() {
               )}
 
               {/* Table Footer totals */}
-              <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-slate-500">
-                <span>Productos: {selectedReq.items.length}</span>
-                <span className="text-slate-700">
-                  Total unidades: <strong className="text-primary font-black text-sm">{selectedReq.items.reduce((acc, i) => acc + i.quantity, 0)}</strong>
+              <div className="px-6 py-4 bg-slate-50/90 border-t border-slate-200/80 flex items-center justify-between text-xs font-bold text-slate-600">
+                <span>Total insumos en solicitud: <strong className="text-slate-800">{selectedReq.items.length}</strong></span>
+                <span>
+                  Total unidades: <strong className="text-[#006156] font-black text-sm">{selectedReq.items.reduce((acc, i) => acc + i.quantity, 0)}</strong>
                 </span>
               </div>
             </Card>
 
           </div>
 
-          {/* ═══════ COL 2: ACTION BUTTONS ═══════ */}
+          {/* ═══════ COL 2: ACTION BUTTONS (SOFTWARE DE PRIMER NIVEL) ═══════ */}
           <div className="lg:col-span-4 space-y-6">
-            
-            {/* Actions Card */}
-            <Card className="border border-slate-200/80 rounded-2xl shadow-clinical-md overflow-hidden bg-white p-5 space-y-4">
-              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block border-b border-slate-100 pb-3">
-                Compartir y Descargar
-              </span>
+
+            {/* Main Action Card */}
+            <Card className="border border-slate-200/90 rounded-2xl shadow-clinical-md overflow-hidden bg-white p-5 space-y-5">
+              
+              <div>
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block border-b border-slate-100 pb-2.5">
+                  Documentos Oficiales
+                </span>
+                <p className="text-xs text-slate-500 font-medium mt-1">
+                  Formatos listos para compras, revisión física y auditoría.
+                </p>
+              </div>
 
               <div className="space-y-3">
-                
-                {/* 1. Main Action: Share Image (Native API) */}
-                <button
-                  onClick={handleShareImage}
-                  disabled={!selectedReq}
-                  className={`w-full flex items-center justify-center gap-2.5 h-12 rounded-xl font-bold text-sm text-white transition-all active:scale-[0.98] cursor-pointer bg-primary hover:bg-primary-hover shadow-md shadow-primary/20 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed disabled:shadow-none`}
+                {/* 1. EXCEL OFICIAL (.XLSX) */}
+                <a
+                  href={selectedReq ? `${API_URL}/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte/excel` : '#'}
+                  download={`Orden_Compra_${selectedReq?.id?.toUpperCase()}.xlsx`}
+                  className={`w-full flex items-center gap-3 p-3.5 rounded-xl bg-[#107C41] hover:bg-[#0e6b37] text-white shadow-md shadow-[#107C41]/20 transition-all active:scale-[0.98] cursor-pointer group ${
+                    !selectedReq ? 'pointer-events-none opacity-50 bg-slate-200 text-slate-400' : ''
+                  }`}
                 >
-                  <Share2 className="w-5 h-5 stroke-[2.5]" />
-                  <span>Compartir Imagen</span>
-                </button>
+                  <div className="p-2 rounded-lg bg-white/15 text-white shrink-0">
+                    <FileSpreadsheet className="w-5 h-5 stroke-[2.2]" />
+                  </div>
+                  <div className="text-left flex-1 min-w-0">
+                    <div className="text-xs font-extrabold text-white truncate">
+                      Descargar Excel Oficial (.xlsx)
+                    </div>
+                    <div className="text-[10px] text-emerald-100 font-semibold truncate">
+                      Celdas formateadas y clasificado por canales
+                    </div>
+                  </div>
+                  <Download className="w-4 h-4 text-white/80 group-hover:translate-y-0.5 transition-transform shrink-0" />
+                </a>
 
-                {/* 2. Secondary Action: Download Image */}
-                <button
-                  onClick={handleDownloadImage}
-                  disabled={!selectedReq}
-                  className="w-full flex items-center justify-center gap-2.5 h-12 rounded-xl font-bold text-sm bg-secondary hover:bg-secondary-hover text-white transition-all active:scale-[0.98] cursor-pointer shadow-md shadow-secondary/20 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed disabled:shadow-none"
-                >
-                  <Download className="w-5 h-5 text-white" />
-                  <span>Descargar Imagen</span>
-                </button>
-
-                {/* Section divider */}
-                <div className="flex items-center gap-2 py-1">
-                  <div className="flex-1 h-px bg-slate-200" />
-                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Documentos Oficiales</span>
-                  <div className="flex-1 h-px bg-slate-200" />
-                </div>
-
+                {/* 2. PDF Y LOCAL PRINT EN 2 COLUMNAS */}
                 <div className="grid grid-cols-2 gap-2">
-                  {/* Download PDF (Backend Link) */}
+                  {/* Download PDF Oficial */}
                   <a
-                    href={selectedReq ? `${process.env.NEXT_PUBLIC_API_URL || 'https://107.172.193.34.nip.io'}/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte/pdf` : '#'}
+                    href={selectedReq ? `${API_URL}/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte/pdf` : '#'}
                     download={`Pedido_${selectedReq?.id?.toUpperCase()}.pdf`}
-                    className={`w-full flex items-center justify-center gap-2 h-12 border-2 border-primary text-primary hover:bg-primary-light font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer text-center flex items-center justify-center ${!selectedReq ? 'pointer-events-none opacity-50 bg-slate-50 text-slate-400 border-slate-200' : ''}`}
+                    className={`flex items-center justify-center gap-1.5 h-11 border-2 border-[#006156] text-[#006156] hover:bg-[#e6f0ef] font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer text-center ${
+                      !selectedReq ? 'pointer-events-none opacity-50 border-slate-200 text-slate-400 bg-slate-50' : ''
+                    }`}
                   >
-                    <Download className="w-4 h-4 text-primary shrink-0" />
-                    <span className="ml-1">Descargar PDF</span>
+                    <Download className="w-4 h-4 text-[#006156] shrink-0" />
+                    <span>Descargar PDF</span>
                   </a>
 
-                  {/* Print PDF (Local print window) */}
+                  {/* Print PDF Local */}
                   <button
+                    type="button"
                     onClick={handlePrintLocalPDF}
                     disabled={!selectedReq}
-                    className="w-full flex items-center justify-center gap-2 h-12 bg-secondary hover:bg-secondary-hover text-white font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-md shadow-secondary/15 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed"
+                    className="flex items-center justify-center gap-1.5 h-11 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition-all active:scale-[0.98] cursor-pointer shadow-sm disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed"
                   >
                     <Printer className="w-4 h-4 text-white shrink-0" />
-                    <span className="ml-1">Imprimir PDF</span>
+                    <span>Imprimir PDF</span>
                   </button>
                 </div>
 
+                {/* 3. VER INFORME EJECUTIVO WEB */}
+                <a
+                  href={selectedReq ? `${API_URL}/pedidos/${selectedReq.idPublico || selectedReq.id}/reporte-admin` : '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`w-full flex items-center justify-between p-3 rounded-xl border border-slate-200 hover:border-[#006156] bg-slate-50 hover:bg-white text-slate-700 font-bold text-xs transition-all active:scale-[0.98] cursor-pointer group ${
+                    !selectedReq ? 'pointer-events-none opacity-50 bg-slate-50 text-slate-400' : ''
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <FileText className="w-4 h-4 text-[#006156] shrink-0" />
+                    <span>Ver Reporte Ejecutivo (Web)</span>
+                  </div>
+                  <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#006156] transition-colors shrink-0" />
+                </a>
+
+                {/* 4. CONSOLIDADO PENDIENTES (.XLSX) */}
+                <a
+                  href={`${API_URL}/api/pedidos/pendientes/excel`}
+                  download={`Consolidado_Pendientes_${new Date().toISOString().slice(0, 10)}.xlsx`}
+                  className="w-full flex items-center justify-between p-3 rounded-xl border border-amber-200 bg-amber-50/70 hover:bg-amber-100/70 text-amber-900 font-bold text-xs transition-all active:scale-[0.98] cursor-pointer group"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Package className="w-4 h-4 text-amber-700 shrink-0" />
+                    <div className="text-left">
+                      <div>Consolidado Maestro Pendientes (.xlsx)</div>
+                      <div className="text-[10px] text-amber-800/80 font-normal">Suma de todos los pedidos por comprar</div>
+                    </div>
+                  </div>
+                  <Download className="w-3.5 h-3.5 text-amber-700 group-hover:translate-y-0.5 transition-transform shrink-0" />
+                </a>
               </div>
+
+              {/* Section divider */}
+              <div className="pt-2 border-t border-slate-100 space-y-3">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
+                  Captura y WhatsApp
+                </span>
+
+                <div className="space-y-2">
+                  {/* Share Image */}
+                  <button
+                    type="button"
+                    onClick={handleShareImage}
+                    disabled={!selectedReq}
+                    className="w-full flex items-center justify-center gap-2.5 h-11 rounded-xl font-bold text-xs text-white transition-all active:scale-[0.98] cursor-pointer bg-[#006156] hover:bg-[#004d44] shadow-md shadow-[#006156]/20 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed disabled:shadow-none"
+                  >
+                    <Share2 className="w-4 h-4 stroke-[2.5]" />
+                    <span>Compartir Imagen por WhatsApp</span>
+                  </button>
+
+                  {/* Download Image */}
+                  <button
+                    type="button"
+                    onClick={handleDownloadImage}
+                    disabled={!selectedReq}
+                    className="w-full flex items-center justify-center gap-2 h-10 rounded-xl font-bold text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-all active:scale-[0.98] cursor-pointer disabled:bg-slate-100 disabled:text-slate-300 disabled:cursor-not-allowed"
+                  >
+                    <Download className="w-3.5 h-3.5 text-slate-600" />
+                    <span>Descargar Imagen (PNG 4K)</span>
+                  </button>
+                </div>
+              </div>
+
             </Card>
 
           </div>
@@ -826,13 +1205,13 @@ export default function WhatsAppDispatch() {
       {/* ═══════ MODAL: SELECT REQUEST (PEDIDO) ═══════ */}
       {isReqModalOpen && (
         <Portal>
-          {/* Backdrop - click to close */}
+          {/* Backdrop */}
           <div
             className="fixed inset-0 z-[9999] bg-slate-900/60 backdrop-blur-sm animate-fade-in"
             onClick={() => setIsReqModalOpen(false)}
           />
 
-          {/* Modal Panel — full-screen sheet on mobile, centered card on sm+ */}
+          {/* Modal Panel */}
           <div
             className="
               fixed z-[10000] inset-0 flex flex-col
@@ -843,12 +1222,14 @@ export default function WhatsAppDispatch() {
             "
             style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
           >
-            {/* ── Sticky Header ── */}
-            <div className="flex items-center justify-between gap-2 px-4 py-3 sm:px-5 sm:py-4 border-b border-slate-100 bg-white/95 backdrop-blur-md shrink-0 sticky top-0 z-10"
+            {/* Header */}
+            <div
+              className="flex items-center justify-between gap-2 px-4 py-3 sm:px-5 sm:py-4 border-b border-slate-100 bg-white/95 backdrop-blur-md shrink-0 sticky top-0 z-10"
               style={{ paddingTop: 'max(env(safe-area-inset-top, 0px), 12px)' }}
             >
               <h3 className="text-sm font-black text-[#006156] uppercase tracking-wide flex items-center gap-2 truncate">
-                <Package className="w-4 h-4 text-primary shrink-0" /> Seleccionar Solicitud
+                <Package className="w-4 h-4 text-[#006156] shrink-0" />
+                <span>Seleccionar Solicitud</span>
               </h3>
               <button
                 type="button"
@@ -859,137 +1240,109 @@ export default function WhatsAppDispatch() {
                 <X className="w-5 h-5 stroke-[2.5]" />
               </button>
             </div>
-            
-            {/* ── Search, Filter & Sort (sticky below header) ── */}
-            <div className="px-3 pt-3 pb-2 sm:px-4 sm:pt-4 sm:pb-3 border-b border-slate-100 space-y-2.5 bg-white shrink-0">
-              {/* Search input */}
+
+            {/* Search, Filter & Sort */}
+            <div className="p-3 sm:p-4 border-b border-slate-100 bg-slate-50/80 space-y-2.5 shrink-0">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                 <input
                   type="text"
-                  placeholder="Buscar por solicitante, ID, producto..."
+                  placeholder="Buscar por usuario, ID o insumo..."
                   value={searchOrderQuery}
                   onChange={(e) => setSearchOrderQuery(e.target.value)}
-                  className="w-full h-10 pl-9 pr-8 rounded-xl border border-slate-200 text-sm text-slate-800 placeholder-slate-400 focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none bg-slate-50/50"
+                  className="w-full pl-8 pr-7 py-2 text-xs font-semibold bg-white border border-slate-200 rounded-xl outline-none focus:border-[#006156] text-slate-800"
                 />
                 {searchOrderQuery && (
                   <button
                     onClick={() => setSearchOrderQuery('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-3.5 h-3.5" />
                   </button>
                 )}
               </div>
 
-              {/* Status Filters (Horizontal Scroll on Mobile) */}
-              <div className="flex gap-1.5 overflow-x-auto pb-0.5 flex-nowrap scrollbar-hide -mx-1 px-1">
-                <button
-                  type="button"
-                  onClick={() => setStatusFilter('all')}
-                  className={`shrink-0 px-2.5 py-1.5 rounded-full text-[11px] font-extrabold transition-all border cursor-pointer ${
-                    statusFilter === 'all'
-                      ? 'bg-primary text-white border-primary shadow-sm'
-                      : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
-                  }`}
-                >
-                  Todos ({requests.length})
-                </button>
-                {uniqueStatuses.map(s => {
-                  const si = getStatusInfo(s);
-                  const count = requests.filter(r => r.status === s).length;
-                  return (
-                    <button
-                      type="button"
-                      key={s}
-                      onClick={() => setStatusFilter(statusFilter === s ? 'all' : s)}
-                      className={`shrink-0 px-2.5 py-1.5 rounded-full text-[11px] font-extrabold transition-all border cursor-pointer ${
-                        statusFilter === s
-                          ? `${si.bg} ${si.text} border-current shadow-sm`
-                          : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'
-                      }`}
-                    >
-                      {s} ({count})
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Sorting toolbar */}
-              <div className="flex items-center gap-1.5 border-t border-slate-100 pt-2 text-[10px] overflow-x-auto scrollbar-hide -mx-1 px-1">
-                <span className="text-slate-400 font-bold mr-1 flex items-center gap-1 shrink-0">
-                  <ArrowUpDown className="w-3 h-3" /> Orden:
-                </span>
-                {([['date', 'Fecha'], ['user', 'Solicitante'], ['items', 'Items'], ['status', 'Estado']] as [SortKey, string][]).map(([k, label]) => (
+              {/* Status filter chips */}
+              <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5">
+                {['all', 'Pendiente', 'Aprobado', 'Comprado', 'Rechazado'].map((st) => (
                   <button
+                    key={st}
                     type="button"
-                    key={k}
-                    onClick={() => toggleSort(k)}
-                    className={`shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-bold cursor-pointer transition-colors ${
-                      sortKey === k
-                        ? 'bg-primary/10 text-primary'
-                        : 'text-slate-400 hover:text-slate-600'
+                    onClick={() => setStatusFilter(st)}
+                    className={`px-2.5 py-1 rounded-lg text-[11px] font-bold shrink-0 transition-colors cursor-pointer ${
+                      statusFilter === st
+                        ? 'bg-[#006156] text-white'
+                        : 'bg-white text-slate-600 hover:bg-slate-200/80 border border-slate-200'
                     }`}
                   >
-                    {label} {sortKey === k && (sortDir === 'asc' ? '↑' : '↓')}
+                    {st === 'all' ? 'Todos' : st}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* ── Scrollable Request list ── */}
-            <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain divide-y divide-slate-100/80 bg-white">
+            {/* Request list */}
+            <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2.5 divide-y divide-slate-100">
               {processedRequests.length === 0 ? (
-                <div className="text-center py-16 px-5">
-                  <Package className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-                  <p className="text-xs text-slate-400 font-bold">No se encontraron solicitudes</p>
+                <div className="py-12 text-center text-slate-400 text-xs font-medium">
+                  No se encontraron solicitudes con los filtros aplicados.
                 </div>
               ) : (
                 processedRequests.map((req) => {
-                  const isSelected = selectedReqId === req.idPublico || selectedReqId === req.id;
+                  const isSelected = (req.idPublico || req.id) === (selectedReq?.idPublico || selectedReq?.id);
                   const si = getStatusInfo(req.status);
                   return (
                     <button
                       key={req.idPublico || req.id}
+                      type="button"
                       onClick={() => {
                         setSelectedReqId(req.idPublico || req.id);
                         setIsReqModalOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-3.5 sm:px-5 sm:py-3.5 flex items-center gap-3 transition-colors cursor-pointer border-l-4 active:bg-slate-100 ${
-                        isSelected 
-                          ? 'bg-primary-light/30 border-l-primary' 
-                          : 'bg-white hover:bg-slate-50 border-l-transparent'
+                      className={`w-full text-left p-3.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                        isSelected
+                          ? 'border-[#006156] bg-[#e6f0ef]/40 shadow-xs ring-1 ring-[#006156]'
+                          : 'border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50'
                       }`}
                     >
-                      <div className="min-w-0 flex-1 space-y-1.5">
-                        <div className="flex items-center justify-between gap-2">
-                          <h4 className="text-xs font-extrabold text-slate-800 truncate">
+                      <div className="space-y-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="font-extrabold text-xs text-slate-800 truncate">
                             {req.user}
-                          </h4>
-                          <span className={`inline-flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full border shrink-0 ${si.bg} ${si.text}`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${si.dot}`} />
+                          </span>
+                          <span className={`text-[10px] font-bold px-2 py-0.2 rounded-full border ${si.bg} ${si.text}`}>
                             {req.status}
                           </span>
                         </div>
-                        <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-semibold">
-                          <span>N° #{req.id.slice(0, 8).toUpperCase()}</span>
-                          <span>•</span>
-                          <span>{req.date.split(' ')[0]}</span>
-                          <span>•</span>
-                          <span className="text-slate-500 font-bold">{req.items.length} prod.</span>
+                        <div className="text-[11px] text-slate-400 font-medium">
+                          #{req.id.toUpperCase()} &bull; {req.date}
+                        </div>
+                        <div className="text-[11px] text-slate-500 font-semibold truncate">
+                          {req.items.length} productos &bull; {req.items.reduce((s, i) => s + i.quantity, 0)} unidades
                         </div>
                       </div>
-                      <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
+                      {isSelected && (
+                        <div className="w-6 h-6 rounded-full bg-[#006156] text-white flex items-center justify-center shrink-0">
+                          <CheckCircle2 className="w-4 h-4" />
+                        </div>
+                      )}
                     </button>
                   );
                 })
               )}
             </div>
-            
-            {/* ── Footer summary ── */}
-            <div className="px-5 py-3 border-t border-slate-100 bg-slate-50 text-center text-[10px] text-slate-400 font-semibold shrink-0">
-              Mostrando {processedRequests.length} de {requests.length} solicitudes
+
+            {/* Footer */}
+            <div className="p-3 border-t border-slate-100 bg-slate-50 text-right">
+              <button
+                type="button"
+                onClick={() => setIsReqModalOpen(false)}
+                className="px-4 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs transition-colors cursor-pointer"
+              >
+                Cerrar
+              </button>
             </div>
+
           </div>
         </Portal>
       )}
