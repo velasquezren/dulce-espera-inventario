@@ -117,53 +117,109 @@ flowchart TD
 - Documento formal en escala tipografica estricta, libre de emojis, optimizado para impresion fisica.
 
 ### 4.3 Imagen WhatsApp en Alta Densidad (Canvas 4x)
-- Componente `WhatsAppDispatch.tsx` con soporte de vista segmentada por canal o secuencial plana, exportacion Blob y Web Share API.
+- Modulo `features/despacho`: vista segmentada por canal o lista unica, generacion de la hoja del
+  pedido en canvas a 3x (se carga bajo demanda) y envio con Web Share API o descarga directa.
 
 ---
 
-## 5. Estructura y Rendimiento del Frontend (Next.js 16)
+## 5. Arquitectura del Frontend (Next.js 16 App Router)
 
-### 5.1 Jerarquia de Componentes
+### 5.1 Principios
+
+- **Una ruta real por modulo.** Ya no existe un unico `page.tsx` que conmuta modulos por estado:
+  cada seccion es una ruta del App Router, con su propia URL, su historial de navegacion y su
+  paquete de JavaScript independiente. El personal puede marcar `/cuaderno` como favorito y el
+  navegador solo descarga el codigo de la pantalla que abre.
+- **Dominio antes que interfaz.** Los tipos (`Insumo`, `Pedido`, `LineaPedido`, `EstadoPedido`,
+  `CanalId`) reflejan el modelo del backend en espanol. No hay traduccion entre "Product" y
+  "insumo" ni heuristicas por nombre de producto: el canal y la categoria vienen de la API.
+- **Estado fuera del arbol de React.** El catalogo y los pedidos viven en un store externo
+  (`lib/recurso.ts`) consumido con `useSyncExternalStore`. Se descargan una sola vez por sesion,
+  sobreviven a la navegacion entre secciones y se hidratan desde `localStorage` para funcionar
+  sin conexion.
+- **Cero deuda visual.** Todos los tokens de color, radio, sombra y tipografia estan declarados
+  en `@theme` dentro de `app/globals.css`; no quedan clases utilitarias que no generen CSS.
+
+### 5.2 Mapa de rutas
+
+| Ruta | Contenido | Acceso |
+|---|---|---|
+| `/` | Redireccion al panel | Publica |
+| `/acceso` | Inicio de sesion | Publica |
+| `/panel` | Estado del dia, accesos rapidos y ultimos pedidos | Cocina |
+| `/cuaderno` | Catalogo de 771 insumos y cuaderno de anotaciones | Cocina |
+| `/solicitudes` | Seguimiento en lista o calendario | Cocina |
+| `/recepciones` | Confirmacion de mercaderia recibida | Cocina |
+| `/despacho` | Reportes oficiales, imagen y envio por WhatsApp | Cocina |
+| `/historial` | Bitacora de movimientos, CSV e impresion | Cocina |
+| `/cuenta` | Sesion, conexion e instalacion de la PWA | Cocina |
+| `/compras` | Lista de compras con checklist y cambio de estado | Rol compras |
+
+Todas las rutas se generan como contenido estatico (`next build` las marca como `Static`), por lo
+que el servidor no renderiza nada por peticion.
+
+### 5.3 Estructura de carpetas
+
 ```
-app/
-├── layout.tsx                  # Root layout, fuentes Geist, viewport y Service Worker
-├── page.tsx                    # Enrutador cliente tipo SPA por modulo activo
-├── globals.css                 # Estilos y variables de TailwindCSS 4
-├── context/
-│   └── AppContext.tsx          # Store global reactivo, offline localStorage y cache
-└── components/
-    ├── Header.tsx              # Encabezado institucional
-    ├── Sidebar.tsx             # Barra lateral colapsable
-    ├── BottomNav.tsx           # Navegacion movil
-    ├── ResumenDiaCard.tsx      # Tarjeta de metricas de cocina
-    ├── SemaforoButtons.tsx     # Selector de criticidad (Rojo, Amarillo, Verde)
-    ├── AudioRecorder.tsx       # Grabadora de notas de voz
-    ├── AudioPlayer.tsx         # Reproductor de audio adjunto
-    └── Modules/
-        ├── Login.tsx           # Formulario de acceso
-        ├── Dashboard.tsx       # Acciones rapidas
-        ├── Inventory.tsx       # Catalogo, busqueda y filtros por canal
-        ├── RequestForm.tsx     # Solicitudes y cuaderno borrador
-        ├── MyRequests.tsx      # Seguimiento de pedidos
-        ├── Reception.tsx       # Verificacion y recepcion de mercancia
-        ├── History.tsx         # Registro historico
-        ├── WhatsAppDispatch.tsx# Despacho de Excel, PDF e imagen
-        ├── ComprasView.tsx     # Vista especializada para rol compras
-        └── ManageProducts.tsx  # Administracion de catalogo
+app/                         Rutas del App Router (solo enrutado y metadata)
+  layout.tsx                 Fuente, metadata, viewport y proveedores globales
+  manifest.ts                Manifiesto PWA tipado
+  globals.css                Sistema de diseno completo (@theme de Tailwind 4)
+  acceso/  (app)/  compras/  Segmentos de la aplicacion
+components/
+  ui/                        Biblioteca de interfaz: boton, campo, dialogo, avisos, filtros...
+  shell/                     Barras lateral, superior e inferior, marca y guardas de acceso
+  pwa/                       Registro del service worker
+features/                    Una carpeta por modulo funcional (cuaderno, solicitudes, ...)
+lib/
+  api/                       Cliente HTTP tipado y un modulo por recurso de la API
+  domain/                    Tipos, canales, estados, derivados y mensajes
+  hooks/                     Sesion, catalogo, pedidos, cuaderno, conexion e instalacion
+  recurso.ts                 Store externo de datos remotos con cache local
+  almacenamiento.ts          Acceso tolerante a fallos a localStorage
 ```
 
-### 5.2 Estandares de Calidad
-- **Politica Cero Emojis:** Prohibido el uso de caracteres emoji. Solo iconos vectoriales `lucide-react`.
-- **Rendimiento React 19:** Memorizacion de calculos pesados con `useMemo` y paginacion/filtrado virtual en catalogo de 800 insumos.
-- **PWA Offline Resilience:** La aplicacion funciona con microcortes de red gracias a `localStorage` y cache del Service Worker.
+### 5.4 Capa de datos
 
----
+| Modulo | Responsabilidad |
+|---|---|
+| `lib/api/cliente.ts` | `fetch` con tiempo limite de 15 s, cancelacion y dos errores tipados: `ErrorApi` (el servidor respondio) y `ErrorRed` (no hubo respuesta) |
+| `lib/api/insumos.ts` | `GET /insumos` a `Insumo[]` |
+| `lib/api/pedidos.ts` | `GET /pedidos/todos`, `POST /pedidos`, `PATCH /pedidos/actualizar-estado` |
+| `lib/api/coordinadores.ts` | `GET /coordinadores`, filtrando inactivos y telefonos invalidos |
+| `lib/api/sesion.ts` | `POST /login` |
+| `lib/api/reportes.ts` | URLs de los documentos oficiales generados por el backend |
+
+La distincion entre `ErrorApi` y `ErrorRed` es la que decide si un pedido se encola: un rechazo del
+servidor se muestra al usuario, una caida de red guarda el pedido y lo reintenta al reconectar.
+
+### 5.5 Trabajo sin conexion
+
+1. El catalogo y los pedidos se guardan en `localStorage` tras cada descarga correcta.
+2. Al enviar un pedido sin red, se encola en `de.cola.v1` y aparece de inmediato marcado
+   como *Sin enviar*.
+3. Cuando el navegador recupera la conexion, la cola se vacia en orden; si un envio falla, se
+   detiene y conserva el resto para el siguiente intento.
+4. El service worker (`public/sw.js`) cachea unicamente recursos de este origen. Las llamadas a la
+   API nunca se cachean.
+
+### 5.6 Estandares de calidad
+
+- **Politica cero emojis:** solo iconos vectoriales de `lucide-react`.
+- **Sin `any`, sin `@ts-ignore`, sin `eslint-disable`** en el codigo de la aplicacion.
+- **Accesibilidad:** objetivos tactiles de 44 px, foco visible, dialogos con foco atrapado y
+  cierre con `Escape`, enlace para saltar al contenido y respeto por `prefers-reduced-motion`.
+- **Busqueda sin acentos:** "limon" encuentra "Limón" en los 771 insumos.
+- **Verificacion antes de desplegar:** `npm run typecheck`, `npm run lint` y `npm run build`
+  deben terminar sin errores.
 
 ## 6. Runbook de Despliegue y Mantenimiento
 
 ### 6.1 Despliegue de Frontend (Vercel)
 ```bash
 cd "/Users/macmini2024/Documents/CARPETA RENE/dulce-espera-inventario"
+npm run typecheck
+npm run lint
 npm run build
 git add .
 git commit -m "feat: actualizacion frontend"

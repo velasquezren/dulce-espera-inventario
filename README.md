@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dulce Espera · Inventario de cocina
 
-## Getting Started
+Aplicacion web progresiva (PWA) para la gestion de insumos de cocina de la **Clinica Montalvo**.
+El personal anota lo que falta, envia el pedido a gobernanta, compras lo gestiona y cocina
+confirma la recepcion. Funciona en telefono, tablet y escritorio, y sigue operando durante
+microcortes de red.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 (App Router, Turbopack) · React 19 · TypeScript en modo estricto
+- TailwindCSS 4 con sistema de diseno propio en `app/globals.css`
+- `lucide-react` como unica dependencia de interfaz
+- Backend FastAPI + MySQL (repositorio aparte)
+
+## Puesta en marcha
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev            # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Por defecto la aplicacion apunta al backend de produccion. Para usar otro, crea `.env.local`:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```env
+NEXT_PUBLIC_API_URL=https://107.172.193.34.nip.io
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Comandos
 
-## Learn More
+| Comando | Uso |
+|---|---|
+| `npm run dev` | Servidor de desarrollo |
+| `npm run typecheck` | Verificacion de tipos |
+| `npm run lint` | Reglas de ESLint y React |
+| `npm run build` | Compilacion de produccion |
+| `npm start` | Sirve la compilacion |
 
-To learn more about Next.js, take a look at the following resources:
+Los tres primeros deben pasar sin errores antes de cualquier despliegue.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Organizacion del codigo
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+app/          Rutas del App Router (enrutado y metadata)
+components/   Biblioteca de interfaz, estructura de la aplicacion y PWA
+features/     Un modulo por seccion funcional
+lib/          Dominio, cliente de API, hooks y almacenamiento local
+public/       Iconos y service worker
+```
 
-## Deploy on Vercel
+## Convenciones
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Sin emojis.** La iconografia es exclusivamente vectorial.
+- **Dominio en espanol**, alineado con los nombres del backend (`insumo`, `pedido`, `canal`,
+  `estado`), para que no exista una capa de traduccion entre API e interfaz.
+- **Sin `any`, sin `@ts-ignore`, sin `eslint-disable`** en el codigo de la aplicacion.
+- Cada pantalla nueva es una ruta, nunca un caso mas de un `switch`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Documentacion
+
+- `MANUAL_TECNICO_Y_ARQUITECTURA.md`: arquitectura, reglas del servidor VPS y runbook.
+- `DOCUMENTACION_COMPLETA.md`: manual operativo extendido (uso interno, no se publica).

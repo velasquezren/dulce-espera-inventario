@@ -1,65 +1,49 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import Providers from "./components/Providers";
-import PWARegister from "./components/PWARegister";
-import ErrorDebugger from "./components/ErrorDebugger";
-import PWAInstallModal from "./components/PWAInstallModal";
+import type { Metadata, Viewport } from 'next';
+import { Geist } from 'next/font/google';
+import './globals.css';
+import { Proveedores } from '@/components/proveedores';
+import { RegistroServiceWorker } from '@/components/pwa/registro-sw';
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const geist = Geist({
+  subsets: ['latin'],
+  variable: '--font-geist-sans',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "Clínica Montalvo - Inventario de Cocina",
-  description: "Sistema PWA para gestión de inventario e insumos de cocina de la Clínica Montalvo",
-  manifest: "/manifest.json",
+  title: {
+    default: 'Dulce Espera · Insumos de cocina',
+    template: '%s · Dulce Espera',
+  },
+  description:
+    'Gestion de pedidos, despacho y recepcion de insumos de cocina de la Clinica Montalvo.',
+  applicationName: 'Dulce Espera',
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
-    title: "Montalvo Cocina",
+    title: 'Dulce Espera',
+    statusBarStyle: 'default',
+  },
+  formatDetection: { telephone: false },
+  robots: { index: false, follow: false },
+  icons: {
+    apple: '/icon-192.png',
   },
 };
 
-export const viewport = {
-  width: "device-width",
+export const viewport: Viewport = {
+  width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  viewportFit: "cover",
-  themeColor: "#006156",
+  viewportFit: 'cover',
+  themeColor: '#006156',
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="es"
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-    >
-      <head>
-        <meta name="theme-color" content="#006156" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <link rel="apple-touch-icon" href="/icon-192.png" />
-      </head>
-      <body className="bg-[#f8fafc] text-[#0f172a] antialiased">
-        <Providers>
-          <PWARegister />
-          <PWAInstallModal />
-          <ErrorDebugger />
-          {children}
-        </Providers>
+    <html lang="es" className={geist.variable}>
+      <body className="antialiased">
+        <Proveedores>{children}</Proveedores>
+        <RegistroServiceWorker />
       </body>
     </html>
   );
 }
-
-

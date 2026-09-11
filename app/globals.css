@@ -1,153 +1,187 @@
 @import "tailwindcss";
 
-:root {
-  /* Brand Colors (Clínica Montalvo Official Palette) */
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  
-  --primary: #006156; /* Dark Green Official */
-  --primary-hover: #004d44;
-  --primary-light: #e6f0ef;
-  
-  --secondary: #39ADA3; /* Turquoise Accent Official */
-  --secondary-hover: #2e8b83;
-  --secondary-light: #ebf7f6;
-  
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-  
-  --muted: #64748b;
-  --muted-light: #f1f5f9;
-  --border: #e2e8f0;
-  
-  /* Status Colors for Kitchen Semáforo */
-  --status-faltante: #ef4444; /* Red */
-  --status-pedido: #f59e0b; /* Amber */
-  --status-llego: #39ADA3; /* Turquoise Success */
-  
-  --radius-card: 16px;
-  --radius-interactive: 12px;
-
-  /* Shadows (Clinical PWA Elevation) */
-  --shadow-clinical-sm: 0 2px 8px rgba(0, 97, 86, 0.04);
-  --shadow-clinical-md: 0 8px 20px rgba(0, 97, 86, 0.06);
-  --shadow-clinical-lg: 0 16px 36px rgba(0, 97, 86, 0.09);
-  --shadow-soft-bottom: 0 -4px 16px rgba(0, 97, 86, 0.03);
-}
+/* ==========================================================================
+   Sistema de diseno - Dulce Espera / Clinica Montalvo
+   Paleta institucional, escala tipografica sobria y densidad apta para uso
+   con guantes en tablets de cocina.
+   ========================================================================== */
 
 @theme {
-  --color-primary: var(--primary);
-  --color-primary-hover: var(--primary-hover);
-  --color-primary-light: var(--primary-light);
-  
-  --color-secondary: var(--secondary);
-  --color-secondary-hover: var(--secondary-hover);
-  --color-secondary-light: var(--secondary-light);
-  
-  --color-bg-main: var(--background);
-  --color-fg-main: var(--foreground);
-  
-  --color-card: var(--card);
-  --color-card-fg: var(--card-foreground);
-  
-  --color-muted: var(--muted);
-  --color-muted-light: var(--muted-light);
-  --color-border-custom: var(--border);
-  
-  --color-status-faltante: var(--status-faltante);
-  --color-status-pedido: var(--status-pedido);
-  --color-status-llego: var(--status-llego);
-  
-  --radius-card: var(--radius-card);
-  --radius-interactive: var(--radius-interactive);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Superficies */
+  --color-canvas: #f4f7f7;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f8fafc;
+
+  /* Texto */
+  --color-ink: #0f172a;
+  --color-ink-soft: #475569;
+  --color-ink-muted: #64748b;
+  --color-ink-faint: #94a3b8;
+
+  /* Bordes */
+  --color-line: #e3e8ee;
+  --color-line-strong: #cbd5e1;
+
+  /* Marca */
+  --color-brand: #006156;
+  --color-brand-strong: #004840;
+  --color-brand-soft: #e8f1f0;
+  --color-brand-line: #bcd8d4;
+  --color-accent: #2f9d93;
+
+  /* Semanticos */
+  --color-exito: #047857;
+  --color-exito-soft: #ecfdf5;
+  --color-exito-line: #a7f3d0;
+
+  --color-alerta: #b45309;
+  --color-alerta-soft: #fff8eb;
+  --color-alerta-line: #fcd9a4;
+
+  --color-critico: #b91c1c;
+  --color-critico-soft: #fef2f2;
+  --color-critico-line: #fbcaca;
+
+  --color-info: #4338ca;
+  --color-info-soft: #eef2ff;
+  --color-info-line: #c7d2fe;
+
+  --radius-control: 10px;
+  --radius-card: 14px;
+  --radius-panel: 18px;
+
+  --shadow-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.03);
+  --shadow-raised: 0 4px 12px -2px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+  --shadow-overlay: 0 24px 48px -12px rgba(15, 23, 42, 0.24);
+
+  --animate-aparecer: aparecer 0.16s ease-out both;
+  --animate-subir: subir 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Base reset & Touch Optimizations for Kitchen Tablets/Phones */
-*, *::before, *::after {
-  -webkit-tap-highlight-color: transparent !important;
+@keyframes aparecer {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-html {
-  scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%;
+@keyframes subir {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  overflow-x: hidden;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* Touch targets (Minimum 44x44px for Kitchen Staff) */
-button, input, select, textarea {
-  min-height: 44px;
-}
-
-/* Glass Panel Layout */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  box-shadow: var(--shadow-clinical-sm);
-}
-
-/* Card hover animation */
-.card-hover-effect {
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.card-hover-effect:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-clinical-md);
-  border-color: var(--secondary-light);
-}
-
-/* Micro-animations */
-@keyframes view-enter {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
+@layer base {
+  html {
+    color-scheme: light;
+    -webkit-text-size-adjust: 100%;
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-wrap: break-word;
+  }
+
+  /* Evita el destello gris del tap en dispositivos tactiles. */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background-color: var(--color-brand-soft);
+    color: var(--color-brand-strong);
+  }
+
+  /* El numero no debe mostrar flechas: en cocina se usa el teclado numerico. */
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line-strong);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-ink-faint);
   }
 }
 
-.animate-view-enter {
-  animation: view-enter 0.2s ease-out forwards;
+@layer components {
+  .sin-barra {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .sin-barra::-webkit-scrollbar {
+    display: none;
+  }
 }
 
-/* Semáforo Pulse effect */
-@keyframes semaforo-pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.04); }
-  100% { transform: scale(1); }
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
-.animate-semaforo-active {
-  animation: semaforo-pulse 0.3s ease-in-out;
-}
+/* Impresion: se conserva unicamente el contenido marcado como imprimible. */
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm;
+  }
 
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
+  body {
+    background: #ffffff;
+  }
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
+  [data-no-imprimir] {
+    display: none !important;
+  }
 
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 9999px;
-}
+  [data-imprimible] {
+    box-shadow: none !important;
+    border: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10pt;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    break-inside: avoid;
+  }
 }
