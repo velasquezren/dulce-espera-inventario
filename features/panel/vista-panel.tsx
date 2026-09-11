@@ -25,7 +25,7 @@ const ACCESOS = [
   {
     href: '/despacho',
     titulo: 'Despachar pedido',
-    descripcion: 'Genera el Excel oficial o comparte la lista por WhatsApp.',
+    descripcion: 'Genera el Excel oficial, el PDF o la hoja del pedido para compartir.',
     icono: Send,
   },
   {

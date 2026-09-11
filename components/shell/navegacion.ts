@@ -56,7 +56,7 @@ export const ENLACES: readonly Enlace[] = [
     href: '/despacho',
     etiqueta: 'Despacho',
     etiquetaCorta: 'Despacho',
-    descripcion: 'Reportes oficiales y envio por WhatsApp',
+    descripcion: 'Reportes oficiales y hoja del pedido',
     icono: Send,
     enMovil: true,
   },

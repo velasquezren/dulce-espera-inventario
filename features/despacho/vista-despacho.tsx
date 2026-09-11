@@ -1,12 +1,11 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import {
   ExternalLink,
   FileSpreadsheet,
   FileText,
   Image as ImagenIcono,
-  MessageCircle,
   Repeat,
   Send,
   Share2,
@@ -15,22 +14,26 @@ import { Boton } from '@/components/ui/boton';
 import { Buscador } from '@/components/ui/buscador';
 import { Segmentado } from '@/components/ui/filtros';
 import { Insignia } from '@/components/ui/insignia';
-import { Selector } from '@/components/ui/campo';
 import { Esqueleto, Vacio } from '@/components/ui/estados';
 import { EncabezadoPagina, Seccion, Tarjeta } from '@/components/ui/superficie';
 import { useAvisos } from '@/components/ui/avisos';
 import { reportes } from '@/lib/api/reportes';
 import { agruparPorCanal, totalUnidades } from '@/lib/domain/derivados';
 import { estado as definicionEstado } from '@/lib/domain/estados';
-import { enlaceWhatsApp, textoWhatsApp } from '@/lib/domain/mensajes';
 import type { Pedido } from '@/lib/domain/tipos';
 import { formatoCantidad, formatoFechaHora } from '@/lib/formato';
 import { normalizar, pluralizar } from '@/lib/texto';
 import { usePedidos } from '@/lib/hooks/use-pedidos';
-import { useCoordinadores } from '@/lib/hooks/use-coordinadores';
 import { SelectorPedido } from './selector-pedido';
 
 type Vista = 'canales' | 'plana';
+
+/* El dialogo para compartir del sistema operativo solo existe en navegadores
+   moviles; en escritorio se ofrece unicamente la descarga. */
+const sinCambios = () => () => {};
+const soportaCompartir = () =>
+  typeof navigator.share === 'function' && typeof navigator.canShare === 'function';
+const noSoportaCompartir = () => false;
 
 const DOCUMENTOS = [
   {
@@ -59,13 +62,12 @@ const DOCUMENTOS = [
 export function VistaDespacho() {
   const { avisar } = useAvisos();
   const { pedidos, estado } = usePedidos();
-  const coordinadores = useCoordinadores();
+  const puedeCompartir = useSyncExternalStore(sinCambios, soportaCompartir, noSoportaCompartir);
 
   const [elegido, setElegido] = useState<string | null>(null);
   const [abrirSelector, setAbrirSelector] = useState(false);
   const [vista, setVista] = useState<Vista>('canales');
   const [busqueda, setBusqueda] = useState('');
-  const [coordinador, setCoordinador] = useState('');
   const [generando, setGenerando] = useState(false);
   const [imagen, setImagen] = useState<{ pedidoId: string; url: string; blob: Blob } | null>(null);
 
@@ -160,7 +162,7 @@ export function VistaDespacho() {
     <div className="flex flex-col gap-6">
       <EncabezadoPagina
         titulo="Despacho"
-        descripcion="Genera los documentos oficiales del pedido y compartelos con el coordinador."
+        descripcion="Genera los documentos oficiales del pedido y la hoja para compartir."
         acciones={
           <Boton variante="secundario" onClick={() => setAbrirSelector(true)}>
             <Repeat className="size-4" aria-hidden />
@@ -249,69 +251,49 @@ export function VistaDespacho() {
             </a>
           </Seccion>
 
-          <Seccion titulo="Envio por WhatsApp" descripcion="Comparte la lista como texto o como imagen de alta resolucion.">
-            <div className="grid gap-3 lg:grid-cols-2">
-              <Tarjeta className="flex flex-col gap-3">
-                <p className="text-[13px] text-ink-soft">
-                  Envia el detalle en texto, agrupado por canal de compra.
-                </p>
-                {coordinadores.length > 0 && (
-                  <Selector
-                    etiqueta="Coordinador"
-                    value={coordinador}
-                    onChange={(e) => setCoordinador(e.target.value)}
-                  >
-                    <option value="">Elegir contacto al compartir</option>
-                    {coordinadores.map((c) => (
-                      <option key={c.id} value={c.telefono}>
-                        {c.nombre}
-                      </option>
-                    ))}
-                  </Selector>
-                )}
-                <Boton
-                  onClick={() =>
-                    window.open(enlaceWhatsApp(textoWhatsApp(pedido), coordinador || undefined), '_blank', 'noopener')
-                  }
-                >
-                  <MessageCircle className="size-4" aria-hidden />
-                  Compartir texto
-                </Boton>
-              </Tarjeta>
-
-              <Tarjeta className="flex flex-col gap-3">
-                <p className="text-[13px] text-ink-soft">
-                  Genera la hoja del pedido como imagen para enviarla o archivarla.
-                </p>
-
-                {imagenActual ? (
-                  <>
-                    <div className="max-h-72 overflow-y-auto rounded-control border border-line bg-surface-muted p-2">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={imagenActual.url} alt={`Hoja del pedido ${pedido.folio}`} className="w-full rounded" />
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      <Boton onClick={descargarImagen}>
-                        <ImagenIcono className="size-4" aria-hidden />
-                        Descargar
-                      </Boton>
-                      <Boton variante="secundario" onClick={compartirImagen}>
+          <Seccion
+            titulo="Hoja del pedido"
+            descripcion="Imagen de alta resolucion lista para enviar o archivar."
+          >
+            <Tarjeta className="flex flex-col gap-3">
+              {imagenActual ? (
+                <>
+                  <div className="max-h-96 overflow-y-auto rounded-control border border-line bg-surface-muted p-2">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={imagenActual.url}
+                      alt={`Hoja del pedido ${pedido.folio}`}
+                      className="mx-auto w-full max-w-md rounded"
+                    />
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {puedeCompartir && (
+                      <Boton onClick={compartirImagen}>
                         <Share2 className="size-4" aria-hidden />
                         Compartir
                       </Boton>
-                      <Boton variante="fantasma" onClick={() => setImagen(null)}>
-                        Quitar
-                      </Boton>
-                    </div>
-                  </>
-                ) : (
-                  <Boton variante="secundario" onClick={generarImagen} cargando={generando}>
+                    )}
+                    <Boton variante={puedeCompartir ? 'secundario' : 'principal'} onClick={descargarImagen}>
+                      <ImagenIcono className="size-4" aria-hidden />
+                      Descargar
+                    </Boton>
+                    <Boton variante="fantasma" onClick={() => setImagen(null)}>
+                      Quitar
+                    </Boton>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="text-[13px] text-ink-soft">
+                    Genera la hoja con los insumos agrupados por canal, el total y los espacios de firma.
+                  </p>
+                  <Boton variante="secundario" onClick={generarImagen} cargando={generando} className="self-start">
                     <ImagenIcono className="size-4" aria-hidden />
                     Generar imagen
                   </Boton>
-                )}
-              </Tarjeta>
-            </div>
+                </>
+              )}
+            </Tarjeta>
           </Seccion>
 
           <Seccion

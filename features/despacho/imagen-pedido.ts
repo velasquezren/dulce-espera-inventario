@@ -4,8 +4,8 @@ import type { Pedido } from '@/lib/domain/tipos';
 import { formatoCantidad, formatoFechaHora } from '@/lib/formato';
 
 /**
- * Genera la hoja de pedido como imagen PNG de alta densidad para enviarla por
- * WhatsApp. Se carga bajo demanda para no pesar en el paquete inicial.
+ * Genera la hoja del pedido como imagen PNG de alta densidad para compartirla o
+ * archivarla. Se carga bajo demanda para no pesar en el paquete inicial.
  */
 
 const ANCHO = 640;

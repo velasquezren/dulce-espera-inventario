@@ -44,12 +44,6 @@ export interface Pedido {
   enCola?: boolean;
 }
 
-export interface Coordinador {
-  id: number;
-  nombre: string;
-  telefono: string;
-}
-
 export type Rol = 'cocina' | 'compras' | 'admin';
 
 export interface Sesion {

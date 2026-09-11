@@ -116,9 +116,11 @@ flowchart TD
 - Endpoint: `GET /pedidos/{id_publico}/reporte/pdf`
 - Documento formal en escala tipografica estricta, libre de emojis, optimizado para impresion fisica.
 
-### 4.3 Imagen WhatsApp en Alta Densidad (Canvas 4x)
-- Modulo `features/despacho`: vista segmentada por canal o lista unica, generacion de la hoja del
-  pedido en canvas a 3x (se carga bajo demanda) y envio con Web Share API o descarga directa.
+### 4.3 Hoja del Pedido en Imagen de Alta Densidad
+- Modulo `features/despacho`: vista segmentada por canal o lista unica y generacion de la hoja del
+  pedido en canvas a 3x, que se carga bajo demanda.
+- La imagen se descarga o se entrega al dialogo del sistema (Web Share API), que es quien ofrece
+  las aplicaciones disponibles en el dispositivo. La aplicacion no envia a ningun canal concreto.
 
 ---
 
@@ -150,7 +152,7 @@ flowchart TD
 | `/cuaderno` | Catalogo de 771 insumos y cuaderno de anotaciones | Cocina |
 | `/solicitudes` | Seguimiento en lista o calendario | Cocina |
 | `/recepciones` | Confirmacion de mercaderia recibida | Cocina |
-| `/despacho` | Reportes oficiales, imagen y envio por WhatsApp | Cocina |
+| `/despacho` | Reportes oficiales y hoja del pedido en imagen | Cocina |
 | `/historial` | Bitacora de movimientos, CSV e impresion | Cocina |
 | `/cuenta` | Sesion, conexion e instalacion de la PWA | Cocina |
 | `/compras` | Lista de compras con checklist y cambio de estado | Rol compras |

@@ -1,14 +1,13 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { Check, ChevronDown, FileSpreadsheet, MessageCircle, Printer } from 'lucide-react';
+import { Check, ChevronDown, FileSpreadsheet, Printer } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { Boton } from '@/components/ui/boton';
 import { Insignia } from '@/components/ui/insignia';
 import { reportes } from '@/lib/api/reportes';
 import { agruparPorCanal, resumenLineas } from '@/lib/domain/derivados';
 import { estado as definicionEstado } from '@/lib/domain/estados';
-import { enlaceWhatsApp, textoWhatsApp } from '@/lib/domain/mensajes';
 import type { EstadoPedido, Pedido } from '@/lib/domain/tipos';
 import { formatoCantidad, formatoFechaHora } from '@/lib/formato';
 import { pluralizar } from '@/lib/texto';
@@ -141,14 +140,6 @@ export function TarjetaCompra({
             <Boton tamano="sm" variante="secundario" onClick={() => alImprimir(pedido)}>
               <Printer className="size-4" aria-hidden />
               Imprimir
-            </Boton>
-            <Boton
-              tamano="sm"
-              variante="secundario"
-              onClick={() => window.open(enlaceWhatsApp(textoWhatsApp(pedido)), '_blank', 'noopener')}
-            >
-              <MessageCircle className="size-4" aria-hidden />
-              WhatsApp
             </Boton>
             <a
               href={reportes.excelPedido(pedido.id)}
