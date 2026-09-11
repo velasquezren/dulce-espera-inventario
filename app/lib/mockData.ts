@@ -2,6 +2,7 @@ export interface Product {
   id: string;
   name: string;
   category: string;
+  group?: string;
   stock: number;
   unit: string;
   minStock: number;
@@ -26,6 +27,8 @@ export interface RequestItem {
     productName: string;
     quantity: number;
     unit: string;
+    category?: string;
+    group?: string;
     notes?: string;
   }>;
 }

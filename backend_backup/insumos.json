@@ -1,0 +1,7202 @@
+[
+  {
+    "id_publico": "IN6",
+    "nombre": "Huevo",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN7",
+    "nombre": "Plátano",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Racimo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN9",
+    "nombre": "Arroz carolina",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Kintal",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN10",
+    "nombre": "Pimenton Verde",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Docena",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN11",
+    "nombre": "Pimenton Rojo",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN12",
+    "nombre": "Lechuga Carola",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN13",
+    "nombre": "Lechuga Morada",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN14",
+    "nombre": "Carote",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN15",
+    "nombre": "Zapallito",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN18",
+    "nombre": "Zapallo",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN19",
+    "nombre": "Arbeja",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN20",
+    "nombre": "Cebolla",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Arroba",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN21",
+    "nombre": "Papa Harinosa",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Arroba",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN22",
+    "nombre": "Papa Holandesa",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Arroba",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN23",
+    "nombre": "Ajinomoto",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN24",
+    "nombre": "Apio",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Porcion",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN25",
+    "nombre": "Caldo Maggi Costilla",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "Caja",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN26",
+    "nombre": "Caldo Maggi Gallina",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Caja",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN27",
+    "nombre": "Mandarina",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN28",
+    "nombre": "Naranja",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN29",
+    "nombre": "Maracuya",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN30",
+    "nombre": "leche",
+    "categoria": "Lácteos",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN31",
+    "nombre": "Lima",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN32",
+    "nombre": "Kiwi",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN33",
+    "nombre": "Pera",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN34",
+    "nombre": "Manzana Verde",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN35",
+    "nombre": "Papaya",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN36",
+    "nombre": "Piña",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN39",
+    "nombre": "Frutilla",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "kilo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN40",
+    "nombre": "Uva",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Kilo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN41",
+    "nombre": "Manzana Roja",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN44",
+    "nombre": "Mote Cocido",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Kilo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN45",
+    "nombre": "Gualele",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Docena",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN46",
+    "nombre": "Cool",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "kilo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN47",
+    "nombre": "Acelga",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Porcion",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN48",
+    "nombre": "Cilandro",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Porcion",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN49",
+    "nombre": "Cebollin",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Porcion",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN50",
+    "nombre": "Perejil",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Porcion",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN51",
+    "nombre": "Lechuga",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN52",
+    "nombre": "Zanahoria",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN55",
+    "nombre": "Repollo",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN56",
+    "nombre": "Berengena",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN57",
+    "nombre": "Tomate",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN58",
+    "nombre": "Ajo",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN59",
+    "nombre": "Aji rojo",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "libra",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN60",
+    "nombre": "Manzanilla",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Libra",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN61",
+    "nombre": "Yerva Buena",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Grs",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN62",
+    "nombre": "Aceite",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN63",
+    "nombre": "Fosforo",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN65",
+    "nombre": "Espinaca",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Porcion",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN66",
+    "nombre": "Remolacha",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN67",
+    "nombre": "Locoto",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Libra",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN68",
+    "nombre": "Rabano",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN70",
+    "nombre": "Camote",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN71",
+    "nombre": "Fideo codito",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN72",
+    "nombre": "Aji Amarillo",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "libra",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN73",
+    "nombre": "Fideo Tallarin",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN74",
+    "nombre": "Fideo Ligth Tallarin",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN75",
+    "nombre": "Sal",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN76",
+    "nombre": "Huevo de Codornis",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN77",
+    "nombre": "Azucar",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "kintal",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN78",
+    "nombre": "Tamarindo",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN79",
+    "nombre": "Sandia",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN82",
+    "nombre": "Pan Molde Integral",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN83",
+    "nombre": "Pan Molido",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN84",
+    "nombre": "Jamon",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN85",
+    "nombre": "Lenteja",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "bolsa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN86",
+    "nombre": "Leche",
+    "categoria": "Lácteos",
+    "grupo": "Mercado",
+    "presentacion": "Litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN87",
+    "nombre": "Salchicha",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "bolsa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN88",
+    "nombre": "Choclo Crudo",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN89",
+    "nombre": "Lomito",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN90",
+    "nombre": "Hueso",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN91",
+    "nombre": "Churiqui",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN92",
+    "nombre": "Pechuga",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN93",
+    "nombre": "Choclo Cocido",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN95",
+    "nombre": "Palta",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN98",
+    "nombre": "Carne Molida",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN99",
+    "nombre": "Vainita",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Porcion",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN101",
+    "nombre": "IN10",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN102",
+    "nombre": "Platano Maduro",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN104",
+    "nombre": "Carne",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN105",
+    "nombre": "Comino",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Grs",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN109",
+    "nombre": "Pollo Entero",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "Kilo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN110",
+    "nombre": "IN110",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN111",
+    "nombre": "Mostaza",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Bote",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN112",
+    "nombre": "Harina",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "kintal",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN113",
+    "nombre": "Oregano",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Libra",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN114",
+    "nombre": "Papaliza",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN115",
+    "nombre": "Trigo",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Bolsa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN116",
+    "nombre": "Chuño",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "LIBRA",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN117",
+    "nombre": "Lengua",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN118",
+    "nombre": "Frejol",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "bolsa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN119",
+    "nombre": "Alitas de Pollo",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN121",
+    "nombre": "Jenjibre",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN122",
+    "nombre": "Vino",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Botella",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN123",
+    "nombre": "Azucar en  sachet (500und)",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "caja",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN124",
+    "nombre": "Fideo Lamina",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN125",
+    "nombre": "Yuca",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN127",
+    "nombre": "Panza",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN128",
+    "nombre": "Aba",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN129",
+    "nombre": "Sibarita",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "caja",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN130",
+    "nombre": "Mayonesa",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Bote",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN131",
+    "nombre": "Levadura",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN132",
+    "nombre": "Esencia de Vainilla",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN133",
+    "nombre": "Mantequilla",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "caja",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN134",
+    "nombre": "Harina 0000",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN135",
+    "nombre": "Polvo P/ Hornear",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN136",
+    "nombre": "Leche Evaporada",
+    "categoria": "Lácteos",
+    "grupo": "Proveedor",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN138",
+    "nombre": "Leche Condensada",
+    "categoria": "Lácteos",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN139",
+    "nombre": "Singani",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN140",
+    "nombre": "Dulce de Leche",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Grs",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN141",
+    "nombre": "Durazno en Lata",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN143",
+    "nombre": "Cocoa Amarga",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN144",
+    "nombre": "Esencia de chocolate",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Proveedor",
+    "presentacion": "Litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN145",
+    "nombre": "Colorante P/ Torta",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN146",
+    "nombre": "Galleta Mana",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN148",
+    "nombre": "Pulpa de Maracuya",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN149",
+    "nombre": "Azucar Glass",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN150",
+    "nombre": "Gelatina sin Sabor",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN151",
+    "nombre": "Gelatina Kriss",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN152",
+    "nombre": "Gelatina Neutra",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN153",
+    "nombre": "Cereal sin azucar",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN154",
+    "nombre": "Maicena",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN155",
+    "nombre": "Te con canela",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN156",
+    "nombre": "Chocolate Semi Amargo",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN157",
+    "nombre": "Chocolate Blanco",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN158",
+    "nombre": "Chocolate Blanco",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN160",
+    "nombre": "Piernas de Pollo",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN161",
+    "nombre": "Muslo de pollo",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN162",
+    "nombre": "Alas de pollo",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN163",
+    "nombre": "Costilla",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN164",
+    "nombre": "keperi",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN165",
+    "nombre": "Lomito",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN166",
+    "nombre": "Bollo",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN167",
+    "nombre": "Colita",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN168",
+    "nombre": "Durazno",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN169",
+    "nombre": "Tumbo",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN171",
+    "nombre": "Cebolla Blanca",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "arroba",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN172",
+    "nombre": "Coliflor",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN173",
+    "nombre": "Pimenton",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN174",
+    "nombre": "Champiñon",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "Lata",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN175",
+    "nombre": "Choclo en lata",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Lata",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN177",
+    "nombre": "Coco Rayado",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN178",
+    "nombre": "Yuca",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN179",
+    "nombre": "Yuca",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN180",
+    "nombre": "Azucar Impalpable",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN181",
+    "nombre": "Glucosa",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN182",
+    "nombre": "Esencia de vainilla Frasco",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN183",
+    "nombre": "Manteca",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN184",
+    "nombre": "Aceite de oliva",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN185",
+    "nombre": "Crema de leche Nestle",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN186",
+    "nombre": "Cafe en Sachet",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN187",
+    "nombre": "Leche Pil Light",
+    "categoria": "Lácteos",
+    "grupo": "Proveedor",
+    "presentacion": "Litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN188",
+    "nombre": "Jamon Sanwichero",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN189",
+    "nombre": "Jamon Sanwichero",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN190",
+    "nombre": "Crema de leche Pil",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN191",
+    "nombre": "Crema de leche Pil 1/2",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN192",
+    "nombre": "Cereza Marraschi",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN195",
+    "nombre": "Mermelada Fragata",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN196",
+    "nombre": "Leche Deslactosada",
+    "categoria": "Lácteos",
+    "grupo": "Proveedor",
+    "presentacion": "Litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN197",
+    "nombre": "Mermelada",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN198",
+    "nombre": "Jamon de Pavo",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN199",
+    "nombre": "Jamon de Pavo",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN200",
+    "nombre": "Pan Miga",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Bolsa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN201",
+    "nombre": "Te Windsor",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN202",
+    "nombre": "Fideo Tallarin Integral",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN203",
+    "nombre": "Arroz Integral",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN204",
+    "nombre": "Splenda Sobre",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN205",
+    "nombre": "Peceto",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN206",
+    "nombre": "Puerro",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN207",
+    "nombre": "Requeson",
+    "categoria": "Lácteos",
+    "grupo": "Mercado",
+    "presentacion": "Frasco",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN209",
+    "nombre": "Mani",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "bolsas",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN210",
+    "nombre": "Brocoli",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN211",
+    "nombre": "Pepino",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN212",
+    "nombre": "Arroz Corriente",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN213",
+    "nombre": "Charque",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN214",
+    "nombre": "Cafe Copacabana",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN215",
+    "nombre": "Queso Sanwichero",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN216",
+    "nombre": "Guantes de cocina",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN217",
+    "nombre": "Yogurt",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN218",
+    "nombre": "Yogurt light",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN219",
+    "nombre": "Queso Ricotta",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Bote",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN220",
+    "nombre": "Requeson dietetico",
+    "categoria": "Lácteos",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN221",
+    "nombre": "Carne de Pecho",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN222",
+    "nombre": "Flan",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN223",
+    "nombre": "Avena",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Caja",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN224",
+    "nombre": "Kepchut",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Frasco",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN225",
+    "nombre": "Tomatada",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Sachet",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN226",
+    "nombre": "Queso Bonle",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Bote",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN227",
+    "nombre": "Bicarbonato",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN229",
+    "nombre": "Filete de Surubi",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN230",
+    "nombre": "Jamon Light",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "Gramos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN231",
+    "nombre": "Pan Molde American",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Bolsa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN232",
+    "nombre": "Harina de Maiz Selecta",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN233",
+    "nombre": "Queso Dietetico",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Gramos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN234",
+    "nombre": "Carambola",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN235",
+    "nombre": "Hoja de Platano",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN236",
+    "nombre": "Galletas Oreo",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN237",
+    "nombre": "Chuleta de Cerdo",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN238",
+    "nombre": "Chancho",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN239",
+    "nombre": "Limon Camba",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN240",
+    "nombre": "Maggi Crema",
+    "categoria": "Lácteos",
+    "grupo": "Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN241",
+    "nombre": "Azucar Morena",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN242",
+    "nombre": "Fideo Lamania Integral",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN243",
+    "nombre": "Nescafe",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Bote",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN244",
+    "nombre": "Nescafe 200 Gr",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN245",
+    "nombre": "Mermelada activa",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Frasco",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN246",
+    "nombre": "Cadera de Pollo",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN247",
+    "nombre": "Harina 000",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN248",
+    "nombre": "Harina Integral",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN249",
+    "nombre": "Miel de abeja",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN250",
+    "nombre": "Salsa pomodoro",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Frasco",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN251",
+    "nombre": "Galleta Serranita",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "caja",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN252",
+    "nombre": "Toddy",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN253",
+    "nombre": "Toddy",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN254",
+    "nombre": "Singani 3 Estrelas",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN255",
+    "nombre": "Mantequila",
+    "categoria": "Lácteos",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN256",
+    "nombre": "Mantequila Pil",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN257",
+    "nombre": "Jamon Ligth de Pollo",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN258",
+    "nombre": "Pistacho Agranel",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN259",
+    "nombre": "Cayu",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN260",
+    "nombre": "Chia Agranel",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN261",
+    "nombre": "Uvas Pasas",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN262",
+    "nombre": "Ciruelo Agranel",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN264",
+    "nombre": "Nuez",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN265",
+    "nombre": "Jamon de Pllo",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN266",
+    "nombre": "Ongos secos",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN267",
+    "nombre": "Miel de Caña",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN268",
+    "nombre": "Quinua",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Bolsa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN269",
+    "nombre": "Linaza",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN270",
+    "nombre": "Linaza",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN271",
+    "nombre": "Salvado de Trigo",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN272",
+    "nombre": "Avena Laminada",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN273",
+    "nombre": "Almendra",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN274",
+    "nombre": "Harina de Arroz",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN275",
+    "nombre": "Canela",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "libra",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN276",
+    "nombre": "Canela Molida",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "Kilo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN277",
+    "nombre": "Nuez Moscada",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Kilo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN278",
+    "nombre": "Ganach de Chocolate",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "Kilo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN279",
+    "nombre": "Clavo de olor",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Kilo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN280",
+    "nombre": "Jalea de Fresa",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "frasco",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN281",
+    "nombre": "Gelatina Ligh",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Kilo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN283",
+    "nombre": "Agua",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN284",
+    "nombre": "Salsa Soya",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Litro",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN285",
+    "nombre": "Pescado",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN286",
+    "nombre": "Sufle",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "gramos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN287",
+    "nombre": "Pure de Tomate",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN288",
+    "nombre": "Fideo Cabello de Angel",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN289",
+    "nombre": "Hoja de Laurel",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN290",
+    "nombre": "Piña en Lata",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN292",
+    "nombre": "Vasos Pet Cristal de 16 OZ (Ensalada de frutas)",
+    "categoria": "Verduras",
+    "grupo": "Proveedor",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN293",
+    "nombre": "Tapa Domo Forne 98mm Pet (Ensalada de frutas)",
+    "categoria": "Verduras",
+    "grupo": "Proveedor",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN294",
+    "nombre": "vasos polipapel 12 oz (cafe)",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN295",
+    "nombre": "Tapa Negra para vasos polipapel 12oz y 16oz",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN297",
+    "nombre": "Gelatina de pata",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN298",
+    "nombre": "rollos de cintas",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN299",
+    "nombre": "pirotines",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN300",
+    "nombre": "colorante",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN301",
+    "nombre": "envase pet para 6 cupcake",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN302",
+    "nombre": "fanta guarana de 3 litros",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN303",
+    "nombre": "Postrera redonda de 120ml",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN304",
+    "nombre": "Servilleta",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "paquete",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN305",
+    "nombre": "Postrera redonda de 170ml",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN306",
+    "nombre": "Bandeja desechable de 1/4 con tapa",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN307",
+    "nombre": "Snduichera triangular base transparente",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN308",
+    "nombre": "Cucharillas kevin",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "paquete",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN310",
+    "nombre": "cafe en granos",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "kilogramo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN311",
+    "nombre": "arroz",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "kilogramo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN314",
+    "nombre": "Lomo de cerdo",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Kilo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN317",
+    "nombre": "Panceta Ahumada",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "kilogramo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN320",
+    "nombre": "Queso muzarella",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Gramos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN327",
+    "nombre": "Galleta frac grande",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN330",
+    "nombre": "Harina Leodante.",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Kilo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN332",
+    "nombre": "Galleta Maria",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN333",
+    "nombre": "ace patito",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN334",
+    "nombre": "Esponja",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN335",
+    "nombre": "laminas para torta",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN336",
+    "nombre": "delivery",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN337",
+    "nombre": "Delifruta achachairu 500gr",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "bolsa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN338",
+    "nombre": "Delifruta acerola 500gr",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "bolsa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN339",
+    "nombre": "Delifruta frutilla 500gr",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "bolsas",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN340",
+    "nombre": "Delifruta maracuya 500gr",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "Bolsa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN341",
+    "nombre": "Delifruta tamarindo 500gr",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "Bolsa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN342",
+    "nombre": "Delifruta coco 500gr",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "bolsas",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN343",
+    "nombre": "Delifruta mango 500gr",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "bolsas",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN344",
+    "nombre": "Delifruta frutos rojos 500gr",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "bolsas",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN345",
+    "nombre": "Delifruta durazno natural 500gr",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "bolsas",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN346",
+    "nombre": "Delifruta guayaba 500 gr",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "bolsas",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN348",
+    "nombre": "hielo",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN349",
+    "nombre": "Te de manzanilla",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "caja",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN350",
+    "nombre": "Crema delizia",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN351",
+    "nombre": "Galleta integral",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN352",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN354",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN355",
+    "nombre": "Crema da gusto",
+    "categoria": "Lácteos",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN356",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN357",
+    "nombre": "Gotas pingo",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "kilogramo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN358",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN359",
+    "nombre": "Cebolla verde",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Porcion",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN360",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN361",
+    "nombre": "Queso dambo",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Queso dambo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN362",
+    "nombre": "Queso cheddar",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "kilogramo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN363",
+    "nombre": "Chocolate toblerone chiquito",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Chocolate toblerone chiquito",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN364",
+    "nombre": "Chupete",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Chupete",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN365",
+    "nombre": "Galleta club social",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Galleta club social",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN366",
+    "nombre": "Baton",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Baton",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN367",
+    "nombre": "Pringles de 37 gr",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Pringles de 37 gr",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN368",
+    "nombre": "Toalla absorbente",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Toalla absorbente",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN369",
+    "nombre": "Pan miga integral",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Pan miga integral",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN370",
+    "nombre": "Bollo chico",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Bollo chico",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN371",
+    "nombre": "Chicle",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Chicle",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN372",
+    "nombre": "Guineo",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "Guineo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN373",
+    "nombre": "Frutilla Grande",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Frutilla Grande",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN374",
+    "nombre": "Regia Sin sal",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Caja",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN375",
+    "nombre": "Higado",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "kilogramo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN376",
+    "nombre": "Gelatina",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Gelatina",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN377",
+    "nombre": "Flan",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Bolsa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN378",
+    "nombre": "Pudin",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Pudin",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN379",
+    "nombre": "Gelatina",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Gelatina",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN380",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN381",
+    "nombre": "Forne warp film pvc 45x1200mts",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Forne warp film pvc 45x1200mts",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN382",
+    "nombre": "Coca cola 500ml",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "paquete",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN383",
+    "nombre": "Sprite de 500 ml",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Sprite de 500 ml",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN384",
+    "nombre": "Fanta de 500 ml",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Fanta de 500 ml",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN385",
+    "nombre": "Vital sin gas 600 ml",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Vital sin gas 600 ml",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN386",
+    "nombre": "bombilla corrugada",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "bombilla corrugada",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN387",
+    "nombre": "Caja para torta de 30x30",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Caja para torta de 30x30",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN388",
+    "nombre": "Caja de torta de 23x23",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Caja de torta de 23x23",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN389",
+    "nombre": "Plato para torta de 23x23",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Plato para torta de 23x23",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN390",
+    "nombre": "Plato para torta de 30x30",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Plato para torta de 30x30",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN391",
+    "nombre": "Envase para sanduich",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Envase para sanduich",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN392",
+    "nombre": "Vasos  para ensalada de frutas 16 oz",
+    "categoria": "Verduras",
+    "grupo": "Proveedor",
+    "presentacion": "Vasos  para ensalada de frutas 16 oz",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN393",
+    "nombre": "Vasos para torta de12 oz",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Vasos para torta de12 oz",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN394",
+    "nombre": "Envases para sonso chico",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Envases para sonso chico",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN395",
+    "nombre": "Envase para sonso mediano",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Envase para sonso mediano",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN396",
+    "nombre": "Caja para torta de 23x23",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Caja para torta de 23x23",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN397",
+    "nombre": "Nescafe  de 200gr",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Nescafe  de 200gr",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN398",
+    "nombre": "Mantequilla pil con sal barra",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Mantequilla pil con sal barra",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN399",
+    "nombre": "Mantequilla pil sin sal barra",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Mantequilla pil sin sal barra",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN400",
+    "nombre": "Ajinosillao de 150ml",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "frasco",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN401",
+    "nombre": "Mermelada en bote de durazno",
+    "categoria": "Verduras",
+    "grupo": "Proveedor",
+    "presentacion": "Mermelada en bote de durazno",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN402",
+    "nombre": "Mermelada de frutilla en bote",
+    "categoria": "Verduras",
+    "grupo": "Proveedor",
+    "presentacion": "Mermelada de frutilla en bote",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN403",
+    "nombre": "Talonario",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Talonario",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN404",
+    "nombre": "Yogurt sin sabor",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Yogurt sin sabor",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN405",
+    "nombre": "Galleta Bauduco",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Galleta Bauduco",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN406",
+    "nombre": "Bom bom",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Bom bom",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN407",
+    "nombre": "Papel estanado",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Papel estanado",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN408",
+    "nombre": "Ambientador",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Ambientador",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN409",
+    "nombre": "Ajinosillao de medio litro",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "Ajinosillao de medio litro",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN410",
+    "nombre": "Toddy de 170gr",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Toddy de 170gr",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN411",
+    "nombre": "gasto varios (propina)",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "gasto varios (propina)",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN412",
+    "nombre": "chocolate x6",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "chocolate x6",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN413",
+    "nombre": "mentolita",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "mentolita",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN414",
+    "nombre": "Envase redondo para postre de 120ml",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Envase redondo para postre de 120ml",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN415",
+    "nombre": "papel sabana",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "papel sabana",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN416",
+    "nombre": "Levadura fresca",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Levadura fresca",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN417",
+    "nombre": "aceite sabrosa de 1,800 ml",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "aceite sabrosa de 1,800 ml",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN418",
+    "nombre": "aceite fino de 4,800ml",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "aceite fino de 4,800ml",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN419",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN420",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN421",
+    "nombre": "Cibarita",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Cibarita",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN422",
+    "nombre": "Sante de 500ml",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Sante de 500ml",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN423",
+    "nombre": "Sante de 1 litro zero",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Sante de 1 litro zero",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN424",
+    "nombre": "Sante de 1 litro normal",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Sante de 1 litro normal",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN425",
+    "nombre": "Transporte de compras",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Transporte de compras",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN426",
+    "nombre": "kambucha",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "kambucha",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN427",
+    "nombre": "Cartulina",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Cartulina",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN428",
+    "nombre": "Power de 1 litro.",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Power de 1 litro.",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN429",
+    "nombre": "Power de 500ml.",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Power de 500ml.",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN430",
+    "nombre": "vital con gas de 600ml.",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "vital con gas de 600ml.",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN431",
+    "nombre": "Coca cola sin azucar de 500ml.",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Proveedor",
+    "presentacion": "paquete",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN432",
+    "nombre": "vital sin gas de 350ml",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "vital sin gas de 350ml",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN433",
+    "nombre": "Fanta de 300 ml",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Fanta de 300 ml",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN434",
+    "nombre": "Coca cola sin azucar de 300ml.",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Proveedor",
+    "presentacion": "paquete",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN435",
+    "nombre": "Coca cola de 300 ml.",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Proveedor",
+    "presentacion": "paquete",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN436",
+    "nombre": "Ades de 200ml",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Ades de 200ml",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN437",
+    "nombre": "Acuario de 500ml",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Acuario de 500ml",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN438",
+    "nombre": "Acuario de 300ml",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Acuario de 300ml",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN439",
+    "nombre": "Maizena",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Maizena",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN440",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN441",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN442",
+    "nombre": "Pimienta Dulce",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Pimienta Dulce",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN443",
+    "nombre": "Fideo para hacer falso conejo",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Kilos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN444",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN445",
+    "nombre": "Mejorador de masa",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Mejorador de masa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN446",
+    "nombre": "Cucharillas para ensalada de frutas",
+    "categoria": "Verduras",
+    "grupo": "Proveedor",
+    "presentacion": "paquete",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN447",
+    "nombre": "Escoba",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Escoba",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN448",
+    "nombre": "Alsa basura",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Alsa basura",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN449",
+    "nombre": "Mopa",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Mopa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN450",
+    "nombre": "Recibero",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Recibero",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN451",
+    "nombre": "aquarius manzana 500ml",
+    "categoria": "Verduras",
+    "grupo": "Proveedor",
+    "presentacion": "aquarius manzana 500ml",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN452",
+    "nombre": "aquaris pera 500ml",
+    "categoria": "Verduras",
+    "grupo": "Proveedor",
+    "presentacion": "aquaris pera 500ml",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN453",
+    "nombre": "aquarius pomelo 300 ml",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "aquarius pomelo 300 ml",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN454",
+    "nombre": "aquarius de pera 300ml",
+    "categoria": "Verduras",
+    "grupo": "Proveedor",
+    "presentacion": "aquarius de pera 300ml",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN455",
+    "nombre": "Gel dorado",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Gel dorado",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN456",
+    "nombre": "Brillo dorado",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Brillo dorado",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN457",
+    "nombre": "Platos de plastofor",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Platos de plastofor",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN458",
+    "nombre": "Vasos de 150ml para agua.",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Vasos de 150ml para agua.",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN459",
+    "nombre": "Plato para torta de 15x15",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Plato para torta de 15x15",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN460",
+    "nombre": "Vaso de 50 ml",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Vaso de 50 ml",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN461",
+    "nombre": "chupetes de 0,50",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "chupetes de 0,50",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN462",
+    "nombre": "Gomitas de 80gr",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Gomitas de 80gr",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN463",
+    "nombre": "Queso philadelphia",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Queso philadelphia",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN464",
+    "nombre": "Mortadela jamonada",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Mortadela jamonada",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN465",
+    "nombre": "Mavaleiro negro",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Mavaleiro negro",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN466",
+    "nombre": "Fideo rolllito",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Fideo rolllito",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN467",
+    "nombre": "Fideo  rosca",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Fideo  rosca",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN468",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN469",
+    "nombre": "Almidon",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Almidon",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN470",
+    "nombre": "Acetato para torta personal",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Acetato para torta personal",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN471",
+    "nombre": "Gel color celeste",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Gel color celeste",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN472",
+    "nombre": "Moldes para torta personal",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Moldes para torta personal",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN473",
+    "nombre": "Mondadientes",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Mondadientes",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN474",
+    "nombre": "Yogurt la bontana",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Yogurt la bontana",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN475",
+    "nombre": "corazon de res",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "corazon de res",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN476",
+    "nombre": "palitos pacumutos",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "palitos pacumutos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN477",
+    "nombre": "Tapa para vasos de cafe de 16 oz.",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Tapa para vasos de cafe de 16 oz.",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN478",
+    "nombre": "Vasos para cafe de 16 oz.",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Vasos para cafe de 16 oz.",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN479",
+    "nombre": "Triguillo",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Triguillo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN480",
+    "nombre": "Endulzante suzaril liquido",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "caja",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN481",
+    "nombre": "MYM",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "MYM",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN482",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN483",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN484",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN485",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN486",
+    "nombre": "Bolsas para galletas de 16x26",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Bolsas Galletas",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN487",
+    "nombre": "Uva pasa rubias",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Uva pasa rubias",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN488",
+    "nombre": "Frutas abrillantadas",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Frutas abrillantadas",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN489",
+    "nombre": "Escencia para paneton",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Escencia para paneton",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN490",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN491",
+    "nombre": "Caramelo chocomani",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Caramelo chocomani",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN492",
+    "nombre": "Caramelo chocomani",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN493",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN494",
+    "nombre": "Cebolla blanca",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Cebolla blanca",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN495",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN496",
+    "nombre": "Tapa de vaso para torta de 12 oz.",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Tapa de vaso para torta de 12 oz.",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN497",
+    "nombre": "Vasos para jugo",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Vasos para jugo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN498",
+    "nombre": "Tapa para vaso de jugo",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Tapa para vaso de jugo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN499",
+    "nombre": "Fajilla de Carton para vasos de cafe",
+    "categoria": "Verduras",
+    "grupo": "Proveedor",
+    "presentacion": "Fajilla de Carton para vasos de cafe",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN500",
+    "nombre": "Pavo",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Pavo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN501",
+    "nombre": "Albahaca",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Albahaca",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN502",
+    "nombre": "Hoja de laurel",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "bolsita",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN503",
+    "nombre": "Te clasico",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "caja",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN504",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN505",
+    "nombre": "Lengua de boca",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "Lengua de boca",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN506",
+    "nombre": "vasos 50ml cristal",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "vasos 50ml cristal",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN507",
+    "nombre": "Sprite de 300 ml",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Sprite de 300 ml",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN508",
+    "nombre": "Coca cola de 2 litros",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN509",
+    "nombre": "Aceitunas negras",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Aceitunas negras",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN510",
+    "nombre": "Alcaparra",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Alcaparra",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN511",
+    "nombre": "queso parmesano",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "queso parmesano",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN512",
+    "nombre": "Tomate cherry",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "Tomate cherry",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN513",
+    "nombre": "Bolsas para paneton",
+    "categoria": "Granos y Cereales",
+    "grupo": "Proveedor",
+    "presentacion": "Bolsas para paneton",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN514",
+    "nombre": "moldes para paneton",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "moldes para paneton",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN515",
+    "nombre": "Budinera",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Budinera",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN516",
+    "nombre": "Cinta para paneton",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Cinta para paneton",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN517",
+    "nombre": "Cherri sin semilla",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Cherri sin semilla",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN518",
+    "nombre": "Mayonesa ligth",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Mayonesa ligth",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN519",
+    "nombre": "Tocino ahumado",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Tocino ahumado",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN520",
+    "nombre": "Yogurt Griego natural",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Yogurt Griego natural",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN521",
+    "nombre": "Pringles de 71 gr",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Pringles de 71 gr",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN522",
+    "nombre": "Uva blanca",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Uva blanca",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN523",
+    "nombre": "Arandanos",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Arandanos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN524",
+    "nombre": "Afrecho",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Afrecho",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN525",
+    "nombre": "fideo tubito",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "fideo tubito",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN526",
+    "nombre": "Yogurt la bontana de 1 litro",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Yogurt la bontana de 1 litro",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN527",
+    "nombre": "pan para lomito",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "pan para lomito",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN528",
+    "nombre": "sante sin azucar",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "sante sin azucar",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN529",
+    "nombre": "Hierva buena",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Hierva buena",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN530",
+    "nombre": "Ciruelo",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Ciruelo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN531",
+    "nombre": "Sante zero con biotina",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Sante zero con biotina",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN532",
+    "nombre": "Envase para brownie",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Envase para brownie",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN533",
+    "nombre": "Leche de soya natural",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Leche de soya natural",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN534",
+    "nombre": "Chocolate Nestle",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Chocolate Nestle",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN535",
+    "nombre": "Tallarin carozzi",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Tallarin carozzi",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN536",
+    "nombre": "Coca cola de 3 litros",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN537",
+    "nombre": "Mangas",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Mangas",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN538",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN539",
+    "nombre": "Gelatina sin sabor",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Gelatina sin sabor",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN540",
+    "nombre": "Doblon",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Doblon",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN541",
+    "nombre": "Jalea ludafa de durazno",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "frasco",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN542",
+    "nombre": "bombril nidito",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "bombril nidito",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN543",
+    "nombre": "patas de chancho",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "patas de chancho",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN544",
+    "nombre": "Chocolate sapito",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "Chocolate sapito",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN545",
+    "nombre": "Vinagre Tinto",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Vinagre Tinto",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN546",
+    "nombre": "Ajinomoto",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "Ajinomoto",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN547",
+    "nombre": "Durazno",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Durazno",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN548",
+    "nombre": "queso",
+    "categoria": "Lácteos",
+    "grupo": "Mercado",
+    "presentacion": "queso",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN549",
+    "nombre": "URUCU",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "URUCU",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN550",
+    "nombre": "Yogurt de 1 litro de mora",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Yogurt de 1 litro de mora",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN551",
+    "nombre": "Hershey de chocolate",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Hershey de chocolate",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN552",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN553",
+    "nombre": "Azucar",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "kilo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN554",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN555",
+    "nombre": "Salseros",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN556",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN557",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN558",
+    "nombre": "Tomate secos",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "Tomate secos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN559",
+    "nombre": "Atun",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Atun",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN560",
+    "nombre": "Cerveza prost",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Cerveza prost",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN561",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN562",
+    "nombre": "Kefir",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Kefir",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN563",
+    "nombre": "Aceitunas verdes",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Aceitunas verdes",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN564",
+    "nombre": "Tabla para picar",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Tabla para picar",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN565",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN566",
+    "nombre": "Javon bolivar",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Javon bolivar",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN567",
+    "nombre": "Caja para galletas",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Caja para galletas",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN568",
+    "nombre": "bolsa celofan 11x30 para galletas",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "bolsa celofan 11x30 para galletas",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN569",
+    "nombre": "Kefir de 500ml",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "frasco",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN570",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN571",
+    "nombre": "Chorizo tipo argentino",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Chorizo tipo argentino",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN572",
+    "nombre": "Bombilla forrada",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Bombilla forrada",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN573",
+    "nombre": "chocolate nestles",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "chocolate nestles",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN574",
+    "nombre": "caja alexander coffee",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "caja alexander coffee",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN575",
+    "nombre": "Chueleta de res",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Chueleta de res",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN576",
+    "nombre": "Gelatian kris ligth",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Gelatian kris ligth",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN577",
+    "nombre": "Flan neutro",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Flan neutro",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN578",
+    "nombre": "Queso crema",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Queso crema",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN579",
+    "nombre": "Keffir de mora",
+    "categoria": "Verduras",
+    "grupo": "Proveedor",
+    "presentacion": "Keffir de mora",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN580",
+    "nombre": "Yogurt de mra de 1 litro",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Yogurt de mra de 1 litro",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN581",
+    "nombre": "cuchara de helado",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "cuchara de helado",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN582",
+    "nombre": "Galleta bauduco",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Galleta bauduco",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN583",
+    "nombre": "Paprika",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Paprika",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN584",
+    "nombre": "Caja para torta de 26x26",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Caja para torta de 26x26",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN585",
+    "nombre": "Perlas para decoracion de torta",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Perlas para decoracion de torta",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN586",
+    "nombre": "Eenvase plastico para torta tres leches",
+    "categoria": "Lácteos",
+    "grupo": "Proveedor",
+    "presentacion": "Eenvase plastico para torta tres leches",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN587",
+    "nombre": "Choquizuela",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Choquizuela",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN588",
+    "nombre": "Trimate",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Trimate",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN589",
+    "nombre": "Salsa de soya de  chica",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Salsa de soya de  chica",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN590",
+    "nombre": "Colcafe",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Colcafe",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN591",
+    "nombre": "Paño para piso",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Paño para piso",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN592",
+    "nombre": "Insumo sin nombre",
+    "categoria": "Otros",
+    "grupo": "Otros",
+    "presentacion": "Unidad",
+    "activo": 0,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN593",
+    "nombre": "lomo paiche",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "lomo paiche",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN594",
+    "nombre": "Lamina para hamburgueza",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Lamina para hamburgueza",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN595",
+    "nombre": "syrup de vainilla",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "syrup de vainilla",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN596",
+    "nombre": "syrup de carmelo",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "syrup de carmelo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN597",
+    "nombre": "caja del dia del padre",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "caja del dia del padre",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN598",
+    "nombre": "Dulce de leche vacalin",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Dulce de leche vacalin",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN599",
+    "nombre": "Trapeador mediano",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Trapeador mediano",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN600",
+    "nombre": "Balde",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Balde",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN601",
+    "nombre": "Utensilios",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Utensilios",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN602",
+    "nombre": "Espatula",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Espatula",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN603",
+    "nombre": "Vizzio chico",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Vizzio chico",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN604",
+    "nombre": "chocolate  para ti",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "chocolate  para ti",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN605",
+    "nombre": "detergente en polvo",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN606",
+    "nombre": "Te de boldo",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Te de boldo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN607",
+    "nombre": "Anis",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Anis",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN608",
+    "nombre": "Tapara para vaso de jugo",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Tapara para vaso de jugo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN609",
+    "nombre": "Toper",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Toper",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN610",
+    "nombre": "Base para torta de 40cm",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Base para torta de 40cm",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN611",
+    "nombre": "Molde para torta de 50 pax",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Molde para torta de 50 pax",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN612",
+    "nombre": "Mil colores",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Mil colores",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN613",
+    "nombre": "Confite",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Confite",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN614",
+    "nombre": "Chubi",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Chubi",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN615",
+    "nombre": "figuras decorativas",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "figuras decorativas",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN616",
+    "nombre": "Gomita de 30gr",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Gomita de 30gr",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN617",
+    "nombre": "Plato para torta de 26x26",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Plato para torta de 26x26",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN618",
+    "nombre": "esparragos",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "esparragos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN619",
+    "nombre": "Gomita de 180 gr",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Gomita de 180 gr",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN620",
+    "nombre": "Platano verde",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "Platano verde",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN621",
+    "nombre": "Envase para mini Brownie",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Envase para mini Brownie",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN622",
+    "nombre": "Base para torta mini",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Base para torta mini",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN623",
+    "nombre": "Lavandina x 5",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Lavandina x 5",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN624",
+    "nombre": "chicle",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "caja",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN625",
+    "nombre": "cajas para desayuno del dia de la madre",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "cajas para desayuno del dia de la madre",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN626",
+    "nombre": "caja para desayuno",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "caja para desayuno",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN627",
+    "nombre": "Rosa",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Rosa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN628",
+    "nombre": "caja de torta",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "caja de torta",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN629",
+    "nombre": "carne molida de chancho",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "carne molida de chancho",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN630",
+    "nombre": "Galletas opera",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Galletas opera",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN631",
+    "nombre": "gotita",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "gotita",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN632",
+    "nombre": "endulzante equal",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "endulzante equal",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN633",
+    "nombre": "Vino blanco",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Vino blanco",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN634",
+    "nombre": "escobillon curvo",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "escobillon curvo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN635",
+    "nombre": "papas chispitas",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "papas chispitas",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN636",
+    "nombre": "nachos",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "nachos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN637",
+    "nombre": "mora",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "mora",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN638",
+    "nombre": "servicio de carretilla",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "servicio de carretilla",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN639",
+    "nombre": "Patas de res",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "Patas de res",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN640",
+    "nombre": "Caja grande para armar desayuno",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Caja grande para armar desayuno",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN641",
+    "nombre": "envase para chesscake",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "envase para chesscake",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN642",
+    "nombre": "envase de corazon",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "envase de corazon",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN643",
+    "nombre": "envase de triangulo",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "envase de triangulo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN644",
+    "nombre": "botelle para jugo",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "botelle para jugo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN645",
+    "nombre": "Botella para jugo",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Botella para jugo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN646",
+    "nombre": "botella para cafe",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "botella para cafe",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN647",
+    "nombre": "leche bonle",
+    "categoria": "Lácteos",
+    "grupo": "Mercado",
+    "presentacion": "leche bonle",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN648",
+    "nombre": "Gengibre",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Gengibre",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN649",
+    "nombre": "jugo ice",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "jugo ice",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN650",
+    "nombre": "Envase para torta tres leches",
+    "categoria": "Lácteos",
+    "grupo": "Proveedor",
+    "presentacion": "Envase para torta tres leches",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN651",
+    "nombre": "refresco",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "refresco",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN652",
+    "nombre": "Jarabe de vainilla",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Jarabe de vainilla",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN653",
+    "nombre": "Ciruela deshidratada",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "Ciruela deshidratada",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN654",
+    "nombre": "Osobuco",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Osobuco",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN655",
+    "nombre": "mermelada casera",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "mermelada casera",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN656",
+    "nombre": "vaso de 14 para torta",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "vaso de 14 para torta",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN657",
+    "nombre": "ajinosillao",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "ajinosillao",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN658",
+    "nombre": "brillo Lila",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "brillo Lila",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN659",
+    "nombre": "pulverizador",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "pulverizador",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN660",
+    "nombre": "peineta",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "peineta",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN661",
+    "nombre": "Envase resctangular para tres leches",
+    "categoria": "Lácteos",
+    "grupo": "Proveedor",
+    "presentacion": "Envase resctangular para tres leches",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN662",
+    "nombre": "fideo de lasaña ferrari chessi",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "fideo de lasaña ferrari chessi",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN663",
+    "nombre": "achojcha",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "achojcha",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN664",
+    "nombre": "Termo",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Termo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN665",
+    "nombre": "almidonn de maizena",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "almidonn de maizena",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN666",
+    "nombre": "Dorito",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Dorito",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN667",
+    "nombre": "api",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "api",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN668",
+    "nombre": "nabo",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "nabo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN669",
+    "nombre": "flor de jamaica",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "flor de jamaica",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN670",
+    "nombre": "golazo",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "golazo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN671",
+    "nombre": "Mini choc",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Mini choc",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN672",
+    "nombre": "impuesto ic",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "impuesto ic",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN673",
+    "nombre": "lavasa",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "lavasa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN674",
+    "nombre": "syrup de chocolate",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "syrup de chocolate",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN675",
+    "nombre": "Skitles",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Skitles",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN676",
+    "nombre": "platillos de plastico",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "platillos de plastico",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN677",
+    "nombre": "envase para brazo gitano",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "envase para brazo gitano",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN678",
+    "nombre": "encendedor para cocina",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "encendedor para cocina",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN679",
+    "nombre": "caja para torta de 18x18",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "caja para torta de 18x18",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN680",
+    "nombre": "cuñape abiscochado san javier",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "cuñape abiscochado san javier",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN681",
+    "nombre": "mix frutal",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "mix frutal",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN682",
+    "nombre": "mix frutal chocolate",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "mix frutal chocolate",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN683",
+    "nombre": "banan con coca rayado",
+    "categoria": "Nutrición Clínica",
+    "grupo": "Mercado",
+    "presentacion": "banan con coca rayado",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN684",
+    "nombre": "manzana verde con canela",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "manzana verde con canela",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN685",
+    "nombre": "banana con maracuya",
+    "categoria": "Nutrición Clínica",
+    "grupo": "Mercado",
+    "presentacion": "banana con maracuya",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN686",
+    "nombre": "envase de ham pa llevar",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "envase de ham pa llevar",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN687",
+    "nombre": "envase para llevar economico",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "envase para llevar economico",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN688",
+    "nombre": "pastillas de cafe",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "pastillas de cafe",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN689",
+    "nombre": "palill",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "palill",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN690",
+    "nombre": "palillo",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "palillo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN691",
+    "nombre": "piña con maracuya",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "piña con maracuya",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN692",
+    "nombre": "snicker",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "snicker",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN693",
+    "nombre": "jarra",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "jarra",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN694",
+    "nombre": "Bolsas Zip para envolsar galletas",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Bolsas Zip para envolsar galletas",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN695",
+    "nombre": "sifon de cocina",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "sifon de cocina",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN696",
+    "nombre": "Cuaderno",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Cuaderno",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN697",
+    "nombre": "te para el personal",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "te para el personal",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN698",
+    "nombre": "parqueo en el abasto",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "parqueo en el abasto",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN699",
+    "nombre": "Envase para llevar postres",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "caja",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN700",
+    "nombre": "quita sarro",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "quita sarro",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN701",
+    "nombre": "te trimate",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "te trimate",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN702",
+    "nombre": "garbanzo",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "garbanzo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN703",
+    "nombre": "cajas para armar pack",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "cajas para armar pack",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN704",
+    "nombre": "bolsas color madera  de 20x34",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "bolsas color madera  de 20x34",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN705",
+    "nombre": "chicharron de chancho",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "chicharron de chancho",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN706",
+    "nombre": "platano verde y maduro",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "platano verde y maduro",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN707",
+    "nombre": "quesillo",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "quesillo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN708",
+    "nombre": "Mostaza Sachet",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Mostaza Sachet",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN709",
+    "nombre": "enva para llevar transparente",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "enva para llevar transparente",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN710",
+    "nombre": "ciruela deshidratada",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "ciruela deshidratada",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN711",
+    "nombre": "Naranja con chocolate",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Naranja con chocolate",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN712",
+    "nombre": "Paceñita en botella",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Paceñita en botella",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN713",
+    "nombre": "Turrones",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Turrones",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN714",
+    "nombre": "Galleta de agua cracker",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "caja",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN715",
+    "nombre": "pipoca dulce y salada de 65gr",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "pipoca dulce y salada de 65gr",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN716",
+    "nombre": "Pipoca dulce y salada de130gr",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Pipoca dulce y salada de130gr",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN717",
+    "nombre": "caja para torta de 40x40",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "caja para torta de 40x40",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN718",
+    "nombre": "plato para torta de 40x40",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "plato para torta de 40x40",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN719",
+    "nombre": "Rrd bull",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Rrd bull",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN720",
+    "nombre": "Red Bull",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Red Bull",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN721",
+    "nombre": "romero",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "romero",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN722",
+    "nombre": "jarabe de caramelo",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "jarabe de caramelo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN723",
+    "nombre": "galletas lijeras",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "galletas lijeras",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN724",
+    "nombre": "Monster",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Monster",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN725",
+    "nombre": "enaldo",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "enaldo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN726",
+    "nombre": "envase para mini mousse",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "envase para mini mousse",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN727",
+    "nombre": "mondadientes",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "mondadientes",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN728",
+    "nombre": "galleta suprema",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "galleta suprema",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN729",
+    "nombre": "NAVO",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "NAVO",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN730",
+    "nombre": "SOYA",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "SOYA",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN731",
+    "nombre": "papel carbonico",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "papel carbonico",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN732",
+    "nombre": "Moster",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Moster",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN733",
+    "nombre": "carbon",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "carbon",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN734",
+    "nombre": "Cajas paneton",
+    "categoria": "Granos y Cereales",
+    "grupo": "Mercado",
+    "presentacion": "Cajas paneton",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN735",
+    "nombre": "corte de hueso",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "corte de hueso",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN736",
+    "nombre": "COCA-COLA",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Proveedor",
+    "presentacion": "unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN737",
+    "nombre": "menta con chocolate",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "menta con chocolate",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN738",
+    "nombre": "Mentho plus",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Mentho plus",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN739",
+    "nombre": "uva  con chocolate",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "uva  con chocolate",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN740",
+    "nombre": "COLORANTE PARA HUEVO",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Mercado",
+    "presentacion": "COLORANTE PARA HUEVO",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN741",
+    "nombre": "Emulsionante para paneton",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Emulsionante para paneton",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN742",
+    "nombre": "Colorante de huevo",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Colorante de huevo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN743",
+    "nombre": "Licor de cafe",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Licor de cafe",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN744",
+    "nombre": "papel de aluminio",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "papel de aluminio",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN745",
+    "nombre": "Saladix pizza",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Saladix pizza",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN746",
+    "nombre": "ositos de 30 gr",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "ositos de 30 gr",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN747",
+    "nombre": "Manga deshidratada",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Manga deshidratada",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN748",
+    "nombre": "ajinomoto",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "ajinomoto",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN749",
+    "nombre": "cubos diney",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "cubos diney",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN750",
+    "nombre": "envases para sopa",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "envases para sopa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN751",
+    "nombre": "tomatada di bella",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "tomatada di bella",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN752",
+    "nombre": "Tapa para vaso de ensala de fruta",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "Tapa para vaso de ensala de fruta",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN753",
+    "nombre": "papel absorbente",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "papel absorbente",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN754",
+    "nombre": "brocha de 1 pul",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "brocha de 1 pul",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN755",
+    "nombre": "brocha de 4 pul",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "brocha de 4 pul",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN756",
+    "nombre": "Bordeador rojo",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Bordeador rojo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN757",
+    "nombre": "bordeador negro",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "bordeador negro",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN758",
+    "nombre": "guante para el horno de pasteleria",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "guante para el horno de pasteleria",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN759",
+    "nombre": "Plato hondo",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Plato hondo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN760",
+    "nombre": "SANTE CON LEMON",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "SANTE CON LEMON",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN761",
+    "nombre": "Base parav torta de 15x15",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Base parav torta de 15x15",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN762",
+    "nombre": "Taladro marca EINGELL",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Taladro marca EINGELL",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN763",
+    "nombre": "moldes para galletas de corazon",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "moldes para galletas de corazon",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN764",
+    "nombre": "base circulares de 15 cm",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "base circulares de 15 cm",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN765",
+    "nombre": "adhesivos",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "adhesivos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN766",
+    "nombre": "osuco",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "osuco",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN767",
+    "nombre": "pimenton",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "pimenton",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN768",
+    "nombre": "lechuga mantequillosa",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "lechuga mantequillosa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN769",
+    "nombre": "caja para torta de 26x26",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "caja para torta de 26x26",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN770",
+    "nombre": "caja para torta de 35x35",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "caja para torta de 35x35",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN771",
+    "nombre": "acuario  2 litros",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "acuario  2 litros",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN772",
+    "nombre": "Banana con coco rallado",
+    "categoria": "Nutrición Clínica",
+    "grupo": "Mercado",
+    "presentacion": "Banana con coco rallado",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN773",
+    "nombre": "Barra de chocolate te quiero",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Barra de chocolate te quiero",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN774",
+    "nombre": "stickers 6x6",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "stickers 6x6",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN775",
+    "nombre": "Leche ligth",
+    "categoria": "Lácteos",
+    "grupo": "Proveedor",
+    "presentacion": "Leche ligth",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN776",
+    "nombre": "Mil colores Chocolate",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Unidad",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN777",
+    "nombre": "Pasta divella",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Pasta divella",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN778",
+    "nombre": "Ticket para anotar extras",
+    "categoria": "Otros",
+    "grupo": "Proveedor",
+    "presentacion": "Ticket para anotar extras",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN779",
+    "nombre": "Tamales a la olla",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Tamales a la olla",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN780",
+    "nombre": "Helado",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Helado",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN781",
+    "nombre": "paceña en lata",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "paceña en lata",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN782",
+    "nombre": "Pastillas con relleno de frutas",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "Pastillas con relleno de frutas",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN783",
+    "nombre": "chocolate block",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "chocolate block",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN784",
+    "nombre": "CAJA PARA TORTA DE 35X35",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "CAJA PARA TORTA DE 35X35",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN785",
+    "nombre": "Aceite fino ligth de 4,5 lts",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "Aceite fino ligth de 4,5 lts",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN786",
+    "nombre": "Rollo de bolsa de 20x30",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Rollo de bolsa de 20x30",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN787",
+    "nombre": "Rollo de  bolsa de 30x40",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Rollo de  bolsa de 30x40",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN788",
+    "nombre": "Endulzante zucaryl",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Endulzante zucaryl",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN789",
+    "nombre": "Vnagre blanco",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "Vnagre blanco",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN790",
+    "nombre": "lima triangular",
+    "categoria": "Verduras",
+    "grupo": "Mercado",
+    "presentacion": "lima triangular",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN791",
+    "nombre": "Silicona",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Silicona",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN792",
+    "nombre": "candaditos para frigobar",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "candaditos para frigobar",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN793",
+    "nombre": "gasolina",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "gasolina",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN794",
+    "nombre": "cortador de masa",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "cortador de masa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN795",
+    "nombre": "bandejas de aluminio",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "bandejas de aluminio",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN796",
+    "nombre": "mogul acido dulce",
+    "categoria": "Otros",
+    "grupo": "Super Mercado",
+    "presentacion": "mogul acido dulce",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN797",
+    "nombre": "atun vam camps",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "atun vam camps",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN798",
+    "nombre": "tripack matarazzo",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "tripack matarazzo",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN799",
+    "nombre": "Jalea de Chirimolla",
+    "categoria": "Abarrotes",
+    "grupo": "Mercado",
+    "presentacion": "frasco",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN800",
+    "nombre": "Yogurt Queso Crema",
+    "categoria": "Lácteos",
+    "grupo": "Proveedor",
+    "presentacion": "Yogurt Queso Crema",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN801",
+    "nombre": "Yogurt Probiotico",
+    "categoria": "Lácteos",
+    "grupo": "Proveedor",
+    "presentacion": "Yogurt Probiotico",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN802",
+    "nombre": "Yogurt Bebible 250 ml",
+    "categoria": "Lácteos",
+    "grupo": "Proveedor",
+    "presentacion": "Yogurt Bebible 250 ml",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN803",
+    "nombre": "Yogurt Griego con Colageno 250G",
+    "categoria": "Lácteos",
+    "grupo": "Proveedor",
+    "presentacion": "Yogurt Griego con Colageno 250G",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN804",
+    "nombre": "KEFIR SMOOTHIE",
+    "categoria": "Lácteos",
+    "grupo": "Proveedor",
+    "presentacion": "KEFIR SMOOTHIE",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN805",
+    "nombre": "MINI SALCHICHAS",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "MINI SALCHICHAS",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN806",
+    "nombre": "Azucar Bca Guabira",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Azucar Bca Guabira",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN807",
+    "nombre": "Spaghetti Carozzi",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Spaghetti Carozzi",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN808",
+    "nombre": "Levadura seca flei",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Levadura seca flei",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN809",
+    "nombre": "Granola el mana",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Granola el mana",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN810",
+    "nombre": "Lomito de res",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Lomito de res",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN811",
+    "nombre": "yogu",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "yogu",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN812",
+    "nombre": "Yogurt beb. Pil Li",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Yogurt beb. Pil Li",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN813",
+    "nombre": "Vinagre toscano Bl",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Vinagre toscano Bl",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN814",
+    "nombre": "Endulzante sucaryl",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Endulzante sucaryl",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN815",
+    "nombre": "Ajinomoto en bolsa",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Ajinomoto en bolsa",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN816",
+    "nombre": "Pan miga blanco",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Pan miga blanco",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN817",
+    "nombre": "Salchichas viena",
+    "categoria": "Carnes y Proteínas",
+    "grupo": "Super Mercado",
+    "presentacion": "Salchichas viena",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN818",
+    "nombre": "Yogurt natural die",
+    "categoria": "Lácteos",
+    "grupo": "Super Mercado",
+    "presentacion": "Yogurt natural die",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN819",
+    "nombre": "Galleta arcor serr",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Galleta arcor serr",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN820",
+    "nombre": "Nescafe tradicion",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Nescafe tradicion",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN821",
+    "nombre": "Mercado (verdura, frutas y abarrotes)",
+    "categoria": "Otros",
+    "grupo": "Mercado",
+    "presentacion": "Mercado (verdura, frutas y abarrotes)",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN822",
+    "nombre": "Vino aranjuzez Terr",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Vino aranjuzez Terr",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN823",
+    "nombre": "Aceite fino light",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Aceite fino light",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN824",
+    "nombre": "Palmito e Trozos",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "Palmito e Trozos",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN825",
+    "nombre": "Miel d/abeja",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Miel d/abeja",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN826",
+    "nombre": "Cerezas helios Ro",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Cerezas helios Ro",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN827",
+    "nombre": "Vinagre Toscano Ti",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Vinagre Toscano Ti",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN828",
+    "nombre": "Gelatina Kris sin",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Gelatina Kris sin",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN829",
+    "nombre": "Te Windsor Clasico",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Te Windsor Clasico",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN830",
+    "nombre": "Choclo Grano Predi",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "Choclo Grano Predi",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN831",
+    "nombre": "Champiñon Entero",
+    "categoria": "Verduras",
+    "grupo": "Super Mercado",
+    "presentacion": "Champiñon Entero",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN832",
+    "nombre": "MATE WINDSOR MANZA",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "MATE WINDSOR MANZA",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN833",
+    "nombre": "TRIMATE WINDSOR",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "TRIMATE WINDSOR",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN834",
+    "nombre": "HARINA LEUDANTE",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "HARINA LEUDANTE",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN835",
+    "nombre": "Mate windsor manza",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Mate windsor manza",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN836",
+    "nombre": "Trimate Windsor",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Trimate Windsor",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN837",
+    "nombre": "Harina Leudante",
+    "categoria": "Granos y Cereales",
+    "grupo": "Super Mercado",
+    "presentacion": "Harina Leudante",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN838",
+    "nombre": "Galleta Arcor serr",
+    "categoria": "Abarrotes",
+    "grupo": "Super Mercado",
+    "presentacion": "Galleta Arcor serr",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN839",
+    "nombre": "Mogul Oso extreme 12x10x50",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Mogul Oso extreme 12x10x50",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN840",
+    "nombre": "Mogul osito 12x12x13",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Mogul osito 12x12x13",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN841",
+    "nombre": "Grosos Surtidos 24x50x350",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Grosos Surtidos 24x50x350",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN842",
+    "nombre": "Alfajor Bon o Bon leche 40c40g",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Alfajor Bon o Bon leche 40c40g",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN843",
+    "nombre": "Bsa Bob sup Avela 4c50x18g",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Bsa Bob sup Avela 4c50x18g",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN844",
+    "nombre": "Saladix Chizzidix 10x150G",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Saladix Chizzidix 10x150G",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN845",
+    "nombre": "Saladix Pops 3x10x30G",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Saladix Pops 3x10x30G",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN846",
+    "nombre": "Mogul Jelly bean ext 12x10x50G",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Mogul Jelly bean ext 12x10x50G",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN847",
+    "nombre": "Saladix Picaña 3x10x26G",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Saladix Picaña 3x10x26G",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN848",
+    "nombre": "Mani bañado Arcor  12x16x35G",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Mani bañado Arcor  12x16x35G",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN849",
+    "nombre": "Bom Bonobon Leche 12x30x15G",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Bom Bonobon Leche 12x30x15G",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN850",
+    "nombre": "Saladix Picadix 3x10x23G",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Saladix Picadix 3x10x23G",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN851",
+    "nombre": "Mogul Bananitas 12x12x30G",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Mogul Bananitas 12x12x30G",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN852",
+    "nombre": "Saladix Pops 10x170G",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Saladix Pops 10x170G",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN853",
+    "nombre": "Saladix Picaña 10x150G",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Saladix Picaña 10x150G",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN854",
+    "nombre": "Rex Estuche 16x125G",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Rex Estuche 16x125G",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN855",
+    "nombre": "alfajor Bon o Bon blanco 40x40",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "alfajor Bon o Bon blanco 40x40",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN856",
+    "nombre": "Chocol. Cofler Bolck 8x20x38",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Chocol. Cofler Bolck 8x20x38",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN857",
+    "nombre": "Nikolo Trad. 8x30x24 G",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Nikolo Trad. 8x30x24 G",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN858",
+    "nombre": "Alfajor Cofler Mouse 40x40",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Alfajor Cofler Mouse 40x40",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN859",
+    "nombre": "Alfajor Cofler Bolck",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Alfajor Cofler Bolck",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  },
+  {
+    "id_publico": "IN860",
+    "nombre": "Mogul Tiburon 12x12x30",
+    "categoria": "Abarrotes",
+    "grupo": "Proveedor",
+    "presentacion": "Mogul Tiburon 12x12x30",
+    "activo": 1,
+    "fecha_actualizacion": "2026-09-11 14:25:23"
+  }
+]

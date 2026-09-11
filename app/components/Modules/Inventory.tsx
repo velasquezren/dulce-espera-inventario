@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Card, Button, ConfirmModal, Skeleton } from '../UI';
 import { Search, Trash2, Send, ShoppingBag, Check, HelpCircle, X } from 'lucide-react';
@@ -38,8 +38,14 @@ export default function Inventory() {
   // Global order notes/reason
   const [listReason, setListReason] = useState('');
 
+  // Selected group filter state: 'all' | 'Mercado' | 'Super Mercado' | 'Proveedor' | 'Otros'
+  const [selectedGroup, setSelectedGroup] = useState<string>('all');
+
   // Selected category filter state (multiple selection)
   const [selectedCategoryFilters, setSelectedCategoryFilters] = useState<string[]>([]);
+
+  // Progressive rendering slice (infinite / load more)
+  const [visibleCount, setVisibleCount] = useState<number>(60);
 
   // States for inline instant product send
   const [confirmingProductId, setConfirmingProductId] = useState<string | null>(null);
@@ -48,35 +54,102 @@ export default function Inventory() {
   // State for notebook item deletion confirmation
   const [removingItemId, setRemovingItemId] = useState<string | null>(null);
 
-  // Filter products by search query and category selection
-  const filteredProducts = products.filter((product) => {
+  // Pre-calculate counts by purchase group
+  const groupCounts = useMemo(() => {
+    const counts: Record<string, number> = {
+      all: products.length,
+      Mercado: 0,
+      'Super Mercado': 0,
+      Proveedor: 0,
+      Otros: 0,
+    };
+    for (const p of products) {
+      const g = p.group || 'Otros';
+      if (counts[g] !== undefined) {
+        counts[g]++;
+      } else {
+        counts['Otros']++;
+      }
+    }
+    return counts;
+  }, [products]);
+
+  // Categories available for the currently active group
+  const availableCategories = useMemo(() => {
+    const relevant = selectedGroup === 'all'
+      ? products
+      : products.filter((p) => (p.group || 'Otros') === selectedGroup);
+    const catSet = new Set<string>();
+    relevant.forEach((p) => {
+      if (p.category) catSet.add(p.category);
+    });
+    return Array.from(catSet).sort();
+  }, [products, selectedGroup]);
+
+  // Category counts within the currently active group
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    const relevant = selectedGroup === 'all'
+      ? products
+      : products.filter((p) => (p.group || 'Otros') === selectedGroup);
+    relevant.forEach((p) => {
+      const cat = p.category || 'Otros';
+      counts[cat] = (counts[cat] || 0) + 1;
+    });
+    return counts;
+  }, [products, selectedGroup]);
+
+  // Reset pagination when filter or search changes
+  useEffect(() => {
+    setVisibleCount(60);
+  }, [selectedGroup, searchQuery, selectedCategoryFilters]);
+
+  // Filter products by search query, group, and category selection (memoized)
+  const filteredProducts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
-    let matchesSearch = true;
-    if (query) {
-      const keywords = query.split(/\s+/).filter(Boolean);
-      matchesSearch = keywords.every(keyword => 
-        product.name.toLowerCase().includes(keyword) || 
-        (product.category || '').toLowerCase().includes(keyword)
-      );
-    }
-    const matchesCategory = selectedCategoryFilters.length === 0 || selectedCategoryFilters.includes(product.category || 'Otros');
-    return matchesSearch && matchesCategory;
-  });
+    const keywords = query ? query.split(/\s+/).filter(Boolean) : [];
 
-  // Get all unique categories present on products or registered in context
-  const allCategories = Array.from(
-    new Set([...categories, ...products.map((p) => p.category || 'Otros')])
-  ).filter(Boolean);
+    return products.filter((product) => {
+      // 1. Group match
+      if (selectedGroup !== 'all' && (product.group || 'Otros') !== selectedGroup) {
+        return false;
+      }
+      // 2. Category match
+      if (selectedCategoryFilters.length > 0 && !selectedCategoryFilters.includes(product.category || 'Otros')) {
+        return false;
+      }
+      // 3. Search query keywords match
+      if (keywords.length > 0) {
+        const pName = product.name.toLowerCase();
+        const pCat = (product.category || '').toLowerCase();
+        const pGrp = (product.group || '').toLowerCase();
+        const matchesAll = keywords.every(
+          (kw) => pName.includes(kw) || pCat.includes(kw) || pGrp.includes(kw)
+        );
+        if (!matchesAll) return false;
+      }
+      return true;
+    });
+  }, [products, selectedGroup, selectedCategoryFilters, searchQuery]);
 
-  // Sort filtered products by category then name
-  const sortedProducts = [...filteredProducts].sort((a, b) => {
-    const catA = a.category || 'Otros';
-    const catB = b.category || 'Otros';
-    if (catA !== catB) {
-      return catA.localeCompare(catB);
-    }
-    return a.name.localeCompare(b.name);
-  });
+  // Sort filtered products (memoized)
+  const sortedProducts = useMemo(() => {
+    return [...filteredProducts].sort((a, b) => {
+      if (selectedGroup === 'all') {
+        const grpA = a.group || 'Otros';
+        const grpB = b.group || 'Otros';
+        if (grpA !== grpB) {
+          return grpA.localeCompare(grpB);
+        }
+      }
+      const catA = a.category || 'Otros';
+      const catB = b.category || 'Otros';
+      if (catA !== catB) {
+        return catA.localeCompare(catB);
+      }
+      return a.name.localeCompare(b.name);
+    });
+  }, [filteredProducts, selectedGroup]);
 
   const handleQuantityChange = (productId: string, newQty: number) => {
     const draftItem = draftItems.find((d) => d.productId === productId);
@@ -193,12 +266,46 @@ export default function Inventory() {
       {/* TAB 1: CATALOGO */}
       {activeTab === 'catalog' && (
         <div className="space-y-4">
+          {/* Level 1: Purchasing Channel / Group Tabs */}
+          <div className="flex items-center gap-1.5 p-1.5 bg-slate-100/90 rounded-2xl overflow-x-auto scrollbar-none snap-x border border-slate-200/50">
+            {[
+              { id: 'all', label: 'Todos', icon: '📦', count: groupCounts.all },
+              { id: 'Mercado', label: 'Mercado', icon: '🥬', count: groupCounts.Mercado },
+              { id: 'Super Mercado', label: 'Supermercado', icon: '🛒', count: groupCounts['Super Mercado'] },
+              { id: 'Proveedor', label: 'Proveedor', icon: '🚚', count: groupCounts.Proveedor },
+              ...(groupCounts.Otros > 0 ? [{ id: 'Otros', label: 'Otros', icon: '🏷️', count: groupCounts.Otros }] : [])
+            ].map((g) => {
+              const isActive = selectedGroup === g.id;
+              return (
+                <button
+                  key={g.id}
+                  onClick={() => {
+                    setSelectedGroup(g.id);
+                  }}
+                  className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-extrabold transition-all shrink-0 snap-start cursor-pointer tap-bounce ${
+                    isActive
+                      ? 'bg-white text-primary shadow-clinical-sm border border-slate-200/70 ring-2 ring-primary/10'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
+                  }`}
+                >
+                  <span className="text-sm leading-none">{g.icon}</span>
+                  <span>{g.label}</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-black ${
+                    isActive ? 'bg-primary text-white' : 'bg-slate-200/80 text-slate-500'
+                  }`}>
+                    {g.count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
           {/* Search bar with clear button & interactive focus ring */}
           <div className="relative group">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400 group-focus-within:text-primary transition-colors duration-200" />
             <input
               type="text"
-              placeholder="Buscar producto por nombre o categoría (ej. huevo, lácteos)..."
+              placeholder={`Buscar en ${selectedGroup === 'all' ? 'todos los insumos' : selectedGroup} por nombre o categoría...`}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full h-12 pl-10 pr-10 rounded-xl border border-slate-200 bg-white text-sm text-[#0f172a] placeholder-slate-400 focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none"
@@ -214,7 +321,7 @@ export default function Inventory() {
             )}
           </div>
           
-          {/* Category Horizontal Filter Bar */}
+          {/* Level 2: Subcategory Horizontal Filter Bar */}
           <div className="w-full max-w-full overflow-hidden">
             <div 
               className="flex flex-nowrap items-center gap-2 overflow-x-auto pt-1 pb-2.5 px-1.5 snap-x scrollbar-none"
@@ -228,15 +335,15 @@ export default function Inventory() {
                     : 'bg-white text-slate-500 border-slate-200/80 hover:bg-slate-50 hover:text-slate-700'
                 }`}
               >
-                <span>Todos</span>
+                <span>Todas las categorías</span>
                 <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
                   selectedCategoryFilters.length === 0 ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-400'
                 }`}>
-                  {products.length}
+                  {filteredProducts.length}
                 </span>
               </button>
-              {allCategories.map((cat) => {
-                const count = products.filter((p) => (p.category || 'Otros') === cat).length;
+              {availableCategories.map((cat) => {
+                const count = categoryCounts[cat] || 0;
                 const isSelected = selectedCategoryFilters.includes(cat);
                 return (
                   <button
@@ -268,16 +375,20 @@ export default function Inventory() {
 
           {/* Search Result Counter */}
           <div className="flex items-center justify-between text-xs text-slate-400 font-bold px-1 py-0.5">
-            <span>Resultados: {sortedProducts.length} de {products.length} insumos</span>
-            {(searchQuery || selectedCategoryFilters.length > 0) && (
+            <span>
+              Mostrando {Math.min(visibleCount, sortedProducts.length)} de {sortedProducts.length} insumos
+              {selectedGroup !== 'all' ? ` en ${selectedGroup}` : ''}
+            </span>
+            {(searchQuery || selectedCategoryFilters.length > 0 || selectedGroup !== 'all') && (
               <button
                 onClick={() => {
                   setSearchQuery('');
+                  setSelectedGroup('all');
                   setSelectedCategoryFilters([]);
                 }}
                 className="text-primary hover:underline cursor-pointer"
               >
-                Restablecer búsqueda
+                Restablecer todos los filtros
               </button>
             )}
           </div>
@@ -302,7 +413,7 @@ export default function Inventory() {
               </div>
               <h3 className="text-base font-extrabold text-slate-800 tracking-tight">Sin resultados coincidentes</h3>
               <p className="text-xs text-slate-500 max-w-xs mt-1.5 leading-relaxed font-semibold">
-                No encontramos ningún insumo que coincida con tu búsqueda. Intenta con otros términos o limpia los filtros de categoría.
+                No encontramos ningún insumo que coincida con tu búsqueda en este grupo o categoría.
               </p>
               <div className="flex items-center gap-2 mt-5">
                 {searchQuery && (
@@ -314,10 +425,13 @@ export default function Inventory() {
                     Limpiar Búsqueda
                   </Button>
                 )}
-                {selectedCategoryFilters.length > 0 && (
+                {(selectedCategoryFilters.length > 0 || selectedGroup !== 'all') && (
                   <Button 
                     variant="ghost" 
-                    onClick={() => setSelectedCategoryFilters([])}
+                    onClick={() => {
+                      setSelectedGroup('all');
+                      setSelectedCategoryFilters([]);
+                    }}
                     className="h-9 px-4 text-xs text-slate-500 font-bold hover:bg-slate-100 cursor-pointer"
                   >
                     Quitar Filtros
@@ -328,7 +442,7 @@ export default function Inventory() {
           ) : (
             <div className="bg-white border border-[#e2e8f0] rounded-[16px] overflow-hidden shadow-clinical-sm">
               <div className="p-1 sm:p-2">
-                {sortedProducts.map((product, index) => {
+                {sortedProducts.slice(0, visibleCount).map((product, index) => {
                   const draftItem = draftItems.find((d) => d.productId === product.id);
                   const quantity = draftItem ? draftItem.quantity : 0;
 
@@ -338,18 +452,45 @@ export default function Inventory() {
                       className={`p-2.5 sm:p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 transition-[background-color] duration-200 rounded-xl ${
                         quantity > 0 ? 'bg-[#e6f0ef]/30' : ''
                       } ${
-                        index < sortedProducts.length - 1 ? 'border-b border-[#f1f5f9]' : ''
+                        index < Math.min(visibleCount, sortedProducts.length) - 1 ? 'border-b border-[#f1f5f9]' : ''
                       }`}
                     >
                       {/* Left: Info */}
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
+                        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                          {/* Channel Badge */}
+                          {product.group === 'Mercado' && (
+                            <span className="text-[9px] font-extrabold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-1">
+                              <span>🥬</span> Mercado
+                            </span>
+                          )}
+                          {product.group === 'Super Mercado' && (
+                            <span className="text-[9px] font-extrabold text-indigo-800 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-1">
+                              <span>🛒</span> Supermercado
+                            </span>
+                          )}
+                          {product.group === 'Proveedor' && (
+                            <span className="text-[9px] font-extrabold text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-1">
+                              <span>🚚</span> Proveedor
+                            </span>
+                          )}
+                          {(!product.group || product.group === 'Otros') && (
+                            <span className="text-[9px] font-extrabold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-1">
+                              <span>📦</span> Otros
+                            </span>
+                          )}
+
+                          {/* Category Badge */}
                           <span className="text-[9px] font-bold text-primary bg-primary-light px-2 py-0.5 rounded uppercase tracking-wide">
                             {product.category || 'Otros'}
                           </span>
+
+                          {/* Product Name */}
                           <h3 className="text-base font-extrabold text-slate-800 tracking-tight">
                             {product.name}
                           </h3>
+
+                          {/* Unit */}
                           <span className="text-[10px] font-bold text-secondary bg-secondary-light px-2 py-0.5 rounded uppercase tracking-wide">
                             {product.unit}
                           </span>
@@ -451,6 +592,21 @@ export default function Inventory() {
                   );
                 })}
               </div>
+
+              {/* Load More Button */}
+              {visibleCount < sortedProducts.length && (
+                <div className="p-3.5 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50/80 border-t border-slate-100">
+                  <span className="text-xs text-slate-500 font-bold">
+                    Viendo {Math.min(visibleCount, sortedProducts.length)} de {sortedProducts.length} insumos
+                  </span>
+                  <button
+                    onClick={() => setVisibleCount((prev) => prev + 60)}
+                    className="h-9 px-5 rounded-xl bg-white border border-slate-300 text-slate-700 font-extrabold text-xs hover:bg-slate-100 shadow-sm transition-all cursor-pointer tap-bounce"
+                  >
+                    Cargar más productos ({sortedProducts.length - visibleCount} restantes)
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>

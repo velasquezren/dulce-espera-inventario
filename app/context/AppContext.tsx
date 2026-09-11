@@ -326,10 +326,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             id: i.id_publico,
             name: i.nombre || '',
             category: i.categoria || 'Otros',
+            group: i.grupo || 'Otros',
             unit: i.presentacion || 'Unidades',
             stock: 0,
             minStock: 0,
-            description: 'Producto cargado desde el catálogo de FileMaker.',
+            description: 'Producto cargado desde el catálogo maestro.',
             avgConsumption: '-',
             lastDelivery: '-'
           }));
@@ -364,6 +365,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           items: req.lineas.map((line: any) => ({
             productId: line.insumo_id_publico,
             productName: line.nombre_insumo || 'Insumo sin nombre',
+            category: line.categoria_insumo || 'Otros',
+            group: line.grupo_insumo || 'Otros',
             quantity: Number(line.cantidad),
             unit: line.presentacion_insumo || 'Unidades',
             notes: ''
