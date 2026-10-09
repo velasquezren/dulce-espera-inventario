@@ -85,3 +85,16 @@ export function esperaRecepcion(valor: EstadoPedido): boolean {
 export function estaAbierto(valor: EstadoPedido): boolean {
   return valor === 'pendiente' || valor === 'en revision';
 }
+
+/**
+ * Estados desde los que cocina todavía puede dar marcha atrás.
+ *
+ * Es la misma regla que aplica el servidor: una vez comprado ya se gastó el
+ * dinero y cancelar sería mentir. Aquí se repite para no ofrecer un botón que
+ * el servidor va a rechazar, no para decidir: quien decide es el backend.
+ */
+const CANCELABLES: readonly EstadoPedido[] = ['pendiente', 'en revision', 'aceptado'];
+
+export function sePuedeCancelar(valor: EstadoPedido): boolean {
+  return CANCELABLES.includes(valor);
+}

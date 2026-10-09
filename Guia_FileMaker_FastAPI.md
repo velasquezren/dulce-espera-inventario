@@ -294,3 +294,65 @@ Por defecto la lista incluye los estados `pendiente`, `en revision` y
 | Hoja del pedido en pantalla | `/pedidos/{id_publico}/reporte` |
 | Lista de compras consolidada en PDF | `/api/compras/pendientes/pdf` |
 | Consolidado de pendientes en Excel | `/api/pedidos/pendientes/excel` |
+
+---
+
+## 6. Estados del pedido: qué cambio admite cada uno
+
+El servidor dejó de aceptar cualquier cambio de estado. Antes un pedido
+entregado podía volver a pendiente y uno ya comprado podía cancelarse. Como hay
+tres programas cambiando estados (cocina, compras y FileMaker), la regla vive en
+el servidor, que es por donde pasan los tres.
+
+### 6.1 Transiciones permitidas
+
+| Estado actual | Puede pasar a |
+|---|---|
+| **Pendiente** | En revisión · Aceptado · Rechazado · Cancelado |
+| **En revisión** | Aceptado · Rechazado · Cancelado |
+| **Aceptado** | Comprado · Rechazado · Cancelado |
+| **Comprado** | Entregado |
+| **Entregado** | nada, es final |
+| **Rechazado** | nada, es final |
+| **Cancelado** | nada, es final |
+
+Después de *Comprado* ya se gastó el dinero: lo único que queda es que llegue a
+cocina. Por eso desde ahí no se puede cancelar.
+
+### 6.2 Rechazado y Cancelado no son lo mismo
+
+| | Quién lo usa | Qué significa |
+|---|---|---|
+| **Rechazado** | Gobernanta / compras | "No autorizo este pedido" |
+| **Cancelado** | Cocina | "Ya no lo necesito" |
+
+En FileMaker el botón que corresponde es **Rechazar**. El de cancelar está en la
+aplicación de cocina, que es quien se arrepiente del pedido. Si igual quiere el
+botón en FileMaker (por ejemplo, cuando cocina avisa por teléfono), duplique el
+botón *Rechazar Pedido* y cambie el parámetro del guión a `cancelado`.
+
+### 6.3 Un ajuste al guión "Cambiar de Estado"
+
+Cuando el cambio no corresponde, el servidor responde **409** con la
+explicación en castellano. Su guión ya lo detecta, porque la respuesta no
+contiene `success`, pero muestra el JSON crudo. Para que se lea bien, cambie el
+`Sino` por esto:
+
+```
+Sino
+    Establecer variable [ $detalle ; Valor:
+        JSONGetElement ( $respuesta_api ; "detail" ) ]
+    Mostrar cuadro de diálogo personalizado [ "No se pudo cambiar el estado" ;
+        If ( IsEmpty ( $detalle ) ; $respuesta_api ; $detalle ) ]
+Fin de si
+```
+
+Así, en vez de un bloque de JSON, la gobernanta lee:
+
+> *Un pedido comprado no puede pasar a cancelado. Solo puede pasar a: entregado.*
+
+### 6.4 Repetir el mismo estado ya no molesta
+
+Mandar el estado que el pedido ya tiene devuelve éxito y no cambia nada. Un
+doble clic en *Aprobar* dejó de mover la fecha de resolución y de mostrar una
+alerta sin motivo.

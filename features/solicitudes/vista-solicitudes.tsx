@@ -1,11 +1,16 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { ClipboardList, RotateCw } from 'lucide-react';
+import { ClipboardList, RotateCw, X } from 'lucide-react';
 import { Boton } from '@/components/ui/boton';
 import { Chip } from '@/components/ui/filtros';
+import { Confirmacion } from '@/components/ui/dialogo';
 import { AvisoError, Esqueleto, Vacio } from '@/components/ui/estados';
 import { EncabezadoPagina } from '@/components/ui/superficie';
+import { useAvisos } from '@/components/ui/avisos';
+import { sePuedeCancelar } from '@/lib/domain/estados';
+import { formatoFecha } from '@/lib/formato';
+import type { Pedido } from '@/lib/domain/tipos';
 import { usePedidos } from '@/lib/hooks/use-pedidos';
 import { TarjetaPedido } from './tarjeta-pedido';
 import { CompartirHoja } from './compartir-hoja';
@@ -13,9 +18,12 @@ import { CompartirHoja } from './compartir-hoja';
 type Filtro = 'todos' | 'enCurso' | 'entregados';
 
 export function VistaSolicitudes() {
-  const { pedidos, estado, error, recargar } = usePedidos();
+  const { avisar } = useAvisos();
+  const { pedidos, estado, error, recargar, cambiarEstado } = usePedidos();
   const [filtro, setFiltro] = useState<Filtro>('todos');
   const [actualizando, setActualizando] = useState(false);
+  const [cancelando, setCancelando] = useState<Pedido | null>(null);
+  const [procesando, setProcesando] = useState(false);
 
   const grupos = useMemo(
     () => ({
@@ -32,6 +40,21 @@ export function VistaSolicitudes() {
     setActualizando(true);
     await recargar();
     setActualizando(false);
+  };
+
+  const confirmarCancelacion = async () => {
+    if (!cancelando) return;
+    setProcesando(true);
+    try {
+      await cambiarEstado(cancelando.id, 'cancelado');
+      avisar('El pedido quedó cancelado.');
+      setCancelando(null);
+    } catch (e) {
+      // El servidor explica por qué no se puede; se muestra tal cual.
+      avisar(e instanceof Error ? e.message : 'No se pudo cancelar el pedido.', 'error');
+    } finally {
+      setProcesando(false);
+    }
   };
 
   const cargando = estado === 'cargando' && pedidos.length === 0;
@@ -95,11 +118,50 @@ export function VistaSolicitudes() {
               key={pedido.id}
               pedido={pedido}
               abiertoPorDefecto={indice === 0 && visibles.length === 1}
-              acciones={pedido.enCola ? undefined : <CompartirHoja pedido={pedido} />}
+              acciones={
+                pedido.enCola ? undefined : (
+                  <>
+                    <CompartirHoja pedido={pedido} />
+                    {sePuedeCancelar(pedido.estado) && (
+                      <Boton
+                        variante="secundario"
+                        tamano="lg"
+                        ancho
+                        className="text-critico"
+                        onClick={() => setCancelando(pedido)}
+                      >
+                        <X className="size-5" aria-hidden />
+                        Cancelar este pedido
+                      </Boton>
+                    )}
+                  </>
+                )
+              }
             />
           ))}
         </div>
       )}
+
+      <Confirmacion
+        abierto={cancelando !== null}
+        alCerrar={() => setCancelando(null)}
+        alConfirmar={confirmarCancelacion}
+        titulo="Cancelar el pedido"
+        mensaje={
+          cancelando
+            ? `Se va a cancelar el pedido del ${formatoFecha(cancelando.fecha)}. Compras va a ver que ya no lo necesitas y no se puede deshacer.`
+            : ''
+        }
+        advertencia={
+          cancelando?.estado === 'aceptado'
+            ? 'Compras ya lo aprobó. Avísales por si estaban por salir a comprar.'
+            : undefined
+        }
+        textoConfirmar="Sí, cancelar"
+        textoCancelar="No, dejarlo"
+        destructivo
+        procesando={procesando}
+      />
     </div>
   );
 }
