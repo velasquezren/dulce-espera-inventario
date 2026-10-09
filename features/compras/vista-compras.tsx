@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { ArrowDownToLine, FileSpreadsheet, LogOut, RotateCw, ShoppingBag } from 'lucide-react';
+import { ArrowDownToLine, FileSpreadsheet, FileText, LogOut, RotateCw, ShoppingBag } from 'lucide-react';
 import { Boton } from '@/components/ui/boton';
 import { Buscador } from '@/components/ui/buscador';
 import { Chip } from '@/components/ui/filtros';
@@ -197,6 +197,16 @@ export function VistaCompras() {
           </div>
 
           <div className="flex flex-wrap gap-2">
+            <a
+              href={reportes.pdfListaCompras()}
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-10 items-center gap-2 rounded-control bg-brand px-3.5 text-sm font-medium text-white transition-colors hover:bg-brand-strong"
+            >
+              <FileText className="size-4" aria-hidden />
+              Lista de compras en PDF
+            </a>
             <a
               href={reportes.excelPendientes()}
               download

@@ -167,3 +167,130 @@ Este guión envía la decisión del administrador (Aceptar o Rechazar) a la API 
 1. **Botón "Refrescar Pedidos"**: Crea un botón en tu menú y configúralo para ejecutar el **Guión A**.
 2. **Botón "Aceptar"**: Crea este botón dentro de tu fila de pedido o portal, configúralo para ejecutar el **Guión B** y en **Parámetro opcional del guión** escribe `"aceptado"`.
 3. **Botón "Rechazar"**: Crea este botón al lado del de aceptar, configúralo para ejecutar el **Guión B** y en **Parámetro opcional del guión** escribe `"rechazado"`.
+
+---
+
+## 4. Botones de descarga de PDF (FileMaker Pro 19 / 20)
+
+Dos botones nuevos: uno baja la hoja del pedido que está abierto, y otro baja la
+lista completa de todo lo que falta comprar.
+
+### 4.1 Preparación: un campo contenedor global
+
+`Insertar desde URL` entrega el archivo en un campo contenedor, y después se
+exporta a disco. Hay que crear **una sola vez** el campo donde aterriza:
+
+1. **Archivo > Administrar > Base de datos… > pestaña Campos**.
+2. Tabla `Pedidos`. Nombre del campo: `g_archivo`. Tipo: **Contenedor**.
+3. Botón **Opciones… > pestaña Almacenamiento** y marcar
+   **Usar almacenamiento global (un valor para todos los registros)**.
+4. Aceptar. El campo **no** hace falta ponerlo en ninguna presentación.
+
+> Es global a propósito: así no guarda un PDF dentro de cada registro ni hace
+> crecer el archivo de FileMaker.
+
+### 4.2 Guión C: "Descargar PDF del pedido"
+
+Baja la hoja de compras del pedido que está en pantalla, separada por canal
+(una hoja para el mercado, otra para el supermercado) y la abre.
+
+```
+# --- Descargar PDF del pedido ---
+Establecer variable [ $id ; Valor: Pedidos::id_publico ]
+
+Si [ IsEmpty ( $id ) ]
+    Mostrar diálogo personalizado [ "Sin pedido" ; "Primero abre un pedido en la ficha." ]
+    Salir del guión [ ]
+Fin de si
+
+Establecer variable [ $url ; Valor:
+    "https://107.172.193.34.nip.io/pedidos/" & $id & "/reporte/pdf" ]
+Establecer variable [ $nombre ; Valor:
+    "Pedido_" & Upper ( Left ( $id ; 8 ) ) & ".pdf" ]
+
+Establecer campo [ Pedidos::g_archivo ; "" ]
+Insertar desde URL [ Con diálogo: Desactivado ; Destino: Pedidos::g_archivo ; $url ]
+
+Si [ Get ( UltimoError ) ≠ 0 or IsEmpty ( Pedidos::g_archivo ) ]
+    Mostrar diálogo personalizado [ "No se pudo descargar" ;
+        "Revisa la conexión a internet. Código: " & Get ( UltimoError ) ]
+    Salir del guión [ ]
+Fin de si
+
+Establecer variable [ $ruta ; Valor: Get ( RutaDocumentos ) & $nombre ]
+Exportar contenido del campo [ Pedidos::g_archivo ; "$ruta" ;
+    Abrir automáticamente: Activado ]
+```
+
+En **Exportar contenido del campo** hay que entrar en *Especificar archivo de
+salida*, escribir `$ruta` y marcar **Abrir el archivo automáticamente**.
+
+### 4.3 Guión D: "Descargar lista de compras"
+
+Junta **todos** los pedidos que todavía no se compraron y suma el mismo insumo
+pedido por varias personas: una sola lista para una sola salida al mercado.
+No depende del registro abierto, así que el botón puede ir en la barra superior.
+
+```
+# --- Descargar lista de compras ---
+Establecer variable [ $url ; Valor:
+    "https://107.172.193.34.nip.io/api/compras/pendientes/pdf" ]
+Establecer variable [ $nombre ; Valor:
+    "Lista_compras_" & Year ( Get ( FechaActual ) )
+    & Right ( "0" & Month ( Get ( FechaActual ) ) ; 2 )
+    & Right ( "0" & Day ( Get ( FechaActual ) ) ; 2 ) & ".pdf" ]
+
+Establecer campo [ Pedidos::g_archivo ; "" ]
+Insertar desde URL [ Con diálogo: Desactivado ; Destino: Pedidos::g_archivo ; $url ]
+
+Si [ Get ( UltimoError ) ≠ 0 or IsEmpty ( Pedidos::g_archivo ) ]
+    Mostrar diálogo personalizado [ "No se pudo descargar" ;
+        "Revisa la conexión a internet. Código: " & Get ( UltimoError ) ]
+    Salir del guión [ ]
+Fin de si
+
+Establecer variable [ $ruta ; Valor: Get ( RutaDocumentos ) & $nombre ]
+Exportar contenido del campo [ Pedidos::g_archivo ; "$ruta" ;
+    Abrir automáticamente: Activado ]
+```
+
+### 4.4 Colocar los botones
+
+| Botón | Dónde | Guión |
+|---|---|---|
+| **PDF del pedido** | Ficha PEDIDOS DE COCINA, al lado de *Informe* | Guión C |
+| **Lista de compras** | Barra superior, junto a *Traer Pedidos* | Guión D |
+
+### 4.5 Filtrar qué pedidos entran en la lista
+
+Por defecto la lista incluye los estados `pendiente`, `en revision` y
+`aceptado`. Para cambiarlo se agrega el parámetro `estados` a la dirección:
+
+```
+.../api/compras/pendientes/pdf?estados=aceptado
+.../api/compras/pendientes/pdf?estados=pendiente,aceptado
+```
+
+### 4.6 Si algo falla
+
+| Síntoma | Causa probable |
+|---|---|
+| El contenedor queda vacío y `Get(UltimoError)` da 1631 | El equipo no llega al servidor: revisar internet o el firewall |
+| Descarga un archivo que no abre | El servidor respondió un error en texto; pegar la dirección en el navegador para ver el mensaje |
+| Error al exportar | La carpeta de destino no existe: usar `Get ( RutaEscritorio )` en vez de `Get ( RutaDocumentos )` |
+
+> Alternativa de una sola línea: `Abrir URL [ $url ]` abre el PDF en el
+> navegador y lo descarga desde ahí. Sirve como plan B, pero no guarda el
+> archivo en una carpeta fija ni lo abre solo.
+
+---
+
+## 5. Otros documentos disponibles
+
+| Documento | Dirección |
+|---|---|
+| Hoja del pedido en PDF | `/pedidos/{id_publico}/reporte/pdf` |
+| Hoja del pedido en Excel | `/pedidos/{id_publico}/reporte/excel` |
+| Hoja del pedido en pantalla | `/pedidos/{id_publico}/reporte` |
+| Lista de compras consolidada en PDF | `/api/compras/pendientes/pdf` |
+| Consolidado de pendientes en Excel | `/api/pedidos/pendientes/excel` |
