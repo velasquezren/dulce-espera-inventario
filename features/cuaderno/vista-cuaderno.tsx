@@ -10,7 +10,9 @@ import { AvisoError, Esqueleto, Vacio } from '@/components/ui/estados';
 import { EncabezadoPagina, Tarjeta } from '@/components/ui/superficie';
 import { useAvisos } from '@/components/ui/avisos';
 import { CANALES } from '@/lib/domain/canales';
+import { estaAbierto, esperaRecepcion } from '@/lib/domain/estados';
 import type { CanalId, Insumo } from '@/lib/domain/tipos';
+import { formatoFecha } from '@/lib/formato';
 import { normalizar, pluralizar } from '@/lib/texto';
 import { useCatalogo } from '@/lib/hooks/use-catalogo';
 import { useCuaderno } from '@/lib/hooks/use-cuaderno';
@@ -23,7 +25,10 @@ const PAGINA = 50;
 const ORDEN_CANAL = new Map(CANALES.map((c, indice) => [c.id, indice]));
 
 type Pestana = 'buscar' | 'cuaderno';
-type FiltroCanal = 'todos' | CanalId;
+type FiltroCanal = 'todos' | 'frecuentes' | CanalId;
+
+/** Con menos de esto, la lista de frecuentes no vale la pena como atajo. */
+const MINIMO_FRECUENTES = 8;
 
 interface Entrada {
   insumo: Insumo;
@@ -36,11 +41,11 @@ export function VistaCuaderno() {
   const { sesion } = useSesion();
   const { insumos, porId, estado, error, recargar } = useCatalogo();
   const { anotaciones, cantidades, total, fijar, quitar, vaciar } = useCuaderno();
-  const { enviar } = usePedidos();
+  const { pedidos, enviar } = usePedidos();
 
   const [pestana, setPestana] = useState<Pestana>('buscar');
   const [busqueda, setBusqueda] = useState('');
-  const [canalActivo, setCanalActivo] = useState<FiltroCanal>('todos');
+  const [canalElegido, setCanalActivo] = useState<FiltroCanal | null>(null);
   const [paginacion, setPaginacion] = useState({ firma: '', visibles: PAGINA });
   const [motivo, setMotivo] = useState('');
   const [enviando, setEnviando] = useState(false);
@@ -64,6 +69,38 @@ export function VistaCuaderno() {
     [insumos],
   );
 
+  /**
+   * Del catálogo de 771 insumos la cocina usa apenas unas decenas. Ordenarlos
+   * por las veces que se pidieron convierte una búsqueda larga en un atajo.
+   */
+  const frecuencia = useMemo(() => {
+    const cuenta = new Map<string, number>();
+    for (const pedido of pedidos) {
+      for (const linea of pedido.lineas) {
+        cuenta.set(linea.insumoId, (cuenta.get(linea.insumoId) ?? 0) + 1);
+      }
+    }
+    return cuenta;
+  }, [pedidos]);
+
+  /** Lo que ya está pedido y todavía no llegó, para no pedirlo dos veces. */
+  const enCamino = useMemo(() => {
+    const mapa = new Map<string, string>();
+    for (const pedido of pedidos) {
+      if (!estaAbierto(pedido.estado) && !esperaRecepcion(pedido.estado)) continue;
+      for (const linea of pedido.lineas) {
+        // Solo día y mes: el aviso tiene que caber en un renglón.
+        if (!mapa.has(linea.insumoId)) mapa.set(linea.insumoId, formatoFecha(pedido.fecha).slice(0, 5));
+      }
+    }
+    return mapa;
+  }, [pedidos]);
+
+  const hayFrecuentes = frecuencia.size >= MINIMO_FRECUENTES;
+
+  // Sin elección explícita se abre en el atajo, que es lo que se usa a diario.
+  const canalActivo: FiltroCanal = canalElegido ?? (hayFrecuentes ? 'frecuentes' : 'todos');
+
   const porCanal = useMemo(() => {
     const cuenta = new Map<CanalId, number>();
     for (const { insumo } of indice) cuenta.set(insumo.canal, (cuenta.get(insumo.canal) ?? 0) + 1);
@@ -72,13 +109,24 @@ export function VistaCuaderno() {
 
   const resultados = useMemo(() => {
     const palabras = normalizar(consulta.trim()).split(/\s+/).filter(Boolean);
-    return indice
-      .filter(({ insumo, texto }) => {
-        if (canalActivo !== 'todos' && insumo.canal !== canalActivo) return false;
-        return palabras.every((palabra) => texto.includes(palabra));
-      })
-      .map((entrada) => entrada.insumo);
-  }, [indice, consulta, canalActivo]);
+    const coincide = ({ insumo, texto }: Entrada) => {
+      if (canalActivo === 'frecuentes') {
+        if (!frecuencia.has(insumo.id)) return false;
+      } else if (canalActivo !== 'todos' && insumo.canal !== canalActivo) {
+        return false;
+      }
+      return palabras.every((palabra) => texto.includes(palabra));
+    };
+
+    const encontrados = indice.filter(coincide);
+    if (canalActivo === 'frecuentes') {
+      // Primero lo que más se pide, no el orden alfabético.
+      encontrados.sort(
+        (a, b) => (frecuencia.get(b.insumo.id) ?? 0) - (frecuencia.get(a.insumo.id) ?? 0),
+      );
+    }
+    return encontrados.map((entrada) => entrada.insumo);
+  }, [indice, consulta, canalActivo, frecuencia]);
 
   const firma = `${consulta}|${canalActivo}`;
   const visibles = paginacion.firma === firma ? paginacion.visibles : PAGINA;
@@ -164,6 +212,15 @@ export function VistaCuaderno() {
           />
 
           <div className="flex gap-2 overflow-x-auto pb-1 sin-barra">
+            {hayFrecuentes && (
+              <Chip
+                activo={canalActivo === 'frecuentes'}
+                alPulsar={() => setCanalActivo('frecuentes')}
+                cuenta={frecuencia.size}
+              >
+                Lo que más pides
+              </Chip>
+            )}
             <Chip activo={canalActivo === 'todos'} alPulsar={() => setCanalActivo('todos')}>
               Todo
             </Chip>
@@ -209,6 +266,9 @@ export function VistaCuaderno() {
                       insumo={insumo}
                       cantidad={cantidades.get(insumo.id) ?? 0}
                       alFijar={fijar}
+                      aviso={
+                        enCamino.has(insumo.id) ? `Ya pedido el ${enCamino.get(insumo.id)}` : undefined
+                      }
                     />
                   ))}
                 </ul>

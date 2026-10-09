@@ -1,5 +1,6 @@
 import { normalizarCanal } from '../domain/canales';
 import { normalizarEstado } from '../domain/estados';
+import { presentacionLegible } from '../domain/presentacion';
 import type { EstadoPedido, LineaNueva, Pedido } from '../domain/tipos';
 import { pedir } from './cliente';
 
@@ -37,15 +38,18 @@ function mapear(dto: PedidoDTO): Pedido {
     fechaEstado: dto.fecha_estado ?? fecha,
     estado: normalizarEstado(dto.estado),
     motivo: dto.motivo?.trim() ?? '',
-    lineas: (dto.lineas ?? []).map((linea) => ({
-      id: linea.id_publico,
-      insumoId: linea.insumo_id_publico,
-      nombre: linea.nombre_insumo?.trim() || 'Insumo sin nombre',
-      categoria: linea.categoria_insumo?.trim() || 'Otros',
-      canal: normalizarCanal(linea.grupo_insumo),
-      presentacion: linea.presentacion_insumo?.trim() || 'Unidades',
-      cantidad: Number(linea.cantidad) || 0,
-    })),
+    lineas: (dto.lineas ?? []).map((linea) => {
+      const nombre = linea.nombre_insumo?.trim() || 'Insumo sin nombre';
+      return {
+        id: linea.id_publico,
+        insumoId: linea.insumo_id_publico,
+        nombre,
+        categoria: linea.categoria_insumo?.trim() || 'Otros',
+        canal: normalizarCanal(linea.grupo_insumo),
+        presentacion: presentacionLegible(nombre, linea.presentacion_insumo),
+        cantidad: Number(linea.cantidad) || 0,
+      };
+    }),
   };
 }
 

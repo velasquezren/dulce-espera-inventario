@@ -9,9 +9,11 @@ interface Props {
   insumo: Insumo;
   cantidad: number;
   alFijar: (insumo: Insumo, cantidad: number) => void;
+  /** Aviso corto bajo el nombre, por ejemplo si ya se pidió y sigue en camino. */
+  aviso?: string;
 }
 
-export const FilaInsumo = memo(function FilaInsumo({ insumo, cantidad, alFijar }: Props) {
+export const FilaInsumo = memo(function FilaInsumo({ insumo, cantidad, alFijar, aviso }: Props) {
   const anotado = cantidad > 0;
 
   return (
@@ -24,6 +26,7 @@ export const FilaInsumo = memo(function FilaInsumo({ insumo, cantidad, alFijar }
       <div className="min-w-0 flex-1">
         <p className="text-[15px] font-medium leading-snug text-ink">{insumo.nombre}</p>
         <p className="mt-0.5 truncate text-sm text-ink-muted">{insumo.presentacion}</p>
+        {aviso && <p className="mt-1 text-sm font-medium text-alerta">{aviso}</p>}
       </div>
 
       <Contador
